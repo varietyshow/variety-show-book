@@ -1,0 +1,139 @@
+/* Basic Reset */
+body, h1, h2, h3, p, a {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    line-height: 1.6;
+    background-color: #f4f4f4;
+}
+
+/* Header Styles */
+header {
+    background-color: #333;
+    color: #fff;
+    padding: 10px 20px;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.header .logo {
+    font-size: 24px;
+    font-weight: bold;
+}
+
+nav {
+    display: flex;
+    gap: 10px;
+}
+
+nav a {
+    color: #fff;
+    text-decoration: none;
+}
+
+nav a:hover {
+    text-decoration: underline;
+}
+
+/* Main Content Styles */
+main {
+    padding: 20px;
+}
+
+.welcome-message, .quick-start-guide, .key-actions, .notifications {
+    background: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+}
+
+.welcome-message {
+    text-align: center;
+}
+
+
+
+
+@media (max-width: 480px) {
+    header {
+        flex-direction: column;
+        text-align: center;
+    }
+
+    nav {
+        margin-top: 10px;
+        flex-direction: column;
+    }
+
+    nav a {
+        margin: 5px 0;
+    }
+
+   
+}
+
+        /* CSS for Dropdown */
+        .dropdown {
+            position: relative;
+            display: inline-block;
+        }
+
+        .dropbtn {
+            border: none; /* Remove default border */
+            background: none; /* Remove default background */
+            padding: 0; /* Remove default padding */
+            cursor: pointer; /* Pointer cursor for the button */
+            outline: none; /* Remove focus outline */
+        }
+
+        .dropbtn img {
+            border-radius: 50%; /* Makes the image circular */
+            width: 40px; /* Adjust size as needed */
+            height: 40px; /* Adjust size as needed */
+            object-fit: cover; /* Ensures the image covers the circle */
+            display: block; /* Ensures the image is displayed as a block */
+        }
+
+        .dropdown-content {
+            display: none; /* Initially hidden */
+            position: absolute;
+            top: 100%; /* Adjusts dropdown to appear below the button */
+            left: -90px;
+            background-color: white;
+            min-width: 150px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+            z-index: 1000; /* Ensures the dropdown appears above other elements */
+            border-radius: 4px;
+        }
+
+        .dropdown-content a {
+            color: #007bff;
+            padding: 12px 16px;
+            text-decoration: none;
+            display: block;
+        }
+
+        .dropdown-content a:hover {
+            background-color: #f1f1f1;
+        }
+
+        .dropdown.show .dropdown-content {
+            display: block;
+        }
+
+        .dropdown.show .dropbtn img {
+            background-color: #0056b3; /* Optional: change image background when dropdown is open */
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 600px) {
+            .dropdown-content {
+                min-width: 120px;
+            }
+        }

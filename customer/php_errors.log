@@ -1,0 +1,816 @@
+[12-Feb-2025 20:45:37 Europe/Berlin] Received data: {"entertainer_id":"10","booking_date":"2025-02-20","start_time":"13:45","end_time":"16:45"}
+[12-Feb-2025 20:45:37 Europe/Berlin] PHP Fatal error:  Uncaught ArgumentCountError: The number of elements in the type definition string must match the number of bind variables in C:\xampp\htdocs\new-system\customer\check_availability.php:86
+Stack trace:
+#0 C:\xampp\htdocs\new-system\customer\check_availability.php(86): mysqli_stmt->bind_param('sssssss', '10', '2025-02-20', '13:45', '16:45', '13:45', '16:45', '13:45', '16:45')
+#1 {main}
+  thrown in C:\xampp\htdocs\new-system\customer\check_availability.php on line 86
+[12-Feb-2025 20:45:43 Europe/Berlin] Received data: {"entertainer_id":"10","booking_date":"2025-02-20","start_time":"13:45","end_time":"16:45"}
+[12-Feb-2025 20:45:43 Europe/Berlin] PHP Fatal error:  Uncaught ArgumentCountError: The number of elements in the type definition string must match the number of bind variables in C:\xampp\htdocs\new-system\customer\check_availability.php:86
+Stack trace:
+#0 C:\xampp\htdocs\new-system\customer\check_availability.php(86): mysqli_stmt->bind_param('sssssss', '10', '2025-02-20', '13:45', '16:45', '13:45', '16:45', '13:45', '16:45')
+#1 {main}
+  thrown in C:\xampp\htdocs\new-system\customer\check_availability.php on line 86
+[12-Feb-2025 20:45:43 Europe/Berlin] Received data: {"entertainer_id":"12","booking_date":"2025-02-20","start_time":"13:45","end_time":"16:45"}
+[12-Feb-2025 20:45:43 Europe/Berlin] PHP Fatal error:  Uncaught ArgumentCountError: The number of elements in the type definition string must match the number of bind variables in C:\xampp\htdocs\new-system\customer\check_availability.php:86
+Stack trace:
+#0 C:\xampp\htdocs\new-system\customer\check_availability.php(86): mysqli_stmt->bind_param('sssssss', '12', '2025-02-20', '13:45', '16:45', '13:45', '16:45', '13:45', '16:45')
+#1 {main}
+  thrown in C:\xampp\htdocs\new-system\customer\check_availability.php on line 86
+[12-Feb-2025 20:50:43 Europe/Berlin] Received data: {"entertainer_id":"10","booking_date":"2025-02-14","start_time":"13:50","end_time":"15:50"}
+[12-Feb-2025 20:50:43 Europe/Berlin] SQL Query: SELECT COUNT(*) as booking_count 
+            FROM booking_report 
+            WHERE entertainer_id = ?
+            AND date_schedule = ?
+            AND status IN ('Approved', 'Pending')
+[12-Feb-2025 20:50:43 Europe/Berlin] Parameters: entertainer_id=10, date_schedule=2025-02-14
+[12-Feb-2025 20:50:43 Europe/Berlin] Query result: {"booking_count":0}
+[12-Feb-2025 20:50:49 Europe/Berlin] Received data: {"entertainer_id":"6","booking_date":"2025-02-14","start_time":"13:50","end_time":"15:50"}
+[12-Feb-2025 20:50:49 Europe/Berlin] SQL Query: SELECT COUNT(*) as booking_count 
+            FROM booking_report 
+            WHERE entertainer_id = ?
+            AND date_schedule = ?
+            AND status IN ('Approved', 'Pending')
+[12-Feb-2025 20:50:49 Europe/Berlin] Parameters: entertainer_id=6, date_schedule=2025-02-14
+[12-Feb-2025 20:50:49 Europe/Berlin] Query result: {"booking_count":0}
+[12-Feb-2025 20:50:49 Europe/Berlin] Received data: {"entertainer_id":"10","booking_date":"2025-02-14","start_time":"13:50","end_time":"15:50"}
+[12-Feb-2025 20:50:49 Europe/Berlin] SQL Query: SELECT COUNT(*) as booking_count 
+            FROM booking_report 
+            WHERE entertainer_id = ?
+            AND date_schedule = ?
+            AND status IN ('Approved', 'Pending')
+[12-Feb-2025 20:50:49 Europe/Berlin] Parameters: entertainer_id=10, date_schedule=2025-02-14
+[12-Feb-2025 20:50:49 Europe/Berlin] Query result: {"booking_count":0}
+[12-Feb-2025 20:50:53 Europe/Berlin] Received data: {"entertainer_id":"6","booking_date":"2025-02-14","start_time":"13:50","end_time":"15:50"}
+[12-Feb-2025 20:50:53 Europe/Berlin] SQL Query: SELECT COUNT(*) as booking_count 
+            FROM booking_report 
+            WHERE entertainer_id = ?
+            AND date_schedule = ?
+            AND status IN ('Approved', 'Pending')
+[12-Feb-2025 20:50:53 Europe/Berlin] Parameters: entertainer_id=6, date_schedule=2025-02-14
+[12-Feb-2025 20:50:53 Europe/Berlin] Query result: {"booking_count":0}
+[12-Feb-2025 20:50:53 Europe/Berlin] Received data: {"entertainer_id":"10","booking_date":"2025-02-14","start_time":"13:50","end_time":"15:50"}
+[12-Feb-2025 20:50:53 Europe/Berlin] SQL Query: SELECT COUNT(*) as booking_count 
+            FROM booking_report 
+            WHERE entertainer_id = ?
+            AND date_schedule = ?
+            AND status IN ('Approved', 'Pending')
+[12-Feb-2025 20:50:53 Europe/Berlin] Parameters: entertainer_id=10, date_schedule=2025-02-14
+[12-Feb-2025 20:50:53 Europe/Berlin] Query result: {"booking_count":0}
+[12-Feb-2025 20:50:53 Europe/Berlin] Received data: {"entertainer_id":"12","booking_date":"2025-02-14","start_time":"13:50","end_time":"15:50"}
+[12-Feb-2025 20:50:53 Europe/Berlin] SQL Query: SELECT COUNT(*) as booking_count 
+            FROM booking_report 
+            WHERE entertainer_id = ?
+            AND date_schedule = ?
+            AND status IN ('Approved', 'Pending')
+[12-Feb-2025 20:50:53 Europe/Berlin] Parameters: entertainer_id=12, date_schedule=2025-02-14
+[12-Feb-2025 20:50:53 Europe/Berlin] Query result: {"booking_count":0}
+[12-Feb-2025 21:40:50 Europe/Berlin] Received data: {"entertainer_id":"12","booking_date":"2025-02-15","start_time":"13:40","end_time":"16:40"}
+[12-Feb-2025 21:40:50 Europe/Berlin] SQL Query: SELECT COUNT(*) as booking_count 
+            FROM booking_report 
+            WHERE entertainer_id = ?
+            AND date_schedule = ?
+            AND status IN ('Approved', 'Pending')
+[12-Feb-2025 21:40:50 Europe/Berlin] Parameters: entertainer_id=12, date_schedule=2025-02-15
+[12-Feb-2025 21:40:50 Europe/Berlin] Query result: {"booking_count":0}
+[12-Feb-2025 21:40:54 Europe/Berlin] Received data: {"entertainer_id":"10","booking_date":"2025-02-15","start_time":"13:40","end_time":"16:40"}
+[12-Feb-2025 21:40:54 Europe/Berlin] SQL Query: SELECT COUNT(*) as booking_count 
+            FROM booking_report 
+            WHERE entertainer_id = ?
+            AND date_schedule = ?
+            AND status IN ('Approved', 'Pending')
+[12-Feb-2025 21:40:54 Europe/Berlin] Parameters: entertainer_id=10, date_schedule=2025-02-15
+[12-Feb-2025 21:40:54 Europe/Berlin] Query result: {"booking_count":0}
+[12-Feb-2025 21:40:54 Europe/Berlin] Received data: {"entertainer_id":"12","booking_date":"2025-02-15","start_time":"13:40","end_time":"16:40"}
+[12-Feb-2025 21:40:54 Europe/Berlin] SQL Query: SELECT COUNT(*) as booking_count 
+            FROM booking_report 
+            WHERE entertainer_id = ?
+            AND date_schedule = ?
+            AND status IN ('Approved', 'Pending')
+[12-Feb-2025 21:40:54 Europe/Berlin] Parameters: entertainer_id=12, date_schedule=2025-02-15
+[12-Feb-2025 21:40:54 Europe/Berlin] Query result: {"booking_count":0}
+[12-Feb-2025 21:40:57 Europe/Berlin] Received data: {"entertainer_id":"12","booking_date":"2025-02-15","start_time":"13:40","end_time":"16:40"}
+[12-Feb-2025 21:40:57 Europe/Berlin] SQL Query: SELECT COUNT(*) as booking_count 
+            FROM booking_report 
+            WHERE entertainer_id = ?
+            AND date_schedule = ?
+            AND status IN ('Approved', 'Pending')
+[12-Feb-2025 21:40:57 Europe/Berlin] Parameters: entertainer_id=12, date_schedule=2025-02-15
+[12-Feb-2025 21:40:57 Europe/Berlin] Query result: {"booking_count":0}
+[12-Feb-2025 22:33:14 Europe/Berlin] Received data: {"entertainer_id":"12","booking_date":"2025-02-20","start_time":"13:33","end_time":"16:33"}
+[12-Feb-2025 22:33:14 Europe/Berlin] SQL Query: SELECT COUNT(*) as booking_count 
+            FROM booking_report 
+            WHERE entertainer_id = ?
+            AND date_schedule = ?
+            AND status IN ('Approved', 'Pending')
+[12-Feb-2025 22:33:14 Europe/Berlin] Parameters: entertainer_id=12, date_schedule=2025-02-20
+[12-Feb-2025 22:33:14 Europe/Berlin] Query result: {"booking_count":0}
+[14-Feb-2025 02:39:33 Europe/Berlin] Received data: {"entertainer_id":"12","booking_date":"2025-02-14","start_time":"17:39","end_time":"20:39"}
+[14-Feb-2025 02:39:33 Europe/Berlin] SQL Query: SELECT COUNT(*) as booking_count 
+            FROM booking_report 
+            WHERE entertainer_id = ?
+            AND date_schedule = ?
+            AND status IN ('Approved', 'Pending')
+[14-Feb-2025 02:39:33 Europe/Berlin] Parameters: entertainer_id=12, date_schedule=2025-02-14
+[14-Feb-2025 02:39:33 Europe/Berlin] Query result: {"booking_count":0}
+[14-Feb-2025 03:09:55 Europe/Berlin] Received data: []
+[14-Feb-2025 03:09:55 Europe/Berlin] Error in check_availability.php: Missing required fields: {"entertainer_id":null,"booking_date":null,"start_time":null,"end_time":null}
+[14-Feb-2025 03:14:28 Europe/Berlin] Received data: []
+[14-Feb-2025 03:14:28 Europe/Berlin] Error in check_availability.php: Missing required fields: {"entertainer_id":null,"booking_date":null,"start_time":null,"end_time":null}
+[14-Feb-2025 03:17:31 Europe/Berlin] Received data: {"entertainers":["12"],"date":"2025-02-18","start_time":"18:17","end_time":"20:17"}
+[14-Feb-2025 03:17:31 Europe/Berlin] Error in check_availability.php: Unknown column 'start_time' in 'field list'
+[14-Feb-2025 03:19:18 Europe/Berlin] Received data: {"entertainers":["12"],"date":"2025-02-18","start_time":"18:19","end_time":"20:19"}
+[14-Feb-2025 03:19:18 Europe/Berlin] Error in check_availability.php: Unknown column 'start_time' in 'field list'
+[14-Feb-2025 03:21:40 Europe/Berlin] Received data: {"entertainers":["12"],"date":"2025-02-18","start_time":"18:21","end_time":"21:21"}
+[14-Feb-2025 03:21:40 Europe/Berlin] Checking availability for entertainer 12 on 2025-02-18 between 18:21 and 21:21
+[14-Feb-2025 03:21:40 Europe/Berlin] Result for entertainer 12: {"entertainer_id":"12","name":"Marc Omandam","available":true,"conflict":null}
+[14-Feb-2025 03:21:47 Europe/Berlin] Received data: {"entertainers":["10","12"],"date":"2025-02-18","start_time":"18:21","end_time":"21:21"}
+[14-Feb-2025 03:21:47 Europe/Berlin] Checking availability for entertainer 10 on 2025-02-18 between 18:21 and 21:21
+[14-Feb-2025 03:21:47 Europe/Berlin] Result for entertainer 10: {"entertainer_id":"10","name":"jomarie omandam","available":true,"conflict":null}
+[14-Feb-2025 03:21:47 Europe/Berlin] Checking availability for entertainer 12 on 2025-02-18 between 18:21 and 21:21
+[14-Feb-2025 03:21:47 Europe/Berlin] Result for entertainer 12: {"entertainer_id":"12","name":"Marc Omandam","available":true,"conflict":null}
+[14-Feb-2025 03:21:52 Europe/Berlin] Received data: {"entertainers":["12"],"date":"2025-02-18","start_time":"18:21","end_time":"21:21"}
+[14-Feb-2025 03:21:52 Europe/Berlin] Checking availability for entertainer 12 on 2025-02-18 between 18:21 and 21:21
+[14-Feb-2025 03:21:52 Europe/Berlin] Result for entertainer 12: {"entertainer_id":"12","name":"Marc Omandam","available":true,"conflict":null}
+[14-Feb-2025 03:27:52 Europe/Berlin] Received data: {"entertainers":["12"],"date":"2025-02-18","start_time":"18:27","end_time":"20:27"}
+[14-Feb-2025 03:27:52 Europe/Berlin] Checking bookings for entertainer 12 on 2025-02-18 between 18:27 and 20:27
+[14-Feb-2025 03:27:52 Europe/Berlin] Result for entertainer 12: {"entertainer_id":"12","name":"Marc Omandam","available":true,"conflict":null}
+[14-Feb-2025 03:28:10 Europe/Berlin] Received data: {"entertainers":["12"],"date":"2025-04-19","start_time":"18:27","end_time":"20:27"}
+[14-Feb-2025 03:28:37 Europe/Berlin] Received data: {"entertainers":["10"],"date":"2025-02-27","start_time":"18:27","end_time":"20:27"}
+[14-Feb-2025 03:28:56 Europe/Berlin] Received data: {"entertainers":["6"],"date":"2025-02-17","start_time":"18:27","end_time":"20:27"}
+[14-Feb-2025 03:29:05 Europe/Berlin] Received data: {"entertainers":["2"],"date":"2025-02-19","start_time":"18:27","end_time":"20:27"}
+[14-Feb-2025 03:29:10 Europe/Berlin] Received data: {"entertainers":["1"],"date":"2025-02-19","start_time":"18:27","end_time":"20:27"}
+[14-Feb-2025 03:29:10 Europe/Berlin] Checking bookings for entertainer 1 on 2025-02-19 between 18:27 and 20:27
+[14-Feb-2025 03:29:10 Europe/Berlin] Result for entertainer 1: {"entertainer_id":"1","name":"Markyyyy Latonio","available":true,"conflict":null}
+[14-Feb-2025 03:29:18 Europe/Berlin] Received data: {"entertainers":["1"],"date":"2025-02-20","start_time":"18:27","end_time":"20:27"}
+[14-Feb-2025 03:33:25 Europe/Berlin] Received data: {"entertainers":["12"],"date":"2025-02-17","start_time":"18:33","end_time":"20:33"}
+[14-Feb-2025 03:33:25 Europe/Berlin] Checking bookings for entertainer 12 on 2025-02-17 between 18:33 and 20:33
+[14-Feb-2025 03:33:25 Europe/Berlin] Result for entertainer 12: {"entertainer_id":"12","name":"Marc Omandam","available":true,"conflict":null}
+[14-Feb-2025 03:33:25 Europe/Berlin] Received data: {"entertainers":["1","2","3","6","10","12"],"date":"2025-02-17","start_time":"18:33","end_time":"20:33"}
+[14-Feb-2025 03:33:25 Europe/Berlin] Checking bookings for entertainer 1 on 2025-02-17 between 18:33 and 20:33
+[14-Feb-2025 03:33:25 Europe/Berlin] Result for entertainer 1: {"entertainer_id":"1","name":"Markyyyy Latonio","available":true,"conflict":null}
+[14-Feb-2025 03:33:25 Europe/Berlin] Checking bookings for entertainer 12 on 2025-02-17 between 18:33 and 20:33
+[14-Feb-2025 03:33:25 Europe/Berlin] Result for entertainer 12: {"entertainer_id":"12","name":"Marc Omandam","available":true,"conflict":null}
+[14-Feb-2025 03:33:37 Europe/Berlin] Received data: {"entertainers":["1","2","3","6","10","12"],"date":"2025-02-21","start_time":"18:33","end_time":"20:33"}
+[14-Feb-2025 03:33:37 Europe/Berlin] Checking bookings for entertainer 12 on 2025-02-21 between 18:33 and 20:33
+[14-Feb-2025 03:33:37 Europe/Berlin] Received data: {"entertainers":["12"],"date":"2025-02-21","start_time":"18:33","end_time":"20:33"}
+[14-Feb-2025 03:33:37 Europe/Berlin] Result for entertainer 12: {"entertainer_id":"12","name":"Marc Omandam","available":true,"conflict":null}
+[14-Feb-2025 03:33:37 Europe/Berlin] Checking bookings for entertainer 12 on 2025-02-21 between 18:33 and 20:33
+[14-Feb-2025 03:33:37 Europe/Berlin] Result for entertainer 12: {"entertainer_id":"12","name":"Marc Omandam","available":true,"conflict":null}
+[14-Feb-2025 03:33:44 Europe/Berlin] Received data: {"entertainers":["1","2","3","6","10","12"],"date":"2025-02-27","start_time":"18:33","end_time":"20:33"}
+[14-Feb-2025 03:33:44 Europe/Berlin] Received data: {"entertainers":["12"],"date":"2025-02-27","start_time":"18:33","end_time":"20:33"}
+[14-Feb-2025 03:33:44 Europe/Berlin] Checking bookings for entertainer 12 on 2025-02-27 between 18:33 and 20:33
+[14-Feb-2025 03:33:44 Europe/Berlin] Result for entertainer 12: {"entertainer_id":"12","name":"Marc Omandam","available":true,"conflict":null}
+[14-Feb-2025 03:33:44 Europe/Berlin] Checking bookings for entertainer 12 on 2025-02-27 between 18:33 and 20:33
+[14-Feb-2025 03:33:44 Europe/Berlin] Result for entertainer 12: {"entertainer_id":"12","name":"Marc Omandam","available":true,"conflict":null}
+[14-Feb-2025 03:33:54 Europe/Berlin] Received data: {"entertainers":["1","2","3","6","10","12"],"date":"2025-04-23","start_time":"18:33","end_time":"20:33"}
+[14-Feb-2025 03:33:54 Europe/Berlin] Received data: {"entertainers":["12"],"date":"2025-04-23","start_time":"18:33","end_time":"20:33"}
+[14-Feb-2025 03:34:10 Europe/Berlin] Received data: {"entertainers":["1","2","3","6","10","12"],"date":"2025-02-17","start_time":"18:33","end_time":"20:33"}
+[14-Feb-2025 03:34:10 Europe/Berlin] Checking bookings for entertainer 1 on 2025-02-17 between 18:33 and 20:33
+[14-Feb-2025 03:34:10 Europe/Berlin] Result for entertainer 1: {"entertainer_id":"1","name":"Markyyyy Latonio","available":true,"conflict":null}
+[14-Feb-2025 03:34:10 Europe/Berlin] Checking bookings for entertainer 12 on 2025-02-17 between 18:33 and 20:33
+[14-Feb-2025 03:34:10 Europe/Berlin] Result for entertainer 12: {"entertainer_id":"12","name":"Marc Omandam","available":true,"conflict":null}
+[14-Feb-2025 03:34:19 Europe/Berlin] Received data: {"entertainers":["1"],"date":"2025-02-17","start_time":"18:33","end_time":"20:33"}
+[14-Feb-2025 03:34:19 Europe/Berlin] Checking bookings for entertainer 1 on 2025-02-17 between 18:33 and 20:33
+[14-Feb-2025 03:34:19 Europe/Berlin] Result for entertainer 1: {"entertainer_id":"1","name":"Markyyyy Latonio","available":true,"conflict":null}
+[14-Feb-2025 03:34:27 Europe/Berlin] Received data: {"entertainers":["1","12"],"date":"2025-02-17","start_time":"18:33","end_time":"20:33"}
+[14-Feb-2025 03:34:27 Europe/Berlin] Checking bookings for entertainer 1 on 2025-02-17 between 18:33 and 20:33
+[14-Feb-2025 03:34:27 Europe/Berlin] Result for entertainer 1: {"entertainer_id":"1","name":"Markyyyy Latonio","available":true,"conflict":null}
+[14-Feb-2025 03:34:27 Europe/Berlin] Checking bookings for entertainer 12 on 2025-02-17 between 18:33 and 20:33
+[14-Feb-2025 03:34:27 Europe/Berlin] Result for entertainer 12: {"entertainer_id":"12","name":"Marc Omandam","available":true,"conflict":null}
+[14-Feb-2025 03:34:35 Europe/Berlin] Received data: {"entertainers":["1"],"date":"2025-02-17","start_time":"18:33","end_time":"20:33"}
+[14-Feb-2025 03:34:35 Europe/Berlin] Checking bookings for entertainer 1 on 2025-02-17 between 18:33 and 20:33
+[14-Feb-2025 03:34:35 Europe/Berlin] Result for entertainer 1: {"entertainer_id":"1","name":"Markyyyy Latonio","available":true,"conflict":null}
+[14-Feb-2025 03:34:40 Europe/Berlin] Received data: {"entertainers":["1","12"],"date":"2025-02-17","start_time":"18:33","end_time":"20:33"}
+[14-Feb-2025 03:34:40 Europe/Berlin] Checking bookings for entertainer 1 on 2025-02-17 between 18:33 and 20:33
+[14-Feb-2025 03:34:40 Europe/Berlin] Result for entertainer 1: {"entertainer_id":"1","name":"Markyyyy Latonio","available":true,"conflict":null}
+[14-Feb-2025 03:34:40 Europe/Berlin] Checking bookings for entertainer 12 on 2025-02-17 between 18:33 and 20:33
+[14-Feb-2025 03:34:40 Europe/Berlin] Result for entertainer 12: {"entertainer_id":"12","name":"Marc Omandam","available":true,"conflict":null}
+[14-Feb-2025 03:34:49 Europe/Berlin] Received data: {"entertainers":["1","12"],"date":"2025-02-18","start_time":"18:33","end_time":"20:33"}
+[14-Feb-2025 03:34:49 Europe/Berlin] Received data: {"entertainers":["1","2","3","6","10","12"],"date":"2025-02-18","start_time":"18:33","end_time":"20:33"}
+[14-Feb-2025 03:34:49 Europe/Berlin] Checking bookings for entertainer 1 on 2025-02-18 between 18:33 and 20:33
+[14-Feb-2025 03:34:49 Europe/Berlin] Result for entertainer 1: {"entertainer_id":"1","name":"Markyyyy Latonio","available":true,"conflict":null}
+[14-Feb-2025 03:34:49 Europe/Berlin] Checking bookings for entertainer 12 on 2025-02-18 between 18:33 and 20:33
+[14-Feb-2025 03:34:49 Europe/Berlin] Checking bookings for entertainer 1 on 2025-02-18 between 18:33 and 20:33
+[14-Feb-2025 03:34:49 Europe/Berlin] Result for entertainer 12: {"entertainer_id":"12","name":"Marc Omandam","available":true,"conflict":null}
+[14-Feb-2025 03:34:49 Europe/Berlin] Result for entertainer 1: {"entertainer_id":"1","name":"Markyyyy Latonio","available":true,"conflict":null}
+[14-Feb-2025 03:34:49 Europe/Berlin] Checking bookings for entertainer 12 on 2025-02-18 between 18:33 and 20:33
+[14-Feb-2025 03:34:49 Europe/Berlin] Result for entertainer 12: {"entertainer_id":"12","name":"Marc Omandam","available":true,"conflict":null}
+[14-Feb-2025 03:34:58 Europe/Berlin] Received data: {"entertainers":["1","2","3","6","10","12"],"date":"2025-02-20","start_time":"18:33","end_time":"20:33"}
+[14-Feb-2025 03:34:58 Europe/Berlin] Received data: {"entertainers":["1","12"],"date":"2025-02-20","start_time":"18:33","end_time":"20:33"}
+[14-Feb-2025 03:34:58 Europe/Berlin] Checking bookings for entertainer 12 on 2025-02-20 between 18:33 and 20:33
+[14-Feb-2025 03:34:58 Europe/Berlin] Checking bookings for entertainer 12 on 2025-02-20 between 18:33 and 20:33
+[14-Feb-2025 03:34:58 Europe/Berlin] Result for entertainer 12: {"entertainer_id":"12","name":"Marc Omandam","available":true,"conflict":null}
+[14-Feb-2025 03:34:58 Europe/Berlin] Result for entertainer 12: {"entertainer_id":"12","name":"Marc Omandam","available":true,"conflict":null}
+[14-Feb-2025 03:51:36 Europe/Berlin] Received data: {"entertainers":["12"],"date":"2025-02-14","start_time":"18:51","end_time":"20:51"}
+[14-Feb-2025 03:51:36 Europe/Berlin] Checking bookings for entertainer 12 on 2025-02-14 between 18:51 and 20:51
+[14-Feb-2025 03:51:36 Europe/Berlin] Result for entertainer 12: {"entertainer_id":"12","name":"Marc Omandam","available":true,"conflict":null}
+[14-Feb-2025 03:51:54 Europe/Berlin] Received data: {"entertainers":["12"],"date":"2025-02-20","start_time":"18:51","end_time":"20:51"}
+[14-Feb-2025 03:51:54 Europe/Berlin] Checking bookings for entertainer 12 on 2025-02-20 between 18:51 and 20:51
+[14-Feb-2025 03:51:54 Europe/Berlin] Result for entertainer 12: {"entertainer_id":"12","name":"Marc Omandam","available":true,"conflict":null}
+[14-Feb-2025 03:52:31 Europe/Berlin] Received data: {"entertainers":["1","2","3","6","10","12"],"date":"2025-02-20","start_time":"18:52","end_time":"20:52"}
+[14-Feb-2025 03:52:31 Europe/Berlin] Checking bookings for entertainer 12 on 2025-02-20 between 18:52 and 20:52
+[14-Feb-2025 03:52:31 Europe/Berlin] Result for entertainer 12: {"entertainer_id":"12","name":"Marc Omandam","available":true,"conflict":null}
+[14-Feb-2025 03:52:31 Europe/Berlin] Received data: {"entertainers":["12"],"date":"2025-02-20","start_time":"18:52","end_time":"20:52"}
+[14-Feb-2025 03:52:31 Europe/Berlin] Checking bookings for entertainer 12 on 2025-02-20 between 18:52 and 20:52
+[14-Feb-2025 03:52:31 Europe/Berlin] Result for entertainer 12: {"entertainer_id":"12","name":"Marc Omandam","available":true,"conflict":null}
+[14-Feb-2025 03:52:53 Europe/Berlin] Received data: {"entertainers":["1","2","3","6","10","12"],"date":"2025-02-25","start_time":"18:52","end_time":"20:52"}
+[14-Feb-2025 03:52:53 Europe/Berlin] Received data: {"entertainers":["12"],"date":"2025-02-25","start_time":"18:52","end_time":"20:52"}
+[14-Feb-2025 03:52:53 Europe/Berlin] Checking bookings for entertainer 1 on 2025-02-25 between 18:52 and 20:52
+[14-Feb-2025 03:52:53 Europe/Berlin] Checking bookings for entertainer 12 on 2025-02-25 between 18:52 and 20:52
+[14-Feb-2025 03:52:53 Europe/Berlin] Result for entertainer 1: {"entertainer_id":"1","name":"Markyyyy Latonio","available":true,"conflict":null}
+[14-Feb-2025 03:52:53 Europe/Berlin] Result for entertainer 12: {"entertainer_id":"12","name":"Marc Omandam","available":true,"conflict":null}
+[14-Feb-2025 03:52:53 Europe/Berlin] Checking bookings for entertainer 12 on 2025-02-25 between 18:52 and 20:52
+[14-Feb-2025 03:52:53 Europe/Berlin] Result for entertainer 12: {"entertainer_id":"12","name":"Marc Omandam","available":true,"conflict":null}
+[14-Feb-2025 04:18:19 Europe/Berlin] Received data: {"entertainers":["12"],"date":"2025-02-20","start_time":"19:18","end_time":"21:18"}
+[14-Feb-2025 04:18:19 Europe/Berlin] Checking bookings for entertainer 12 on 2025-02-20 between 19:18 and 21:18
+[14-Feb-2025 04:18:19 Europe/Berlin] Result for entertainer 12: {"entertainer_id":"12","name":"Marc Omandam","available":true,"conflict":null}
+[15-Feb-2025 18:49:19 Europe/Berlin] Received data: {"entertainers":["12"],"date":"2025-02-18","start_time":"09:49","end_time":"11:49"}
+[15-Feb-2025 18:49:19 Europe/Berlin] Checking bookings for entertainer 12 on 2025-02-18 between 09:49 and 11:49
+[15-Feb-2025 18:49:19 Europe/Berlin] Result for entertainer 12: {"entertainer_id":"12","name":"Marc Omandam","available":true,"conflict":null}
+[15-Feb-2025 18:55:15 Europe/Berlin] Received data: {"entertainers":["12"],"date":"2025-02-17","start_time":"09:55","end_time":"11:55"}
+[15-Feb-2025 18:55:15 Europe/Berlin] Checking bookings for entertainer 12 on 2025-02-17 between 09:55 and 11:55
+[15-Feb-2025 18:55:15 Europe/Berlin] Result for entertainer 12: {"entertainer_id":"12","name":"Marc Omandam","available":true,"conflict":null}
+[15-Feb-2025 18:55:24 Europe/Berlin] Received data: {"entertainers":["12"],"date":"2025-04-16","start_time":"09:55","end_time":"11:55"}
+[15-Feb-2025 18:55:33 Europe/Berlin] Received data: {"entertainers":["10"],"date":"2025-04-16","start_time":"09:55","end_time":"11:55"}
+[15-Feb-2025 18:55:41 Europe/Berlin] Received data: {"entertainers":["6"],"date":"2025-04-16","start_time":"09:55","end_time":"11:55"}
+[15-Feb-2025 18:55:45 Europe/Berlin] Received data: {"entertainers":["3"],"date":"2025-04-16","start_time":"09:55","end_time":"11:55"}
+[15-Feb-2025 18:56:07 Europe/Berlin] Received data: {"entertainers":["2"],"date":"2025-02-18","start_time":"09:55","end_time":"11:55"}
+[15-Feb-2025 18:56:10 Europe/Berlin] Received data: {"entertainers":["1"],"date":"2025-02-18","start_time":"09:55","end_time":"11:55"}
+[15-Feb-2025 18:56:10 Europe/Berlin] Checking bookings for entertainer 1 on 2025-02-18 between 09:55 and 11:55
+[15-Feb-2025 18:56:10 Europe/Berlin] Result for entertainer 1: {"entertainer_id":"1","name":"Markyyyy Latonio","available":true,"conflict":null}
+[15-Feb-2025 19:01:04 Europe/Berlin] Received data: {"entertainers":["1","2","3","6","10","12"],"date":"2025-04-16","start_time":"10:00","end_time":"11:01"}
+[15-Feb-2025 19:01:17 Europe/Berlin] Received data: {"entertainers":["1","2","3","6","10","12"],"date":"2025-02-17","start_time":"10:00","end_time":"11:01"}
+[15-Feb-2025 19:01:17 Europe/Berlin] Checking bookings for entertainer 1 on 2025-02-17 between 10:00 and 11:01
+[15-Feb-2025 19:01:17 Europe/Berlin] Result for entertainer 1: {"entertainer_id":"1","name":"Markyyyy Latonio","available":true,"conflict":null}
+[15-Feb-2025 19:01:17 Europe/Berlin] Checking bookings for entertainer 12 on 2025-02-17 between 10:00 and 11:01
+[15-Feb-2025 19:01:17 Europe/Berlin] Result for entertainer 12: {"entertainer_id":"12","name":"Marc Omandam","available":true,"conflict":null}
+[15-Feb-2025 19:01:18 Europe/Berlin] Received data: {"entertainers":["1","2","3","6","10","12"],"date":"2025-02-17","start_time":"10:00","end_time":"11:01"}
+[15-Feb-2025 19:01:18 Europe/Berlin] Checking bookings for entertainer 1 on 2025-02-17 between 10:00 and 11:01
+[15-Feb-2025 19:01:18 Europe/Berlin] Result for entertainer 1: {"entertainer_id":"1","name":"Markyyyy Latonio","available":true,"conflict":null}
+[15-Feb-2025 19:01:18 Europe/Berlin] Checking bookings for entertainer 12 on 2025-02-17 between 10:00 and 11:01
+[15-Feb-2025 19:01:18 Europe/Berlin] Result for entertainer 12: {"entertainer_id":"12","name":"Marc Omandam","available":true,"conflict":null}
+[15-Feb-2025 19:01:27 Europe/Berlin] Received data: {"entertainers":["1","2","3","6","10","12"],"date":"2025-02-17","start_time":"10:00","end_time":"11:01"}
+[15-Feb-2025 19:01:27 Europe/Berlin] Checking bookings for entertainer 1 on 2025-02-17 between 10:00 and 11:01
+[15-Feb-2025 19:01:27 Europe/Berlin] Result for entertainer 1: {"entertainer_id":"1","name":"Markyyyy Latonio","available":true,"conflict":null}
+[15-Feb-2025 19:01:27 Europe/Berlin] Checking bookings for entertainer 12 on 2025-02-17 between 10:00 and 11:01
+[15-Feb-2025 19:01:27 Europe/Berlin] Result for entertainer 12: {"entertainer_id":"12","name":"Marc Omandam","available":true,"conflict":null}
+[15-Feb-2025 19:01:38 Europe/Berlin] Received data: {"entertainers":["1","2","3","6","10","12"],"date":"2025-02-18","start_time":"10:00","end_time":"11:01"}
+[15-Feb-2025 19:01:38 Europe/Berlin] Checking bookings for entertainer 1 on 2025-02-18 between 10:00 and 11:01
+[15-Feb-2025 19:01:38 Europe/Berlin] Result for entertainer 1: {"entertainer_id":"1","name":"Markyyyy Latonio","available":true,"conflict":null}
+[15-Feb-2025 19:01:38 Europe/Berlin] Checking bookings for entertainer 12 on 2025-02-18 between 10:00 and 11:01
+[15-Feb-2025 19:01:38 Europe/Berlin] Result for entertainer 12: {"entertainer_id":"12","name":"Marc Omandam","available":true,"conflict":null}
+[15-Feb-2025 19:01:45 Europe/Berlin] Received data: {"entertainers":["1","2","3","6","10","12"],"date":"2025-02-20","start_time":"10:00","end_time":"11:01"}
+[15-Feb-2025 19:01:45 Europe/Berlin] Checking bookings for entertainer 12 on 2025-02-20 between 10:00 and 11:01
+[15-Feb-2025 19:01:45 Europe/Berlin] Result for entertainer 12: {"entertainer_id":"12","name":"Marc Omandam","available":true,"conflict":null}
+[15-Feb-2025 19:11:14 Europe/Berlin] Received data: {"entertainers":["1","2","3","6","10","12"],"date":"2025-02-20","start_time":"10:11","end_time":"11:11"}
+[15-Feb-2025 19:11:14 Europe/Berlin] Checking bookings for entertainer 12 on 2025-02-20 between 10:11 and 11:11
+[15-Feb-2025 19:11:14 Europe/Berlin] Result for entertainer 12: {"entertainer_id":"12","name":"Marc Omandam","available":true,"conflict":null}
+[15-Feb-2025 19:11:24 Europe/Berlin] Received data: {"entertainers":["1","2","3","6","10","12"],"date":"2025-02-17","start_time":"10:11","end_time":"11:11"}
+[15-Feb-2025 19:11:24 Europe/Berlin] Checking bookings for entertainer 1 on 2025-02-17 between 10:11 and 11:11
+[15-Feb-2025 19:11:24 Europe/Berlin] Result for entertainer 1: {"entertainer_id":"1","name":"Markyyyy Latonio","available":true,"conflict":null}
+[15-Feb-2025 19:11:24 Europe/Berlin] Checking bookings for entertainer 12 on 2025-02-17 between 10:11 and 11:11
+[15-Feb-2025 19:11:24 Europe/Berlin] Result for entertainer 12: {"entertainer_id":"12","name":"Marc Omandam","available":true,"conflict":null}
+[15-Feb-2025 19:11:25 Europe/Berlin] Received data: {"entertainers":["1","2","3","6","10","12"],"date":"2025-02-17","start_time":"10:11","end_time":"11:11"}
+[15-Feb-2025 19:11:25 Europe/Berlin] Checking bookings for entertainer 1 on 2025-02-17 between 10:11 and 11:11
+[15-Feb-2025 19:11:25 Europe/Berlin] Result for entertainer 1: {"entertainer_id":"1","name":"Markyyyy Latonio","available":true,"conflict":null}
+[15-Feb-2025 19:11:25 Europe/Berlin] Checking bookings for entertainer 12 on 2025-02-17 between 10:11 and 11:11
+[15-Feb-2025 19:11:25 Europe/Berlin] Result for entertainer 12: {"entertainer_id":"12","name":"Marc Omandam","available":true,"conflict":null}
+[15-Feb-2025 19:11:29 Europe/Berlin] Received data: {"entertainers":["1","2","3","6","10","12"],"date":"2025-02-17","start_time":"10:11","end_time":"11:11"}
+[15-Feb-2025 19:11:29 Europe/Berlin] Checking bookings for entertainer 1 on 2025-02-17 between 10:11 and 11:11
+[15-Feb-2025 19:11:29 Europe/Berlin] Result for entertainer 1: {"entertainer_id":"1","name":"Markyyyy Latonio","available":true,"conflict":null}
+[15-Feb-2025 19:11:29 Europe/Berlin] Checking bookings for entertainer 12 on 2025-02-17 between 10:11 and 11:11
+[15-Feb-2025 19:11:29 Europe/Berlin] Result for entertainer 12: {"entertainer_id":"12","name":"Marc Omandam","available":true,"conflict":null}
+[15-Feb-2025 19:11:31 Europe/Berlin] Received data: {"entertainers":["1","2","3","6","10","12"],"date":"2025-02-17","start_time":"10:11","end_time":"11:11"}
+[15-Feb-2025 19:11:31 Europe/Berlin] Checking bookings for entertainer 1 on 2025-02-17 between 10:11 and 11:11
+[15-Feb-2025 19:11:31 Europe/Berlin] Result for entertainer 1: {"entertainer_id":"1","name":"Markyyyy Latonio","available":true,"conflict":null}
+[15-Feb-2025 19:11:31 Europe/Berlin] Checking bookings for entertainer 12 on 2025-02-17 between 10:11 and 11:11
+[15-Feb-2025 19:11:31 Europe/Berlin] Result for entertainer 12: {"entertainer_id":"12","name":"Marc Omandam","available":true,"conflict":null}
+[15-Feb-2025 19:14:40 Europe/Berlin] Received data: {"entertainers":["1","2","3","6","10","12"],"date":"2025-02-17","start_time":"10:14","end_time":"11:14"}
+[15-Feb-2025 19:14:40 Europe/Berlin] Checking bookings for entertainer 1 on 2025-02-17 between 10:14 and 11:14
+[15-Feb-2025 19:14:40 Europe/Berlin] Result for entertainer 1: {"entertainer_id":"1","name":"Markyyyy Latonio","available":true,"conflict":null}
+[15-Feb-2025 19:14:40 Europe/Berlin] Checking bookings for entertainer 12 on 2025-02-17 between 10:14 and 11:14
+[15-Feb-2025 19:14:40 Europe/Berlin] Result for entertainer 12: {"entertainer_id":"12","name":"Marc Omandam","available":true,"conflict":null}
+[15-Feb-2025 19:17:58 Europe/Berlin] Received data: {"entertainers":["1","2","3","6","10","12"],"date":"2025-02-17","start_time":"10:17","end_time":"11:17"}
+[15-Feb-2025 19:17:58 Europe/Berlin] Checking bookings for entertainer 1 on 2025-02-17 between 10:17 and 11:17
+[15-Feb-2025 19:17:58 Europe/Berlin] Result for entertainer 1: {"entertainer_id":"1","name":"Markyyyy Latonio","available":true,"conflict":null}
+[15-Feb-2025 19:17:58 Europe/Berlin] Checking bookings for entertainer 12 on 2025-02-17 between 10:17 and 11:17
+[15-Feb-2025 19:17:58 Europe/Berlin] Result for entertainer 12: {"entertainer_id":"12","name":"Marc Omandam","available":true,"conflict":null}
+[15-Feb-2025 19:18:04 Europe/Berlin] Received data: {"entertainers":["1","2","3","6","10","12"],"date":"2025-02-17","start_time":"10:17","end_time":"11:17"}
+[15-Feb-2025 19:18:04 Europe/Berlin] Checking bookings for entertainer 1 on 2025-02-17 between 10:17 and 11:17
+[15-Feb-2025 19:18:04 Europe/Berlin] Result for entertainer 1: {"entertainer_id":"1","name":"Markyyyy Latonio","available":true,"conflict":null}
+[15-Feb-2025 19:18:04 Europe/Berlin] Checking bookings for entertainer 12 on 2025-02-17 between 10:17 and 11:17
+[15-Feb-2025 19:18:04 Europe/Berlin] Result for entertainer 12: {"entertainer_id":"12","name":"Marc Omandam","available":true,"conflict":null}
+[15-Feb-2025 19:18:50 Europe/Berlin] Received data: {"entertainers":["1","2","3","6","10","12"],"date":"2025-02-17","start_time":"10:18","end_time":"11:18"}
+[15-Feb-2025 19:18:50 Europe/Berlin] Checking bookings for entertainer 1 on 2025-02-17 between 10:18 and 11:18
+[15-Feb-2025 19:18:50 Europe/Berlin] Result for entertainer 1: {"entertainer_id":"1","name":"Markyyyy Latonio","available":true,"conflict":null}
+[15-Feb-2025 19:18:50 Europe/Berlin] Checking bookings for entertainer 12 on 2025-02-17 between 10:18 and 11:18
+[15-Feb-2025 19:18:50 Europe/Berlin] Result for entertainer 12: {"entertainer_id":"12","name":"Marc Omandam","available":true,"conflict":null}
+[15-Feb-2025 19:20:20 Europe/Berlin] Received data: {"entertainers":["1","2","3","6","10","12"],"date":"2025-02-17","start_time":"10:20","end_time":"11:20"}
+[15-Feb-2025 19:20:20 Europe/Berlin] Checking bookings for entertainer 1 on 2025-02-17 between 10:20 and 11:20
+[15-Feb-2025 19:20:20 Europe/Berlin] Result for entertainer 1: {"entertainer_id":"1","name":"Markyyyy Latonio","available":true,"conflict":null}
+[15-Feb-2025 19:20:20 Europe/Berlin] Checking bookings for entertainer 12 on 2025-02-17 between 10:20 and 11:20
+[15-Feb-2025 19:20:20 Europe/Berlin] Result for entertainer 12: {"entertainer_id":"12","name":"Marc Omandam","available":true,"conflict":null}
+[15-Feb-2025 19:50:31 Europe/Berlin] Received data: {"date":"2025-02-18","start_time":"10:50","end_time":"11:50","entertainers":["12"]}
+[15-Feb-2025 19:50:31 Europe/Berlin] Checking bookings for entertainer 12 on 2025-02-18 between 10:50 and 11:50
+[15-Feb-2025 19:50:31 Europe/Berlin] Result for entertainer 12: {"entertainer_id":"12","name":"Marc Omandam","available":true,"conflict":null}
+[15-Feb-2025 19:52:39 Europe/Berlin] Received data: {"date":"2025-02-18","start_time":"13:51","end_time":"15:51","entertainers":["12"]}
+[15-Feb-2025 19:52:39 Europe/Berlin] Checking bookings for entertainer 12 on 2025-02-18 between 13:51 and 15:51
+[15-Feb-2025 19:52:39 Europe/Berlin] Result for entertainer 12: {"entertainer_id":"12","name":"Marc Omandam","available":true,"conflict":null}
+[15-Feb-2025 19:54:53 Europe/Berlin] Received data: {"date":"2025-02-18","start_time":"10:54","end_time":"11:54","entertainers":["12"]}
+[15-Feb-2025 19:54:53 Europe/Berlin] Checking bookings for entertainer 12 on 2025-02-18 between 10:54 and 11:54
+[15-Feb-2025 19:54:53 Europe/Berlin] Result for entertainer 12: {"entertainer_id":"12","name":"Marc Omandam","available":true,"conflict":null}
+[15-Feb-2025 19:58:10 Europe/Berlin] Received data: {"date":"2025-02-18","start_time":"10:58","end_time":"11:58","entertainers":["12"]}
+[15-Feb-2025 19:58:10 Europe/Berlin] Checking bookings for entertainer 12 on 2025-02-18 between 10:58 and 11:58
+[15-Feb-2025 19:58:10 Europe/Berlin] Result for entertainer 12: {"entertainer_id":"12","name":"Marc Omandam","available":true,"conflict":null}
+[15-Feb-2025 20:02:24 Europe/Berlin] Received data: {"date":"2025-02-18","start_time":"13:02","end_time":"14:02","entertainers":["12"]}
+[15-Feb-2025 20:02:24 Europe/Berlin] Checking bookings for entertainer 12 on 2025-02-18 between 13:02 and 14:02
+[15-Feb-2025 20:02:24 Europe/Berlin] Result for entertainer 12: {"entertainer_id":"12","name":"Marc Omandam","available":true,"conflict":null}
+[15-Feb-2025 20:03:05 Europe/Berlin] Received data: {"date":"2025-02-18","start_time":"13:02","end_time":"15:03","entertainers":["12"]}
+[15-Feb-2025 20:03:05 Europe/Berlin] Checking bookings for entertainer 12 on 2025-02-18 between 13:02 and 15:03
+[15-Feb-2025 20:03:05 Europe/Berlin] Result for entertainer 12: {"entertainer_id":"12","name":"Marc Omandam","available":true,"conflict":null}
+[15-Feb-2025 20:07:46 Europe/Berlin] Received data: {"date":"2025-02-18","start_time":"13:07","end_time":"15:07","entertainers":["12"]}
+[15-Feb-2025 20:07:46 Europe/Berlin] Checking bookings for entertainer 12 on 2025-02-18 between 13:07 and 15:07
+[15-Feb-2025 20:07:46 Europe/Berlin] Result for entertainer 12: {"entertainer_id":"12","name":"Marc Omandam","available":true,"conflict":null}
+[15-Feb-2025 20:08:02 Europe/Berlin] Received data: {"date":"2025-02-18","start_time":"13:07","end_time":"15:07","entertainers":["10","12"]}
+[15-Feb-2025 20:08:02 Europe/Berlin] Checking bookings for entertainer 12 on 2025-02-18 between 13:07 and 15:07
+[15-Feb-2025 20:08:02 Europe/Berlin] Result for entertainer 12: {"entertainer_id":"12","name":"Marc Omandam","available":true,"conflict":null}
+[15-Feb-2025 20:08:08 Europe/Berlin] Received data: {"date":"2025-02-18","start_time":"13:07","end_time":"15:07","entertainers":["12"]}
+[15-Feb-2025 20:08:08 Europe/Berlin] Checking bookings for entertainer 12 on 2025-02-18 between 13:07 and 15:07
+[15-Feb-2025 20:08:08 Europe/Berlin] Result for entertainer 12: {"entertainer_id":"12","name":"Marc Omandam","available":true,"conflict":null}
+[15-Feb-2025 20:10:12 Europe/Berlin] Received data: {"date":"2025-02-18","start_time":"13:10","end_time":"14:10","entertainers":["12"]}
+[15-Feb-2025 20:10:12 Europe/Berlin] Checking bookings for entertainer 12 on 2025-02-18 between 13:10 and 14:10
+[15-Feb-2025 20:10:12 Europe/Berlin] Result for entertainer 12: {"entertainer_id":"12","name":"Marc Omandam","available":true,"conflict":null}
+[15-Feb-2025 20:12:30 Europe/Berlin] Received data: {"date":"2025-02-18","start_time":"13:12","end_time":"14:12","entertainers":["12"]}
+[15-Feb-2025 20:12:30 Europe/Berlin] Checking bookings for entertainer 12 on 2025-02-18 between 13:12 and 14:12
+[15-Feb-2025 20:12:30 Europe/Berlin] Result for entertainer 12: {"entertainer_id":"12","name":"Marc Omandam","available":true,"conflict":null}
+[15-Feb-2025 20:14:23 Europe/Berlin] Received data: {"date":"2025-02-18","start_time":"13:14","end_time":"15:14","entertainers":["12"]}
+[15-Feb-2025 20:14:23 Europe/Berlin] Checking bookings for entertainer 12 on 2025-02-18 between 13:14 and 15:14
+[15-Feb-2025 20:14:23 Europe/Berlin] Result for entertainer 12: {"entertainer_id":"12","name":"Marc Omandam","available":true,"conflict":null}
+[15-Feb-2025 20:16:44 Europe/Berlin] Received data: {"date":"2025-02-19","start_time":"13:16","end_time":"15:16","entertainers":["12"]}
+[15-Feb-2025 20:16:44 Europe/Berlin] Checking bookings for entertainer 12 on 2025-02-19 between 13:16 and 15:16
+[15-Feb-2025 20:16:44 Europe/Berlin] Result for entertainer 12: {"entertainer_id":"12","name":"Marc Omandam","available":true,"conflict":null}
+[15-Feb-2025 20:20:39 Europe/Berlin] Received data: {"date":"2025-02-18","start_time":"13:20","end_time":"15:20","entertainers":["12"]}
+[15-Feb-2025 20:20:39 Europe/Berlin] Checking bookings for entertainer 12 on 2025-02-18 between 13:20 and 15:20
+[15-Feb-2025 20:20:39 Europe/Berlin] Result for entertainer 12: {"entertainer_id":"12","name":"Marc Omandam","available":true,"conflict":null}
+[15-Feb-2025 20:51:54 Europe/Berlin] Received data: {"date":"2025-02-18","start_time":"13:51","end_time":"15:51","entertainers":["12"]}
+[15-Feb-2025 20:51:54 Europe/Berlin] Checking bookings for entertainer 12 on 2025-02-18 between 13:51 and 15:51
+[15-Feb-2025 20:51:54 Europe/Berlin] Result for entertainer 12: {"entertainer_id":"12","name":"Marc Omandam","available":true,"conflict":null}
+[15-Feb-2025 21:02:33 Europe/Berlin] Received data: {"date":"2025-02-18","start_time":"13:02","end_time":"15:02","entertainers":["12"]}
+[15-Feb-2025 21:02:33 Europe/Berlin] Checking bookings for entertainer 12 on 2025-02-18 between 13:02 and 15:02
+[15-Feb-2025 21:02:33 Europe/Berlin] Result for entertainer 12: {"entertainer_id":"12","name":"Marc Omandam","available":true,"conflict":null}
+[15-Feb-2025 21:20:03 Europe/Berlin] Received data: {"date":"2025-02-18","start_time":"13:19","end_time":"14:19","entertainers":["12"]}
+[15-Feb-2025 21:20:03 Europe/Berlin] Checking bookings for entertainer 12 on 2025-02-18 between 13:19 and 14:19
+[15-Feb-2025 21:20:03 Europe/Berlin] Result for entertainer 12: {"entertainer_id":"12","name":"Marc Omandam","available":true,"conflict":null}
+[15-Feb-2025 21:23:34 Europe/Berlin] Received data: {"date":"2025-02-18","start_time":"13:23","end_time":"15:23","entertainers":["12"]}
+[15-Feb-2025 21:23:34 Europe/Berlin] Checking bookings for entertainer 12 on 2025-02-18 between 13:23 and 15:23
+[15-Feb-2025 21:23:34 Europe/Berlin] Result for entertainer 12: {"entertainer_id":"12","name":"Marc Omandam","available":true,"conflict":null}
+[15-Feb-2025 21:27:19 Europe/Berlin] Received data: {"date":"2025-02-17","start_time":"13:27","end_time":"15:27","entertainers":["12"]}
+[15-Feb-2025 21:27:19 Europe/Berlin] Checking bookings for entertainer 12 on 2025-02-17 between 13:27 and 15:27
+[15-Feb-2025 21:27:19 Europe/Berlin] Result for entertainer 12: {"entertainer_id":"12","name":"Marc Omandam","available":true,"conflict":null}
+[15-Feb-2025 21:32:04 Europe/Berlin] Received data: {"date":"2025-02-18","start_time":"13:31","end_time":"15:32","entertainers":["12"]}
+[15-Feb-2025 21:32:04 Europe/Berlin] Checking bookings for entertainer 12 on 2025-02-18 between 13:31 and 15:32
+[15-Feb-2025 21:32:04 Europe/Berlin] Result for entertainer 12: {"entertainer_id":"12","name":"Marc Omandam","available":true,"conflict":null}
+[15-Feb-2025 21:39:35 Europe/Berlin] Received data: {"date":"2025-02-18","start_time":"13:39","end_time":"14:39","entertainers":["12"]}
+[15-Feb-2025 21:39:35 Europe/Berlin] Checking bookings for entertainer 12 on 2025-02-18 between 13:39 and 14:39
+[15-Feb-2025 21:39:35 Europe/Berlin] Result for entertainer 12: {"entertainer_id":"12","name":"Marc Omandam","available":true,"conflict":null}
+[15-Feb-2025 21:50:56 Europe/Berlin] Received data: {"date":"2025-02-18","start_time":"13:50","end_time":"15:50","entertainers":["12"]}
+[15-Feb-2025 21:50:56 Europe/Berlin] Checking bookings for entertainer 12 on 2025-02-18 between 13:50 and 15:50
+[15-Feb-2025 21:50:56 Europe/Berlin] Result for entertainer 12: {"entertainer_id":"12","name":"Marc Omandam","available":true,"conflict":null}
+[15-Feb-2025 21:53:42 Europe/Berlin] Received data: {"date":"2025-02-18","start_time":"13:53","end_time":"14:53","entertainers":["12"]}
+[15-Feb-2025 21:53:42 Europe/Berlin] Checking bookings for entertainer 12 on 2025-02-18 between 13:53 and 14:53
+[15-Feb-2025 21:53:42 Europe/Berlin] Result for entertainer 12: {"entertainer_id":"12","name":"Marc Omandam","available":true,"conflict":null}
+[15-Feb-2025 21:59:44 Europe/Berlin] Received data: {"date":"2025-02-18","start_time":"13:59","end_time":"14:59","entertainers":["12"]}
+[15-Feb-2025 21:59:44 Europe/Berlin] Checking bookings for entertainer 12 on 2025-02-18 between 13:59 and 14:59
+[15-Feb-2025 21:59:44 Europe/Berlin] Result for entertainer 12: {"entertainer_id":"12","name":"Marc Omandam","available":true,"conflict":null}
+[15-Feb-2025 22:02:36 Europe/Berlin] Received data: {"date":"2025-02-18","start_time":"13:02","end_time":"15:02","entertainers":["12"]}
+[15-Feb-2025 22:02:36 Europe/Berlin] Checking bookings for entertainer 12 on 2025-02-18 between 13:02 and 15:02
+[15-Feb-2025 22:02:36 Europe/Berlin] Result for entertainer 12: {"entertainer_id":"12","name":"Marc Omandam","available":true,"conflict":null}
+[15-Feb-2025 22:20:05 Europe/Berlin] Received data: {"date":"2025-02-18","start_time":"13:19","end_time":"15:20","entertainers":["12"]}
+[15-Feb-2025 22:20:05 Europe/Berlin] Checking bookings for entertainer 12 on 2025-02-18 between 13:19 and 15:20
+[15-Feb-2025 22:20:05 Europe/Berlin] Result for entertainer 12: {"entertainer_id":"12","name":"Marc Omandam","available":true,"conflict":null}
+[15-Feb-2025 22:22:52 Europe/Berlin] Received data: {"date":"2025-02-18","start_time":"13:22","end_time":"15:22","entertainers":["12"]}
+[15-Feb-2025 22:22:52 Europe/Berlin] Checking bookings for entertainer 12 on 2025-02-18 between 13:22 and 15:22
+[15-Feb-2025 22:22:52 Europe/Berlin] Result for entertainer 12: {"entertainer_id":"12","name":"Marc Omandam","available":true,"conflict":null}
+[15-Feb-2025 22:25:17 Europe/Berlin] Received data: {"date":"2025-02-18","start_time":"13:25","end_time":"15:25","entertainers":["12"]}
+[15-Feb-2025 22:25:17 Europe/Berlin] Checking bookings for entertainer 12 on 2025-02-18 between 13:25 and 15:25
+[15-Feb-2025 22:25:17 Europe/Berlin] Result for entertainer 12: {"entertainer_id":"12","name":"Marc Omandam","available":false,"conflict":{"start_time":"13:22:00","end_time":"15:22:00"}}
+[15-Feb-2025 22:25:24 Europe/Berlin] Received data: {"date":"2025-02-17","start_time":"13:25","end_time":"15:25","entertainers":["12"]}
+[15-Feb-2025 22:25:24 Europe/Berlin] Checking bookings for entertainer 12 on 2025-02-17 between 13:25 and 15:25
+[15-Feb-2025 22:25:24 Europe/Berlin] Result for entertainer 12: {"entertainer_id":"12","name":"Marc Omandam","available":true,"conflict":null}
+[15-Feb-2025 22:31:03 Europe/Berlin] Received data: {"date":"2025-02-17","start_time":"13:30","end_time":"15:31","entertainers":["12"]}
+[15-Feb-2025 22:31:03 Europe/Berlin] Checking bookings for entertainer 12 on 2025-02-17 between 13:30 and 15:31
+[15-Feb-2025 22:31:03 Europe/Berlin] Result for entertainer 12: {"entertainer_id":"12","name":"Marc Omandam","available":false,"conflict":{"start_time":"13:25:00","end_time":"15:25:00"}}
+[15-Feb-2025 22:32:10 Europe/Berlin] Received data: {"date":"2025-02-17","start_time":"13:32","end_time":"15:32","entertainers":["12"]}
+[15-Feb-2025 22:32:10 Europe/Berlin] Checking bookings for entertainer 12 on 2025-02-17 between 13:32 and 15:32
+[15-Feb-2025 22:32:10 Europe/Berlin] Result for entertainer 12: {"entertainer_id":"12","name":"Marc Omandam","available":true,"conflict":null}
+[15-Feb-2025 22:36:56 Europe/Berlin] Received data: {"date":"2025-02-18","start_time":"13:36","end_time":"15:36","entertainers":["12"]}
+[15-Feb-2025 22:36:56 Europe/Berlin] Checking bookings for entertainer 12 on 2025-02-18 between 13:36 and 15:36
+[15-Feb-2025 22:36:56 Europe/Berlin] Result for entertainer 12: {"entertainer_id":"12","name":"Marc Omandam","available":true,"conflict":null}
+[15-Feb-2025 22:40:32 Europe/Berlin] Received data: {"date":"2025-02-18","start_time":"13:40","end_time":"15:40","entertainers":["12"]}
+[15-Feb-2025 22:40:32 Europe/Berlin] Checking bookings for entertainer 12 on 2025-02-18 between 13:40 and 15:40
+[15-Feb-2025 22:40:32 Europe/Berlin] Result for entertainer 12: {"entertainer_id":"12","name":"Marc Omandam","available":true,"conflict":null}
+[15-Feb-2025 22:43:30 Europe/Berlin] Received data: {"date":"2025-02-18","start_time":"13:43","end_time":"15:43","entertainers":["12"]}
+[15-Feb-2025 22:43:30 Europe/Berlin] Checking bookings for entertainer 12 on 2025-02-18 between 13:43 and 15:43
+[15-Feb-2025 22:43:30 Europe/Berlin] Result for entertainer 12: {"entertainer_id":"12","name":"Marc Omandam","available":true,"conflict":null}
+[15-Feb-2025 22:46:03 Europe/Berlin] Received data: {"date":"2025-02-18","start_time":"13:45","end_time":"15:46","entertainers":["12"]}
+[15-Feb-2025 22:46:03 Europe/Berlin] Checking bookings for entertainer 12 on 2025-02-18 between 13:45 and 15:46
+[15-Feb-2025 22:46:03 Europe/Berlin] Result for entertainer 12: {"entertainer_id":"12","name":"Marc Omandam","available":true,"conflict":null}
+[15-Feb-2025 22:47:18 Europe/Berlin] Received data: {"date":"2025-02-18","start_time":"13:47","end_time":"15:47","entertainers":["12"]}
+[15-Feb-2025 22:47:18 Europe/Berlin] Checking bookings for entertainer 12 on 2025-02-18 between 13:47 and 15:47
+[15-Feb-2025 22:47:18 Europe/Berlin] Result for entertainer 12: {"entertainer_id":"12","name":"Marc Omandam","available":true,"conflict":null}
+[15-Feb-2025 22:54:42 Europe/Berlin] Received data: {"date":"2025-02-18","start_time":"13:54","end_time":"15:54","entertainers":["12"]}
+[15-Feb-2025 22:54:42 Europe/Berlin] Checking bookings for entertainer 12 on 2025-02-18 between 13:54 and 15:54
+[15-Feb-2025 22:54:42 Europe/Berlin] Result for entertainer 12: {"entertainer_id":"12","name":"Marc Omandam","available":false,"conflict":{"start_time":"13:47:00","end_time":"15:47:00"}}
+[15-Feb-2025 22:57:50 Europe/Berlin] Received data: {"date":"2025-02-18","start_time":"13:57","end_time":"15:57","entertainers":["12"]}
+[15-Feb-2025 22:57:50 Europe/Berlin] Checking bookings for entertainer 12 on 2025-02-18 between 13:57 and 15:57
+[15-Feb-2025 22:57:50 Europe/Berlin] Result for entertainer 12: {"entertainer_id":"12","name":"Marc Omandam","available":true,"conflict":null}
+[15-Feb-2025 23:00:57 Europe/Berlin] Received data: {"date":"2025-02-18","start_time":"14:00","end_time":"16:00","entertainers":["12"]}
+[15-Feb-2025 23:00:57 Europe/Berlin] Checking bookings for entertainer 12 on 2025-02-18 between 14:00 and 16:00
+[15-Feb-2025 23:00:57 Europe/Berlin] Result for entertainer 12: {"entertainer_id":"12","name":"Marc Omandam","available":true,"conflict":null}
+[15-Feb-2025 23:03:17 Europe/Berlin] Received data: {"date":"2025-02-18","start_time":"14:03","end_time":"16:03","entertainers":["12"]}
+[15-Feb-2025 23:03:17 Europe/Berlin] Checking bookings for entertainer 12 on 2025-02-18 between 14:03 and 16:03
+[15-Feb-2025 23:03:17 Europe/Berlin] Result for entertainer 12: {"entertainer_id":"12","name":"Marc Omandam","available":true,"conflict":null}
+[15-Feb-2025 23:06:10 Europe/Berlin] Received data: {"date":"2025-02-18","start_time":"14:06","end_time":"16:06","entertainers":["12"]}
+[15-Feb-2025 23:06:10 Europe/Berlin] Checking bookings for entertainer 12 on 2025-02-18 between 14:06 and 16:06
+[15-Feb-2025 23:06:10 Europe/Berlin] Result for entertainer 12: {"entertainer_id":"12","name":"Marc Omandam","available":false,"conflict":{"start_time":"14:03:00","end_time":"16:03:00"}}
+[15-Feb-2025 23:15:30 Europe/Berlin] Received data: {"date":"2025-02-18","start_time":"14:15","end_time":"16:15","entertainers":["12"]}
+[15-Feb-2025 23:15:30 Europe/Berlin] Checking bookings for entertainer 12 on 2025-02-18 between 14:15 and 16:15
+[15-Feb-2025 23:15:30 Europe/Berlin] Result for entertainer 12: {"entertainer_id":"12","name":"Marc Omandam","available":true,"conflict":null}
+[15-Feb-2025 23:15:47 Europe/Berlin] Received data: {"entertainers":["12"],"date":"2025-02-18","start_time":"14:15","end_time":"16:15"}
+[15-Feb-2025 23:15:47 Europe/Berlin] Checking bookings for entertainer 12 on 2025-02-18 between 14:15 and 16:15
+[15-Feb-2025 23:15:47 Europe/Berlin] Result for entertainer 12: {"entertainer_id":"12","name":"Marc Omandam","available":true,"conflict":null}
+[15-Feb-2025 23:19:26 Europe/Berlin] Received data: {"date":"2025-02-18","start_time":"14:19","end_time":"16:19","entertainers":["12"]}
+[15-Feb-2025 23:19:26 Europe/Berlin] Checking bookings for entertainer 12 on 2025-02-18 between 14:19 and 16:19
+[15-Feb-2025 23:19:26 Europe/Berlin] Result for entertainer 12: {"entertainer_id":"12","name":"Marc Omandam","available":true,"conflict":null}
+[15-Feb-2025 23:19:39 Europe/Berlin] Received data: {"entertainers":["12"],"date":"2025-02-18","start_time":"14:19","end_time":"16:19"}
+[15-Feb-2025 23:19:39 Europe/Berlin] Checking bookings for entertainer 12 on 2025-02-18 between 14:19 and 16:19
+[15-Feb-2025 23:19:39 Europe/Berlin] Result for entertainer 12: {"entertainer_id":"12","name":"Marc Omandam","available":true,"conflict":null}
+[15-Feb-2025 23:53:06 Europe/Berlin] Received data: {"date":"2025-02-18","start_time":"14:52","end_time":"16:53","entertainers":["12"]}
+[15-Feb-2025 23:53:06 Europe/Berlin] Checking bookings for entertainer 12 on 2025-02-18 between 14:52 and 16:53
+[15-Feb-2025 23:53:06 Europe/Berlin] Result for entertainer 12: {"entertainer_id":"12","name":"Marc Omandam","available":true,"conflict":null}
+[15-Feb-2025 23:53:22 Europe/Berlin] Received data: {"entertainers":["12"],"date":"2025-02-18","start_time":"14:52","end_time":"16:53"}
+[15-Feb-2025 23:53:22 Europe/Berlin] Checking bookings for entertainer 12 on 2025-02-18 between 14:52 and 16:53
+[15-Feb-2025 23:53:22 Europe/Berlin] Result for entertainer 12: {"entertainer_id":"12","name":"Marc Omandam","available":true,"conflict":null}
+[16-Feb-2025 00:03:56 Europe/Berlin] Received data: {"date":"2025-02-18","start_time":"15:03","end_time":"17:03","entertainers":["12"]}
+[16-Feb-2025 00:03:56 Europe/Berlin] Checking bookings for entertainer 12 on 2025-02-18 between 15:03 and 17:03
+[16-Feb-2025 00:03:56 Europe/Berlin] Result for entertainer 12: {"entertainer_id":"12","name":"Marc Omandam","available":true,"conflict":null}
+[16-Feb-2025 00:04:13 Europe/Berlin] Received data: {"entertainers":["12"],"date":"2025-02-18","start_time":"15:03","end_time":"17:03"}
+[16-Feb-2025 00:04:13 Europe/Berlin] Checking bookings for entertainer 12 on 2025-02-18 between 15:03 and 17:03
+[16-Feb-2025 00:04:13 Europe/Berlin] Result for entertainer 12: {"entertainer_id":"12","name":"Marc Omandam","available":true,"conflict":null}
+[16-Feb-2025 00:09:13 Europe/Berlin] Received data: {"date":"2025-02-18","start_time":"15:09","end_time":"17:09","entertainers":["12"]}
+[16-Feb-2025 00:09:13 Europe/Berlin] Checking bookings for entertainer 12 on 2025-02-18 between 15:09 and 17:09
+[16-Feb-2025 00:09:13 Europe/Berlin] Result for entertainer 12: {"entertainer_id":"12","name":"Marc Omandam","available":true,"conflict":null}
+[16-Feb-2025 00:09:30 Europe/Berlin] Received data: {"entertainers":["12"],"date":"2025-02-18","start_time":"15:09","end_time":"17:09"}
+[16-Feb-2025 00:09:30 Europe/Berlin] Checking bookings for entertainer 12 on 2025-02-18 between 15:09 and 17:09
+[16-Feb-2025 00:09:30 Europe/Berlin] Result for entertainer 12: {"entertainer_id":"12","name":"Marc Omandam","available":true,"conflict":null}
+[16-Feb-2025 00:13:50 Europe/Berlin] Received data: {"date":"2025-02-18","start_time":"15:13","end_time":"17:13","entertainers":["12"]}
+[16-Feb-2025 00:13:50 Europe/Berlin] Checking bookings for entertainer 12 on 2025-02-18 between 15:13 and 17:13
+[16-Feb-2025 00:13:50 Europe/Berlin] Result for entertainer 12: {"entertainer_id":"12","name":"Marc Omandam","available":true,"conflict":null}
+[16-Feb-2025 00:14:05 Europe/Berlin] Received data: {"entertainers":["12"],"date":"2025-02-18","start_time":"15:13","end_time":"17:13"}
+[16-Feb-2025 00:14:05 Europe/Berlin] Checking bookings for entertainer 12 on 2025-02-18 between 15:13 and 17:13
+[16-Feb-2025 00:14:05 Europe/Berlin] Result for entertainer 12: {"entertainer_id":"12","name":"Marc Omandam","available":true,"conflict":null}
+[16-Feb-2025 00:17:09 Europe/Berlin] Received data: {"date":"2025-02-18","start_time":"15:17","end_time":"17:17","entertainers":["12"]}
+[16-Feb-2025 00:17:09 Europe/Berlin] Checking bookings for entertainer 12 on 2025-02-18 between 15:17 and 17:17
+[16-Feb-2025 00:17:09 Europe/Berlin] Result for entertainer 12: {"entertainer_id":"12","name":"Marc Omandam","available":true,"conflict":null}
+[16-Feb-2025 00:17:23 Europe/Berlin] Received data: {"entertainers":["12"],"date":"2025-02-18","start_time":"15:17","end_time":"17:17"}
+[16-Feb-2025 00:17:23 Europe/Berlin] Checking bookings for entertainer 12 on 2025-02-18 between 15:17 and 17:17
+[16-Feb-2025 00:17:23 Europe/Berlin] Result for entertainer 12: {"entertainer_id":"12","name":"Marc Omandam","available":true,"conflict":null}
+[16-Feb-2025 00:23:45 Europe/Berlin] Received data: {"date":"2025-02-18","start_time":"15:23","end_time":"17:23","entertainers":["12"]}
+[16-Feb-2025 00:23:45 Europe/Berlin] Checking bookings for entertainer 12 on 2025-02-18 between 15:23 and 17:23
+[16-Feb-2025 00:23:45 Europe/Berlin] Result for entertainer 12: {"entertainer_id":"12","name":"Marc Omandam","available":true,"conflict":null}
+[16-Feb-2025 00:23:59 Europe/Berlin] Received data: {"entertainers":["12"],"date":"2025-02-18","start_time":"15:23","end_time":"17:23"}
+[16-Feb-2025 00:23:59 Europe/Berlin] Checking bookings for entertainer 12 on 2025-02-18 between 15:23 and 17:23
+[16-Feb-2025 00:23:59 Europe/Berlin] Result for entertainer 12: {"entertainer_id":"12","name":"Marc Omandam","available":true,"conflict":null}
+[16-Feb-2025 00:28:12 Europe/Berlin] Received data: {"date":"2025-02-18","start_time":"15:28","end_time":"17:28","entertainers":["12"]}
+[16-Feb-2025 00:28:12 Europe/Berlin] Checking bookings for entertainer 12 on 2025-02-18 between 15:28 and 17:28
+[16-Feb-2025 00:28:12 Europe/Berlin] Result for entertainer 12: {"entertainer_id":"12","name":"Marc Omandam","available":true,"conflict":null}
+[16-Feb-2025 00:28:27 Europe/Berlin] Received data: {"entertainers":["12"],"date":"2025-02-18","start_time":"15:28","end_time":"17:28"}
+[16-Feb-2025 00:28:27 Europe/Berlin] Checking bookings for entertainer 12 on 2025-02-18 between 15:28 and 17:28
+[16-Feb-2025 00:28:27 Europe/Berlin] Result for entertainer 12: {"entertainer_id":"12","name":"Marc Omandam","available":true,"conflict":null}
+[16-Feb-2025 00:37:26 Europe/Berlin] Received data: {"date":"2025-02-18","start_time":"15:37","end_time":"17:37","entertainers":["12"]}
+[16-Feb-2025 00:37:26 Europe/Berlin] Checking bookings for entertainer 12 on 2025-02-18 between 15:37 and 17:37
+[16-Feb-2025 00:37:26 Europe/Berlin] Result for entertainer 12: {"entertainer_id":"12","name":"Marc Omandam","available":true,"conflict":null}
+[16-Feb-2025 00:37:40 Europe/Berlin] Received data: {"entertainers":["12"],"date":"2025-02-18","start_time":"15:37","end_time":"17:37"}
+[16-Feb-2025 00:37:40 Europe/Berlin] Checking bookings for entertainer 12 on 2025-02-18 between 15:37 and 17:37
+[16-Feb-2025 00:37:40 Europe/Berlin] Result for entertainer 12: {"entertainer_id":"12","name":"Marc Omandam","available":true,"conflict":null}
+[16-Feb-2025 00:46:50 Europe/Berlin] Received data: {"date":"2025-02-18","start_time":"15:46","end_time":"17:46","entertainers":["12"]}
+[16-Feb-2025 00:46:50 Europe/Berlin] Checking bookings for entertainer 12 on 2025-02-18 between 15:46 and 17:46
+[16-Feb-2025 00:46:50 Europe/Berlin] Result for entertainer 12: {"entertainer_id":"12","name":"Marc Omandam","available":true,"conflict":null}
+[16-Feb-2025 00:47:03 Europe/Berlin] Received data: {"entertainers":["12"],"date":"2025-02-18","start_time":"15:46","end_time":"17:46"}
+[16-Feb-2025 00:47:03 Europe/Berlin] Checking bookings for entertainer 12 on 2025-02-18 between 15:46 and 17:46
+[16-Feb-2025 00:47:03 Europe/Berlin] Result for entertainer 12: {"entertainer_id":"12","name":"Marc Omandam","available":true,"conflict":null}
+[16-Feb-2025 00:54:04 Europe/Berlin] Received data: {"date":"2025-02-18","start_time":"15:53","end_time":"17:54","entertainers":["12"]}
+[16-Feb-2025 00:54:04 Europe/Berlin] Checking bookings for entertainer 12 on 2025-02-18 between 15:53 and 17:54
+[16-Feb-2025 00:54:04 Europe/Berlin] Result for entertainer 12: {"entertainer_id":"12","name":"Marc Omandam","available":true,"conflict":null}
+[16-Feb-2025 00:54:19 Europe/Berlin] Received data: {"entertainers":["12"],"date":"2025-02-18","start_time":"15:53","end_time":"17:54"}
+[16-Feb-2025 00:54:19 Europe/Berlin] Checking bookings for entertainer 12 on 2025-02-18 between 15:53 and 17:54
+[16-Feb-2025 00:54:19 Europe/Berlin] Result for entertainer 12: {"entertainer_id":"12","name":"Marc Omandam","available":true,"conflict":null}
+[16-Feb-2025 01:02:27 Europe/Berlin] Received data: {"date":"2025-02-18","start_time":"16:02","end_time":"18:02","entertainers":["12"]}
+[16-Feb-2025 01:02:27 Europe/Berlin] Checking bookings for entertainer 12 on 2025-02-18 between 16:02 and 18:02
+[16-Feb-2025 01:02:27 Europe/Berlin] Result for entertainer 12: {"entertainer_id":"12","name":"Marc Omandam","available":true,"conflict":null}
+[16-Feb-2025 01:02:40 Europe/Berlin] Received data: {"entertainers":["12"],"date":"2025-02-18","start_time":"16:02","end_time":"18:02"}
+[16-Feb-2025 01:02:40 Europe/Berlin] Checking bookings for entertainer 12 on 2025-02-18 between 16:02 and 18:02
+[16-Feb-2025 01:02:40 Europe/Berlin] Result for entertainer 12: {"entertainer_id":"12","name":"Marc Omandam","available":true,"conflict":null}
+[16-Feb-2025 01:04:44 Europe/Berlin] Received data: {"date":"2025-02-18","start_time":"16:04","end_time":"18:04","entertainers":["12"]}
+[16-Feb-2025 01:04:44 Europe/Berlin] Checking bookings for entertainer 12 on 2025-02-18 between 16:04 and 18:04
+[16-Feb-2025 01:04:44 Europe/Berlin] Result for entertainer 12: {"entertainer_id":"12","name":"Marc Omandam","available":true,"conflict":null}
+[16-Feb-2025 01:05:03 Europe/Berlin] Received data: {"entertainers":["12"],"date":"2025-02-18","start_time":"16:04","end_time":"18:04"}
+[16-Feb-2025 01:05:03 Europe/Berlin] Checking bookings for entertainer 12 on 2025-02-18 between 16:04 and 18:04
+[16-Feb-2025 01:05:03 Europe/Berlin] Result for entertainer 12: {"entertainer_id":"12","name":"Marc Omandam","available":true,"conflict":null}
+[16-Feb-2025 01:14:23 Europe/Berlin] Received data: {"date":"2025-02-18","start_time":"16:14","end_time":"18:14","entertainers":["12"]}
+[16-Feb-2025 01:14:23 Europe/Berlin] Checking bookings for entertainer 12 on 2025-02-18 between 16:14 and 18:14
+[16-Feb-2025 01:14:23 Europe/Berlin] Result for entertainer 12: {"entertainer_id":"12","name":"Marc Omandam","available":true,"conflict":null}
+[16-Feb-2025 01:14:40 Europe/Berlin] Received data: {"entertainers":["12"],"date":"2025-02-18","start_time":"16:14","end_time":"18:14"}
+[16-Feb-2025 01:14:40 Europe/Berlin] Checking bookings for entertainer 12 on 2025-02-18 between 16:14 and 18:14
+[16-Feb-2025 01:14:40 Europe/Berlin] Result for entertainer 12: {"entertainer_id":"12","name":"Marc Omandam","available":true,"conflict":null}
+[16-Feb-2025 01:20:36 Europe/Berlin] Received data: {"date":"2025-02-18","start_time":"16:20","end_time":"18:20","entertainers":["12"]}
+[16-Feb-2025 01:20:36 Europe/Berlin] Checking bookings for entertainer 12 on 2025-02-18 between 16:20 and 18:20
+[16-Feb-2025 01:20:36 Europe/Berlin] Result for entertainer 12: {"entertainer_id":"12","name":"Marc Omandam","available":true,"conflict":null}
+[16-Feb-2025 01:20:51 Europe/Berlin] Received data: {"entertainers":["12"],"date":"2025-02-18","start_time":"16:20","end_time":"18:20"}
+[16-Feb-2025 01:20:51 Europe/Berlin] Checking bookings for entertainer 12 on 2025-02-18 between 16:20 and 18:20
+[16-Feb-2025 01:20:51 Europe/Berlin] Result for entertainer 12: {"entertainer_id":"12","name":"Marc Omandam","available":true,"conflict":null}
+[16-Feb-2025 01:22:52 Europe/Berlin] Received data: {"date":"2025-02-18","start_time":"16:22","end_time":"18:22","entertainers":["6","10","12"]}
+[16-Feb-2025 01:22:52 Europe/Berlin] Checking bookings for entertainer 12 on 2025-02-18 between 16:22 and 18:22
+[16-Feb-2025 01:22:52 Europe/Berlin] Result for entertainer 12: {"entertainer_id":"12","name":"Marc Omandam","available":true,"conflict":null}
+[16-Feb-2025 01:22:58 Europe/Berlin] Received data: {"date":"2025-02-18","start_time":"16:22","end_time":"18:22","entertainers":["10","12"]}
+[16-Feb-2025 01:22:58 Europe/Berlin] Checking bookings for entertainer 12 on 2025-02-18 between 16:22 and 18:22
+[16-Feb-2025 01:22:58 Europe/Berlin] Result for entertainer 12: {"entertainer_id":"12","name":"Marc Omandam","available":true,"conflict":null}
+[16-Feb-2025 01:23:03 Europe/Berlin] Received data: {"date":"2025-02-18","start_time":"16:22","end_time":"18:22","entertainers":["12"]}
+[16-Feb-2025 01:23:03 Europe/Berlin] Checking bookings for entertainer 12 on 2025-02-18 between 16:22 and 18:22
+[16-Feb-2025 01:23:03 Europe/Berlin] Result for entertainer 12: {"entertainer_id":"12","name":"Marc Omandam","available":true,"conflict":null}
+[16-Feb-2025 01:23:09 Europe/Berlin] Received data: {"date":"2025-02-18","start_time":"16:22","end_time":"18:22","entertainers":["1","12"]}
+[16-Feb-2025 01:23:09 Europe/Berlin] Checking bookings for entertainer 1 on 2025-02-18 between 16:22 and 18:22
+[16-Feb-2025 01:23:09 Europe/Berlin] Result for entertainer 1: {"entertainer_id":"1","name":"Markyyyy Latonio","available":true,"conflict":null}
+[16-Feb-2025 01:23:09 Europe/Berlin] Checking bookings for entertainer 12 on 2025-02-18 between 16:22 and 18:22
+[16-Feb-2025 01:23:09 Europe/Berlin] Result for entertainer 12: {"entertainer_id":"12","name":"Marc Omandam","available":true,"conflict":null}
+[16-Feb-2025 01:23:35 Europe/Berlin] Received data: {"entertainers":["1","12"],"date":"2025-02-18","start_time":"16:22","end_time":"18:22"}
+[16-Feb-2025 01:23:35 Europe/Berlin] Checking bookings for entertainer 1 on 2025-02-18 between 16:22 and 18:22
+[16-Feb-2025 01:23:35 Europe/Berlin] Result for entertainer 1: {"entertainer_id":"1","name":"Markyyyy Latonio","available":true,"conflict":null}
+[16-Feb-2025 01:23:35 Europe/Berlin] Checking bookings for entertainer 12 on 2025-02-18 between 16:22 and 18:22
+[16-Feb-2025 01:23:35 Europe/Berlin] Result for entertainer 12: {"entertainer_id":"12","name":"Marc Omandam","available":true,"conflict":null}
+[16-Feb-2025 02:25:42 Europe/Berlin] Received data: {"date":"2025-02-18","start_time":"17:25","end_time":"19:25","entertainers":["12"]}
+[16-Feb-2025 02:25:42 Europe/Berlin] Checking bookings for entertainer 12 on 2025-02-18 between 17:25 and 19:25
+[16-Feb-2025 02:25:42 Europe/Berlin] Result for entertainer 12: {"entertainer_id":"12","name":"Marc Omandam","available":true,"conflict":null}
+[16-Feb-2025 02:25:58 Europe/Berlin] Received data: {"entertainers":["12"],"date":"2025-02-18","start_time":"17:25","end_time":"19:25"}
+[16-Feb-2025 02:25:58 Europe/Berlin] Checking bookings for entertainer 12 on 2025-02-18 between 17:25 and 19:25
+[16-Feb-2025 02:25:58 Europe/Berlin] Result for entertainer 12: {"entertainer_id":"12","name":"Marc Omandam","available":true,"conflict":null}
+[17-Feb-2025 18:44:52 Europe/Berlin] Received data: {"date":"2025-02-18","start_time":"09:44","end_time":"11:44","entertainers":["1","12"]}
+[17-Feb-2025 18:44:52 Europe/Berlin] Checking bookings for entertainer 1 on 2025-02-18 between 09:44 and 11:44
+[17-Feb-2025 18:44:52 Europe/Berlin] Result for entertainer 1: {"entertainer_id":"1","name":"Markyyyy Latonio","available":true,"conflict":null}
+[17-Feb-2025 18:44:52 Europe/Berlin] Checking bookings for entertainer 12 on 2025-02-18 between 09:44 and 11:44
+[17-Feb-2025 18:44:52 Europe/Berlin] Result for entertainer 12: {"entertainer_id":"12","name":"Marc Omandam","available":true,"conflict":null}
+[17-Feb-2025 18:45:15 Europe/Berlin] Received data: {"entertainers":["1","12"],"date":"2025-02-18","start_time":"09:44","end_time":"11:44"}
+[17-Feb-2025 18:45:15 Europe/Berlin] Checking bookings for entertainer 1 on 2025-02-18 between 09:44 and 11:44
+[17-Feb-2025 18:45:15 Europe/Berlin] Result for entertainer 1: {"entertainer_id":"1","name":"Markyyyy Latonio","available":true,"conflict":null}
+[17-Feb-2025 18:45:15 Europe/Berlin] Checking bookings for entertainer 12 on 2025-02-18 between 09:44 and 11:44
+[17-Feb-2025 18:45:15 Europe/Berlin] Result for entertainer 12: {"entertainer_id":"12","name":"Marc Omandam","available":true,"conflict":null}
+[17-Feb-2025 18:56:42 Europe/Berlin] Received data: {"date":"2025-02-18","start_time":"09:56","end_time":"11:56","entertainers":["1","12"]}
+[17-Feb-2025 18:56:42 Europe/Berlin] Checking bookings for entertainer 1 on 2025-02-18 between 09:56 and 11:56
+[17-Feb-2025 18:56:42 Europe/Berlin] Result for entertainer 1: {"entertainer_id":"1","name":"Markyyyy Latonio","available":true,"conflict":null}
+[17-Feb-2025 18:56:42 Europe/Berlin] Checking bookings for entertainer 12 on 2025-02-18 between 09:56 and 11:56
+[17-Feb-2025 18:56:42 Europe/Berlin] Result for entertainer 12: {"entertainer_id":"12","name":"Marc Omandam","available":true,"conflict":null}
+[17-Feb-2025 18:57:08 Europe/Berlin] Received data: {"entertainers":["1","12"],"date":"2025-02-18","start_time":"09:56","end_time":"11:56"}
+[17-Feb-2025 18:57:08 Europe/Berlin] Checking bookings for entertainer 1 on 2025-02-18 between 09:56 and 11:56
+[17-Feb-2025 18:57:08 Europe/Berlin] Result for entertainer 1: {"entertainer_id":"1","name":"Markyyyy Latonio","available":true,"conflict":null}
+[17-Feb-2025 18:57:08 Europe/Berlin] Checking bookings for entertainer 12 on 2025-02-18 between 09:56 and 11:56
+[17-Feb-2025 18:57:08 Europe/Berlin] Result for entertainer 12: {"entertainer_id":"12","name":"Marc Omandam","available":true,"conflict":null}
+[17-Feb-2025 19:06:29 Europe/Berlin] Received data: {"date":"2025-02-18","start_time":"10:06","end_time":"11:06","entertainers":["1","12"]}
+[17-Feb-2025 19:06:29 Europe/Berlin] Checking bookings for entertainer 1 on 2025-02-18 between 10:06 and 11:06
+[17-Feb-2025 19:06:29 Europe/Berlin] Result for entertainer 1: {"entertainer_id":"1","name":"Markyyyy Latonio","available":true,"conflict":null}
+[17-Feb-2025 19:06:29 Europe/Berlin] Checking bookings for entertainer 12 on 2025-02-18 between 10:06 and 11:06
+[17-Feb-2025 19:06:29 Europe/Berlin] Result for entertainer 12: {"entertainer_id":"12","name":"Marc Omandam","available":true,"conflict":null}
+[17-Feb-2025 19:06:49 Europe/Berlin] Received data: {"entertainers":["1","12"],"date":"2025-02-18","start_time":"10:06","end_time":"11:06"}
+[17-Feb-2025 19:06:49 Europe/Berlin] Checking bookings for entertainer 1 on 2025-02-18 between 10:06 and 11:06
+[17-Feb-2025 19:06:49 Europe/Berlin] Result for entertainer 1: {"entertainer_id":"1","name":"Markyyyy Latonio","available":true,"conflict":null}
+[17-Feb-2025 19:06:49 Europe/Berlin] Checking bookings for entertainer 12 on 2025-02-18 between 10:06 and 11:06
+[17-Feb-2025 19:06:49 Europe/Berlin] Result for entertainer 12: {"entertainer_id":"12","name":"Marc Omandam","available":true,"conflict":null}
+[17-Feb-2025 19:10:52 Europe/Berlin] Received data: {"date":"2025-02-18","start_time":"10:10","end_time":"11:10","entertainers":["1","12"]}
+[17-Feb-2025 19:10:52 Europe/Berlin] Checking bookings for entertainer 1 on 2025-02-18 between 10:10 and 11:10
+[17-Feb-2025 19:10:52 Europe/Berlin] Result for entertainer 1: {"entertainer_id":"1","name":"Markyyyy Latonio","available":true,"conflict":null}
+[17-Feb-2025 19:10:52 Europe/Berlin] Checking bookings for entertainer 12 on 2025-02-18 between 10:10 and 11:10
+[17-Feb-2025 19:10:52 Europe/Berlin] Result for entertainer 12: {"entertainer_id":"12","name":"Marc Omandam","available":true,"conflict":null}
+[17-Feb-2025 19:11:11 Europe/Berlin] Received data: {"entertainers":["1","12"],"date":"2025-02-18","start_time":"10:10","end_time":"11:10"}
+[17-Feb-2025 19:11:11 Europe/Berlin] Checking bookings for entertainer 1 on 2025-02-18 between 10:10 and 11:10
+[17-Feb-2025 19:11:11 Europe/Berlin] Result for entertainer 1: {"entertainer_id":"1","name":"Markyyyy Latonio","available":true,"conflict":null}
+[17-Feb-2025 19:11:11 Europe/Berlin] Checking bookings for entertainer 12 on 2025-02-18 between 10:10 and 11:10
+[17-Feb-2025 19:11:11 Europe/Berlin] Result for entertainer 12: {"entertainer_id":"12","name":"Marc Omandam","available":true,"conflict":null}
+[17-Feb-2025 19:14:53 Europe/Berlin] Received data: {"date":"2025-02-18","start_time":"10:14","end_time":"11:14","entertainers":["1","12"]}
+[17-Feb-2025 19:14:53 Europe/Berlin] Checking bookings for entertainer 1 on 2025-02-18 between 10:14 and 11:14
+[17-Feb-2025 19:14:53 Europe/Berlin] Result for entertainer 1: {"entertainer_id":"1","name":"Markyyyy Latonio","available":true,"conflict":null}
+[17-Feb-2025 19:14:53 Europe/Berlin] Checking bookings for entertainer 12 on 2025-02-18 between 10:14 and 11:14
+[17-Feb-2025 19:14:53 Europe/Berlin] Result for entertainer 12: {"entertainer_id":"12","name":"Marc Omandam","available":true,"conflict":null}
+[17-Feb-2025 19:15:00 Europe/Berlin] Received data: {"entertainers":["1","12"],"date":"2025-02-18","start_time":"10:14","end_time":"11:14"}
+[17-Feb-2025 19:15:00 Europe/Berlin] Checking bookings for entertainer 1 on 2025-02-18 between 10:14 and 11:14
+[17-Feb-2025 19:15:00 Europe/Berlin] Result for entertainer 1: {"entertainer_id":"1","name":"Markyyyy Latonio","available":true,"conflict":null}
+[17-Feb-2025 19:15:00 Europe/Berlin] Checking bookings for entertainer 12 on 2025-02-18 between 10:14 and 11:14
+[17-Feb-2025 19:15:00 Europe/Berlin] Result for entertainer 12: {"entertainer_id":"12","name":"Marc Omandam","available":true,"conflict":null}
+[17-Feb-2025 19:20:20 Europe/Berlin] Received data: {"date":"2025-02-18","start_time":"10:20","end_time":"11:20","entertainers":["1","12"]}
+[17-Feb-2025 19:20:20 Europe/Berlin] Checking bookings for entertainer 1 on 2025-02-18 between 10:20 and 11:20
+[17-Feb-2025 19:20:20 Europe/Berlin] Result for entertainer 1: {"entertainer_id":"1","name":"Markyyyy Latonio","available":true,"conflict":null}
+[17-Feb-2025 19:20:20 Europe/Berlin] Checking bookings for entertainer 12 on 2025-02-18 between 10:20 and 11:20
+[17-Feb-2025 19:20:20 Europe/Berlin] Result for entertainer 12: {"entertainer_id":"12","name":"Marc Omandam","available":true,"conflict":null}
+[17-Feb-2025 19:20:40 Europe/Berlin] Received data: {"entertainers":["1","12"],"date":"2025-02-18","start_time":"10:20","end_time":"11:20"}
+[17-Feb-2025 19:20:40 Europe/Berlin] Checking bookings for entertainer 1 on 2025-02-18 between 10:20 and 11:20
+[17-Feb-2025 19:20:40 Europe/Berlin] Result for entertainer 1: {"entertainer_id":"1","name":"Markyyyy Latonio","available":true,"conflict":null}
+[17-Feb-2025 19:20:40 Europe/Berlin] Checking bookings for entertainer 12 on 2025-02-18 between 10:20 and 11:20
+[17-Feb-2025 19:20:40 Europe/Berlin] Result for entertainer 12: {"entertainer_id":"12","name":"Marc Omandam","available":true,"conflict":null}
+[17-Feb-2025 19:22:07 Europe/Berlin] Received data: {"date":"2025-02-18","start_time":"10:21","end_time":"11:22","entertainers":["1","12"]}
+[17-Feb-2025 19:22:07 Europe/Berlin] Checking bookings for entertainer 1 on 2025-02-18 between 10:21 and 11:22
+[17-Feb-2025 19:22:07 Europe/Berlin] Result for entertainer 1: {"entertainer_id":"1","name":"Markyyyy Latonio","available":true,"conflict":null}
+[17-Feb-2025 19:22:07 Europe/Berlin] Checking bookings for entertainer 12 on 2025-02-18 between 10:21 and 11:22
+[17-Feb-2025 19:22:07 Europe/Berlin] Result for entertainer 12: {"entertainer_id":"12","name":"Marc Omandam","available":true,"conflict":null}
+[17-Feb-2025 19:22:27 Europe/Berlin] Received data: {"entertainers":["1","12"],"date":"2025-02-18","start_time":"10:21","end_time":"11:22"}
+[17-Feb-2025 19:22:27 Europe/Berlin] Checking bookings for entertainer 1 on 2025-02-18 between 10:21 and 11:22
+[17-Feb-2025 19:22:27 Europe/Berlin] Result for entertainer 1: {"entertainer_id":"1","name":"Markyyyy Latonio","available":true,"conflict":null}
+[17-Feb-2025 19:22:27 Europe/Berlin] Checking bookings for entertainer 12 on 2025-02-18 between 10:21 and 11:22
+[17-Feb-2025 19:22:27 Europe/Berlin] Result for entertainer 12: {"entertainer_id":"12","name":"Marc Omandam","available":true,"conflict":null}
+[17-Feb-2025 20:04:36 Europe/Berlin] Received data: {"date":"2025-02-18","start_time":"13:04","end_time":"14:04","entertainers":["1","12"]}
+[17-Feb-2025 20:04:36 Europe/Berlin] Checking bookings for entertainer 1 on 2025-02-18 between 13:04 and 14:04
+[17-Feb-2025 20:04:36 Europe/Berlin] Result for entertainer 1: {"entertainer_id":"1","name":"Markyyyy Latonio","available":true,"conflict":null}
+[17-Feb-2025 20:04:36 Europe/Berlin] Checking bookings for entertainer 12 on 2025-02-18 between 13:04 and 14:04
+[17-Feb-2025 20:04:36 Europe/Berlin] Result for entertainer 12: {"entertainer_id":"12","name":"Marc Omandam","available":true,"conflict":null}
+[17-Feb-2025 20:04:55 Europe/Berlin] Received data: {"entertainers":["1","12"],"date":"2025-02-18","start_time":"13:04","end_time":"14:04"}
+[17-Feb-2025 20:04:55 Europe/Berlin] Checking bookings for entertainer 1 on 2025-02-18 between 13:04 and 14:04
+[17-Feb-2025 20:04:55 Europe/Berlin] Result for entertainer 1: {"entertainer_id":"1","name":"Markyyyy Latonio","available":true,"conflict":null}
+[17-Feb-2025 20:04:55 Europe/Berlin] Checking bookings for entertainer 12 on 2025-02-18 between 13:04 and 14:04
+[17-Feb-2025 20:04:55 Europe/Berlin] Result for entertainer 12: {"entertainer_id":"12","name":"Marc Omandam","available":true,"conflict":null}
+[17-Feb-2025 20:07:35 Europe/Berlin] Received data: {"date":"2025-02-18","start_time":"13:07","end_time":"15:07","entertainers":["1","12"]}
+[17-Feb-2025 20:07:35 Europe/Berlin] Checking bookings for entertainer 1 on 2025-02-18 between 13:07 and 15:07
+[17-Feb-2025 20:07:35 Europe/Berlin] Result for entertainer 1: {"entertainer_id":"1","name":"Markyyyy Latonio","available":true,"conflict":null}
+[17-Feb-2025 20:07:35 Europe/Berlin] Checking bookings for entertainer 12 on 2025-02-18 between 13:07 and 15:07
+[17-Feb-2025 20:07:35 Europe/Berlin] Result for entertainer 12: {"entertainer_id":"12","name":"Marc Omandam","available":true,"conflict":null}
+[17-Feb-2025 20:07:52 Europe/Berlin] Received data: {"entertainers":["1","12"],"date":"2025-02-18","start_time":"13:07","end_time":"15:07"}
+[17-Feb-2025 20:07:52 Europe/Berlin] Checking bookings for entertainer 1 on 2025-02-18 between 13:07 and 15:07
+[17-Feb-2025 20:07:52 Europe/Berlin] Result for entertainer 1: {"entertainer_id":"1","name":"Markyyyy Latonio","available":true,"conflict":null}
+[17-Feb-2025 20:07:52 Europe/Berlin] Checking bookings for entertainer 12 on 2025-02-18 between 13:07 and 15:07
+[17-Feb-2025 20:07:52 Europe/Berlin] Result for entertainer 12: {"entertainer_id":"12","name":"Marc Omandam","available":true,"conflict":null}
+[17-Feb-2025 20:40:01 Europe/Berlin] Received data: {"date":"2025-02-18","start_time":"13:39","end_time":"16:39","entertainers":["1","12"]}
+[17-Feb-2025 20:40:01 Europe/Berlin] Checking bookings for entertainer 1 on 2025-02-18 between 13:39 and 16:39
+[17-Feb-2025 20:40:01 Europe/Berlin] Result for entertainer 1: {"entertainer_id":"1","name":"Markyyyy Latonio","available":true,"conflict":null}
+[17-Feb-2025 20:40:01 Europe/Berlin] Checking bookings for entertainer 12 on 2025-02-18 between 13:39 and 16:39
+[17-Feb-2025 20:40:01 Europe/Berlin] Result for entertainer 12: {"entertainer_id":"12","name":"Marc Omandam","available":true,"conflict":null}
+[17-Feb-2025 20:40:19 Europe/Berlin] Received data: {"entertainers":["1","12"],"date":"2025-02-18","start_time":"13:39","end_time":"16:39"}
+[17-Feb-2025 20:40:19 Europe/Berlin] Checking bookings for entertainer 1 on 2025-02-18 between 13:39 and 16:39
+[17-Feb-2025 20:40:19 Europe/Berlin] Result for entertainer 1: {"entertainer_id":"1","name":"Markyyyy Latonio","available":true,"conflict":null}
+[17-Feb-2025 20:40:19 Europe/Berlin] Checking bookings for entertainer 12 on 2025-02-18 between 13:39 and 16:39
+[17-Feb-2025 20:40:19 Europe/Berlin] Result for entertainer 12: {"entertainer_id":"12","name":"Marc Omandam","available":true,"conflict":null}
+[17-Feb-2025 20:44:52 Europe/Berlin] Received data: {"date":"2025-02-18","start_time":"14:44","end_time":"16:44","entertainers":["1","12"]}
+[17-Feb-2025 20:44:52 Europe/Berlin] Checking bookings for entertainer 1 on 2025-02-18 between 14:44 and 16:44
+[17-Feb-2025 20:44:52 Europe/Berlin] Result for entertainer 1: {"entertainer_id":"1","name":"Markyyyy Latonio","available":true,"conflict":null}
+[17-Feb-2025 20:44:52 Europe/Berlin] Checking bookings for entertainer 12 on 2025-02-18 between 14:44 and 16:44
+[17-Feb-2025 20:44:52 Europe/Berlin] Result for entertainer 12: {"entertainer_id":"12","name":"Marc Omandam","available":true,"conflict":null}
+[17-Feb-2025 20:45:14 Europe/Berlin] Received data: {"entertainers":["1","12"],"date":"2025-02-18","start_time":"14:44","end_time":"16:44"}
+[17-Feb-2025 20:45:14 Europe/Berlin] Checking bookings for entertainer 1 on 2025-02-18 between 14:44 and 16:44
+[17-Feb-2025 20:45:14 Europe/Berlin] Result for entertainer 1: {"entertainer_id":"1","name":"Markyyyy Latonio","available":true,"conflict":null}
+[17-Feb-2025 20:45:14 Europe/Berlin] Checking bookings for entertainer 12 on 2025-02-18 between 14:44 and 16:44
+[17-Feb-2025 20:45:14 Europe/Berlin] Result for entertainer 12: {"entertainer_id":"12","name":"Marc Omandam","available":true,"conflict":null}
+[17-Feb-2025 20:48:40 Europe/Berlin] Received data: {"date":"2025-02-18","start_time":"13:48","end_time":"15:48","entertainers":["1","12"]}
+[17-Feb-2025 20:48:40 Europe/Berlin] Checking bookings for entertainer 1 on 2025-02-18 between 13:48 and 15:48
+[17-Feb-2025 20:48:40 Europe/Berlin] Result for entertainer 1: {"entertainer_id":"1","name":"Markyyyy Latonio","available":true,"conflict":null}
+[17-Feb-2025 20:48:40 Europe/Berlin] Checking bookings for entertainer 12 on 2025-02-18 between 13:48 and 15:48
+[17-Feb-2025 20:48:40 Europe/Berlin] Result for entertainer 12: {"entertainer_id":"12","name":"Marc Omandam","available":true,"conflict":null}
+[17-Feb-2025 20:48:59 Europe/Berlin] Received data: {"entertainers":["1","12"],"date":"2025-02-18","start_time":"13:48","end_time":"15:48"}
+[17-Feb-2025 20:48:59 Europe/Berlin] Checking bookings for entertainer 1 on 2025-02-18 between 13:48 and 15:48
+[17-Feb-2025 20:48:59 Europe/Berlin] Result for entertainer 1: {"entertainer_id":"1","name":"Markyyyy Latonio","available":true,"conflict":null}
+[17-Feb-2025 20:48:59 Europe/Berlin] Checking bookings for entertainer 12 on 2025-02-18 between 13:48 and 15:48
+[17-Feb-2025 20:48:59 Europe/Berlin] Result for entertainer 12: {"entertainer_id":"12","name":"Marc Omandam","available":true,"conflict":null}
+[17-Feb-2025 21:07:30 Europe/Berlin] Received data: {"date":"2025-02-18","start_time":"17:07","end_time":"18:00","entertainers":["1","12"]}
+[17-Feb-2025 21:07:30 Europe/Berlin] Checking bookings for entertainer 1 on 2025-02-18 between 17:07 and 18:00
+[17-Feb-2025 21:07:30 Europe/Berlin] Result for entertainer 1: {"entertainer_id":"1","name":"Markyyyy Latonio","available":true,"conflict":null}
+[17-Feb-2025 21:07:30 Europe/Berlin] Checking bookings for entertainer 12 on 2025-02-18 between 17:07 and 18:00
+[17-Feb-2025 21:07:30 Europe/Berlin] Result for entertainer 12: {"entertainer_id":"12","name":"Marc Omandam","available":true,"conflict":null}
+[17-Feb-2025 21:07:48 Europe/Berlin] Received data: {"entertainers":["1","12"],"date":"2025-02-18","start_time":"17:07","end_time":"18:00"}
+[17-Feb-2025 21:07:48 Europe/Berlin] Checking bookings for entertainer 1 on 2025-02-18 between 17:07 and 18:00
+[17-Feb-2025 21:07:48 Europe/Berlin] Result for entertainer 1: {"entertainer_id":"1","name":"Markyyyy Latonio","available":true,"conflict":null}
+[17-Feb-2025 21:07:48 Europe/Berlin] Checking bookings for entertainer 12 on 2025-02-18 between 17:07 and 18:00
+[17-Feb-2025 21:07:48 Europe/Berlin] Result for entertainer 12: {"entertainer_id":"12","name":"Marc Omandam","available":true,"conflict":null}
+[17-Feb-2025 21:11:20 Europe/Berlin] Received data: {"date":"2025-02-18","start_time":"13:11","end_time":"15:11","entertainers":["1","12"]}
+[17-Feb-2025 21:11:20 Europe/Berlin] Checking bookings for entertainer 1 on 2025-02-18 between 13:11 and 15:11
+[17-Feb-2025 21:11:20 Europe/Berlin] Result for entertainer 1: {"entertainer_id":"1","name":"Markyyyy Latonio","available":true,"conflict":null}
+[17-Feb-2025 21:11:20 Europe/Berlin] Checking bookings for entertainer 12 on 2025-02-18 between 13:11 and 15:11
+[17-Feb-2025 21:11:20 Europe/Berlin] Result for entertainer 12: {"entertainer_id":"12","name":"Marc Omandam","available":true,"conflict":null}
+[17-Feb-2025 21:38:07 Europe/Berlin] Received data: {"date":"2025-02-18","start_time":"13:37","end_time":"15:38","entertainers":["1","12"]}
+[17-Feb-2025 21:38:07 Europe/Berlin] Checking bookings for entertainer 1 on 2025-02-18 between 13:37 and 15:38
+[17-Feb-2025 21:38:07 Europe/Berlin] Result for entertainer 1: {"entertainer_id":"1","name":"Markyyyy Latonio","available":true,"conflict":null}
+[17-Feb-2025 21:38:07 Europe/Berlin] Checking bookings for entertainer 12 on 2025-02-18 between 13:37 and 15:38
+[17-Feb-2025 21:38:07 Europe/Berlin] Result for entertainer 12: {"entertainer_id":"12","name":"Marc Omandam","available":true,"conflict":null}
+[17-Feb-2025 21:38:32 Europe/Berlin] Received data: {"entertainers":["1","12"],"date":"2025-02-18","start_time":"13:37","end_time":"15:38"}
+[17-Feb-2025 21:38:32 Europe/Berlin] Checking bookings for entertainer 1 on 2025-02-18 between 13:37 and 15:38
+[17-Feb-2025 21:38:32 Europe/Berlin] Result for entertainer 1: {"entertainer_id":"1","name":"Markyyyy Latonio","available":true,"conflict":null}
+[17-Feb-2025 21:38:32 Europe/Berlin] Checking bookings for entertainer 12 on 2025-02-18 between 13:37 and 15:38
+[17-Feb-2025 21:38:32 Europe/Berlin] Result for entertainer 12: {"entertainer_id":"12","name":"Marc Omandam","available":true,"conflict":null}
+[21-Feb-2025 23:56:27 Europe/Berlin] Received data: {"date":"2025-02-24","start_time":"14:56","end_time":"16:56","entertainers":["12"]}
+[21-Feb-2025 23:56:27 Europe/Berlin] Checking bookings for entertainer 12 on 2025-02-24 between 14:56 and 16:56
+[21-Feb-2025 23:56:27 Europe/Berlin] Result for entertainer 12: {"entertainer_id":"12","name":"Marc Omandam","available":true,"conflict":null}
+[21-Feb-2025 23:56:34 Europe/Berlin] Received data: {"entertainers":["12"],"date":"2025-02-24","start_time":"14:56","end_time":"16:56"}
+[21-Feb-2025 23:56:34 Europe/Berlin] Checking bookings for entertainer 12 on 2025-02-24 between 14:56 and 16:56
+[21-Feb-2025 23:56:34 Europe/Berlin] Result for entertainer 12: {"entertainer_id":"12","name":"Marc Omandam","available":true,"conflict":null}
+[21-Feb-2025 23:58:19 Europe/Berlin] Received data: {"date":"2025-02-24","start_time":"14:58","end_time":"17:58","entertainers":["1","12"]}
+[21-Feb-2025 23:58:19 Europe/Berlin] Checking bookings for entertainer 1 on 2025-02-24 between 14:58 and 17:58
+[21-Feb-2025 23:58:19 Europe/Berlin] Result for entertainer 1: {"entertainer_id":"1","name":"Markyyyy Latonio","available":true,"conflict":null}
+[21-Feb-2025 23:58:19 Europe/Berlin] Checking bookings for entertainer 12 on 2025-02-24 between 14:58 and 17:58
+[21-Feb-2025 23:58:19 Europe/Berlin] Result for entertainer 12: {"entertainer_id":"12","name":"Marc Omandam","available":true,"conflict":null}
+[21-Feb-2025 23:58:54 Europe/Berlin] Received data: {"entertainers":["1","12"],"date":"2025-02-24","start_time":"14:58","end_time":"17:58"}
+[21-Feb-2025 23:58:54 Europe/Berlin] Checking bookings for entertainer 1 on 2025-02-24 between 14:58 and 17:58
+[21-Feb-2025 23:58:54 Europe/Berlin] Result for entertainer 1: {"entertainer_id":"1","name":"Markyyyy Latonio","available":true,"conflict":null}
+[21-Feb-2025 23:58:54 Europe/Berlin] Checking bookings for entertainer 12 on 2025-02-24 between 14:58 and 17:58
+[21-Feb-2025 23:58:54 Europe/Berlin] Result for entertainer 12: {"entertainer_id":"12","name":"Marc Omandam","available":true,"conflict":null}
+[22-Feb-2025 00:07:47 Europe/Berlin] Received data: {"date":"2025-02-24","start_time":"15:07","end_time":"17:07","entertainers":["1","12"]}
+[22-Feb-2025 00:07:47 Europe/Berlin] Checking bookings for entertainer 1 on 2025-02-24 between 15:07 and 17:07
+[22-Feb-2025 00:07:47 Europe/Berlin] Result for entertainer 1: {"entertainer_id":"1","name":"Markyyyy Latonio","available":true,"conflict":null}
+[22-Feb-2025 00:07:47 Europe/Berlin] Checking bookings for entertainer 12 on 2025-02-24 between 15:07 and 17:07
+[22-Feb-2025 00:07:47 Europe/Berlin] Result for entertainer 12: {"entertainer_id":"12","name":"Marc Omandam","available":true,"conflict":null}
+[22-Feb-2025 00:08:18 Europe/Berlin] Received data: {"entertainers":["1","12"],"date":"2025-02-24","start_time":"15:07","end_time":"17:07"}
+[22-Feb-2025 00:08:18 Europe/Berlin] Checking bookings for entertainer 1 on 2025-02-24 between 15:07 and 17:07
+[22-Feb-2025 00:08:18 Europe/Berlin] Result for entertainer 1: {"entertainer_id":"1","name":"Markyyyy Latonio","available":true,"conflict":null}
+[22-Feb-2025 00:08:18 Europe/Berlin] Checking bookings for entertainer 12 on 2025-02-24 between 15:07 and 17:07
+[22-Feb-2025 00:08:18 Europe/Berlin] Result for entertainer 12: {"entertainer_id":"12","name":"Marc Omandam","available":true,"conflict":null}
+[22-Feb-2025 00:13:30 Europe/Berlin] Received data: {"date":"2025-02-24","start_time":"15:13","end_time":"17:13","entertainers":["1","12"]}
+[22-Feb-2025 00:13:30 Europe/Berlin] Checking bookings for entertainer 1 on 2025-02-24 between 15:13 and 17:13
+[22-Feb-2025 00:13:30 Europe/Berlin] Result for entertainer 1: {"entertainer_id":"1","name":"Markyyyy Latonio","available":true,"conflict":null}
+[22-Feb-2025 00:13:30 Europe/Berlin] Checking bookings for entertainer 12 on 2025-02-24 between 15:13 and 17:13
+[22-Feb-2025 00:13:30 Europe/Berlin] Result for entertainer 12: {"entertainer_id":"12","name":"Marc Omandam","available":true,"conflict":null}
+[22-Feb-2025 00:14:12 Europe/Berlin] Received data: {"entertainers":["1","12"],"date":"2025-02-24","start_time":"15:13","end_time":"17:13"}
+[22-Feb-2025 00:14:12 Europe/Berlin] Checking bookings for entertainer 1 on 2025-02-24 between 15:13 and 17:13
+[22-Feb-2025 00:14:12 Europe/Berlin] Result for entertainer 1: {"entertainer_id":"1","name":"Markyyyy Latonio","available":true,"conflict":null}
+[22-Feb-2025 00:14:12 Europe/Berlin] Checking bookings for entertainer 12 on 2025-02-24 between 15:13 and 17:13
+[22-Feb-2025 00:14:12 Europe/Berlin] Result for entertainer 12: {"entertainer_id":"12","name":"Marc Omandam","available":true,"conflict":null}
+[22-Feb-2025 00:15:52 Europe/Berlin] Received data: {"date":"2025-02-24","start_time":"15:15","end_time":"17:15","entertainers":["1","12"]}
+[22-Feb-2025 00:15:52 Europe/Berlin] Checking bookings for entertainer 1 on 2025-02-24 between 15:15 and 17:15
+[22-Feb-2025 00:15:52 Europe/Berlin] Result for entertainer 1: {"entertainer_id":"1","name":"Markyyyy Latonio","available":true,"conflict":null}
+[22-Feb-2025 00:15:52 Europe/Berlin] Checking bookings for entertainer 12 on 2025-02-24 between 15:15 and 17:15
+[22-Feb-2025 00:15:52 Europe/Berlin] Result for entertainer 12: {"entertainer_id":"12","name":"Marc Omandam","available":true,"conflict":null}
+[22-Feb-2025 00:16:10 Europe/Berlin] Received data: {"entertainers":["1","12"],"date":"2025-02-24","start_time":"15:15","end_time":"17:15"}
+[22-Feb-2025 00:16:10 Europe/Berlin] Checking bookings for entertainer 1 on 2025-02-24 between 15:15 and 17:15
+[22-Feb-2025 00:16:10 Europe/Berlin] Result for entertainer 1: {"entertainer_id":"1","name":"Markyyyy Latonio","available":true,"conflict":null}
+[22-Feb-2025 00:16:10 Europe/Berlin] Checking bookings for entertainer 12 on 2025-02-24 between 15:15 and 17:15
+[22-Feb-2025 00:16:10 Europe/Berlin] Result for entertainer 12: {"entertainer_id":"12","name":"Marc Omandam","available":true,"conflict":null}
+[03-Mar-2025 00:25:12 Europe/Berlin] Received data: {"date":"2025-03-10","start_time":"15:25","end_time":"18:25","entertainers":["1","12"]}
+[03-Mar-2025 00:37:25 Europe/Berlin] Received data: {"date":"2025-03-09","start_time":"18:37","end_time":"22:00","entertainers":["1","12"]}
+[03-Mar-2025 00:37:25 Europe/Berlin] Checking bookings for entertainer 1 on 2025-03-09 between 18:37 and 22:00
+[03-Mar-2025 00:37:25 Europe/Berlin] Result for entertainer 1: {"entertainer_id":"1","name":"Markyyyy Latonio","available":true,"conflict":null}
+[03-Mar-2025 00:37:36 Europe/Berlin] Received data: {"date":"2025-03-09","start_time":"18:37","end_time":"22:00","entertainers":["1"]}
+[03-Mar-2025 00:37:36 Europe/Berlin] Checking bookings for entertainer 1 on 2025-03-09 between 18:37 and 22:00
+[03-Mar-2025 00:37:36 Europe/Berlin] Result for entertainer 1: {"entertainer_id":"1","name":"Markyyyy Latonio","available":true,"conflict":null}
+[03-Mar-2025 00:37:41 Europe/Berlin] Received data: {"date":"2025-03-09","start_time":"18:37","end_time":"22:00","entertainers":["1","2"]}
+[03-Mar-2025 00:37:41 Europe/Berlin] Checking bookings for entertainer 1 on 2025-03-09 between 18:37 and 22:00
+[03-Mar-2025 00:37:41 Europe/Berlin] Result for entertainer 1: {"entertainer_id":"1","name":"Markyyyy Latonio","available":true,"conflict":null}
+[03-Mar-2025 00:37:41 Europe/Berlin] Checking bookings for entertainer 2 on 2025-03-09 between 18:37 and 22:00
+[03-Mar-2025 00:37:41 Europe/Berlin] Result for entertainer 2: {"entertainer_id":"2","name":"entertainer2 entertainer2","available":true,"conflict":null}
+[03-Mar-2025 00:47:53 Europe/Berlin] Received data: {"date":"2025-03-09","start_time":"18:37","end_time":"22:00","entertainers":["1"]}
+[03-Mar-2025 00:47:53 Europe/Berlin] Checking bookings for entertainer 1 on 2025-03-09 between 18:37 and 22:00
+[03-Mar-2025 00:47:53 Europe/Berlin] Result for entertainer 1: {"entertainer_id":"1","name":"Markyyyy Latonio","available":true,"conflict":null}
+[03-Mar-2025 00:49:42 Europe/Berlin] Received data: {"entertainers":["1"],"date":"2025-03-09","start_time":"18:37","end_time":"22:00"}
+[03-Mar-2025 00:49:42 Europe/Berlin] Checking bookings for entertainer 1 on 2025-03-09 between 18:37 and 22:00
+[03-Mar-2025 00:49:42 Europe/Berlin] Result for entertainer 1: {"entertainer_id":"1","name":"Markyyyy Latonio","available":true,"conflict":null}
+[03-Mar-2025 00:50:55 Europe/Berlin] Received data: {"entertainers":["1"],"date":"2025-03-09","start_time":"18:37","end_time":"22:00"}
+[03-Mar-2025 00:50:55 Europe/Berlin] Checking bookings for entertainer 1 on 2025-03-09 between 18:37 and 22:00
+[03-Mar-2025 00:50:55 Europe/Berlin] Result for entertainer 1: {"entertainer_id":"1","name":"Markyyyy Latonio","available":true,"conflict":null}
+[03-Mar-2025 00:52:30 Europe/Berlin] Received data: {"entertainers":["1"],"date":"2025-03-09","start_time":"18:37","end_time":"22:00"}
+[03-Mar-2025 00:52:30 Europe/Berlin] Checking bookings for entertainer 1 on 2025-03-09 between 18:37 and 22:00
+[03-Mar-2025 00:52:30 Europe/Berlin] Result for entertainer 1: {"entertainer_id":"1","name":"Markyyyy Latonio","available":true,"conflict":null}
+[03-Mar-2025 01:02:47 Europe/Berlin] Received data: {"entertainers":["1"],"date":"2025-03-09","start_time":"18:37","end_time":"22:00"}
+[03-Mar-2025 01:02:47 Europe/Berlin] Checking bookings for entertainer 1 on 2025-03-09 between 18:37 and 22:00
+[03-Mar-2025 01:02:47 Europe/Berlin] Result for entertainer 1: {"entertainer_id":"1","name":"Markyyyy Latonio","available":true,"conflict":null}
+[06-Mar-2025 23:34:37 Europe/Berlin] Received data: {"date":"2025-03-11","start_time":"14:34","end_time":"16:34","entertainers":["1"]}
+[06-Mar-2025 23:34:37 Europe/Berlin] Checking bookings for entertainer 1 on 2025-03-11 between 14:34 and 16:34
+[06-Mar-2025 23:34:37 Europe/Berlin] Result for entertainer 1: {"entertainer_id":"1","name":"Markyyyy Latonio","available":true,"conflict":null}
+[06-Mar-2025 23:35:15 Europe/Berlin] Received data: {"entertainers":["1"],"date":"2025-03-11","start_time":"14:34","end_time":"16:34"}
+[06-Mar-2025 23:35:15 Europe/Berlin] Checking bookings for entertainer 1 on 2025-03-11 between 14:34 and 16:34
+[06-Mar-2025 23:35:15 Europe/Berlin] Result for entertainer 1: {"entertainer_id":"1","name":"Markyyyy Latonio","available":true,"conflict":null}
+[26-Mar-2025 23:11:10 Europe/Berlin] Received data: {"date":"2025-03-27","start_time":"13:00","end_time":"17:00","entertainers":["1"]}
+[26-Mar-2025 23:11:21 Europe/Berlin] Received data: {"date":"2025-03-27","start_time":"13:00","end_time":"17:00","entertainers":["1","6"]}
+[26-Mar-2025 23:11:31 Europe/Berlin] Received data: {"date":"2025-03-27","start_time":"13:00","end_time":"17:00","entertainers":["1","2","6"]}
+[26-Mar-2025 23:11:35 Europe/Berlin] Received data: {"date":"2025-03-27","start_time":"13:00","end_time":"17:00","entertainers":["1","2"]}
+[26-Mar-2025 23:11:39 Europe/Berlin] Received data: {"date":"2025-03-27","start_time":"13:00","end_time":"17:00","entertainers":["2"]}
+[26-Mar-2025 23:11:57 Europe/Berlin] Received data: {"date":"2025-03-27","start_time":"13:00","end_time":"17:00","entertainers":["1","2"]}
+[26-Mar-2025 23:12:01 Europe/Berlin] Received data: {"date":"2025-03-27","start_time":"13:00","end_time":"17:00","entertainers":["1"]}
+[26-Mar-2025 23:12:12 Europe/Berlin] Received data: {"date":"2025-04-07","start_time":"13:00","end_time":"17:00","entertainers":["1"]}
+[26-Mar-2025 23:12:12 Europe/Berlin] Checking bookings for entertainer 1 on 2025-04-07 between 13:00 and 17:00
+[26-Mar-2025 23:12:12 Europe/Berlin] Result for entertainer 1: {"entertainer_id":"1","name":"Markyyyy Latonio","available":true,"conflict":null}
+[26-Mar-2025 23:12:28 Europe/Berlin] Received data: {"date":"2025-04-07","start_time":"13:00","end_time":"17:00","entertainers":["2"]}
+[26-Mar-2025 23:12:51 Europe/Berlin] Received data: {"date":"2025-04-07","start_time":"13:00","end_time":"17:00","entertainers":["1"]}
+[26-Mar-2025 23:12:51 Europe/Berlin] Checking bookings for entertainer 1 on 2025-04-07 between 13:00 and 17:00
+[26-Mar-2025 23:12:51 Europe/Berlin] Result for entertainer 1: {"entertainer_id":"1","name":"Markyyyy Latonio","available":true,"conflict":null}
+[26-Mar-2025 23:13:06 Europe/Berlin] Received data: {"date":"2025-04-01","start_time":"13:00","end_time":"17:00","entertainers":["1"]}
+[26-Mar-2025 23:13:15 Europe/Berlin] Received data: {"date":"2025-04-02","start_time":"13:00","end_time":"17:00","entertainers":["1"]}
+[26-Mar-2025 23:13:15 Europe/Berlin] Checking bookings for entertainer 1 on 2025-04-02 between 13:00 and 17:00
+[26-Mar-2025 23:13:15 Europe/Berlin] Result for entertainer 1: {"entertainer_id":"1","name":"Markyyyy Latonio","available":true,"conflict":null}
+[26-Mar-2025 23:15:36 Europe/Berlin] Received data: {"entertainers":["1"],"date":"2025-04-02","start_time":"13:00","end_time":"17:00"}
+[26-Mar-2025 23:15:36 Europe/Berlin] Checking bookings for entertainer 1 on 2025-04-02 between 13:00 and 17:00
+[26-Mar-2025 23:15:36 Europe/Berlin] Result for entertainer 1: {"entertainer_id":"1","name":"Markyyyy Latonio","available":true,"conflict":null}
+[26-Mar-2025 23:16:20 Europe/Berlin] Received data: {"entertainers":["1"],"date":"2025-04-02","start_time":"13:00","end_time":"17:00"}
+[26-Mar-2025 23:16:20 Europe/Berlin] Checking bookings for entertainer 1 on 2025-04-02 between 13:00 and 17:00
+[26-Mar-2025 23:16:20 Europe/Berlin] Result for entertainer 1: {"entertainer_id":"1","name":"Markyyyy Latonio","available":true,"conflict":null}
+[26-Mar-2025 23:16:44 Europe/Berlin] Received data: {"entertainers":["1"],"date":"2025-04-02","start_time":"13:00","end_time":"17:00"}
+[26-Mar-2025 23:16:44 Europe/Berlin] Checking bookings for entertainer 1 on 2025-04-02 between 13:00 and 17:00
+[26-Mar-2025 23:16:44 Europe/Berlin] Result for entertainer 1: {"entertainer_id":"1","name":"Markyyyy Latonio","available":true,"conflict":null}
+[06-Apr-2025 00:49:23 Europe/Berlin] Received data: {"date":"2025-04-14","start_time":"15:48","end_time":"18:49","entertainers":["1"]}
+[06-Apr-2025 00:49:23 Europe/Berlin] Checking bookings for entertainer 1 on 2025-04-14 between 15:48 and 18:49
+[06-Apr-2025 00:49:23 Europe/Berlin] Result for entertainer 1: {"entertainer_id":"1","name":"Markyyyy Latonio","available":true,"conflict":null}
+[06-Apr-2025 01:37:14 Europe/Berlin] Received data: {"entertainers":[],"date":"2025-04-14","start_time":"16:36","end_time":"19:36"}
+[06-Apr-2025 01:49:03 Europe/Berlin] Received data: {"entertainers":[],"date":"2025-04-21","start_time":"16:48","end_time":"19:48"}
+[06-Apr-2025 01:55:17 Europe/Berlin] Received data: {"entertainers":[],"date":"2025-04-21","start_time":"16:54","end_time":"19:55"}
+[06-Apr-2025 03:46:04 Europe/Berlin] Booking failed request received: 
+[06-Apr-2025 03:46:04 Europe/Berlin] Error in booking_failed.php: Invalid JSON data: Syntax error
+[06-Apr-2025 03:46:04 Europe/Berlin] Stack trace: #0 {main}

@@ -1,0 +1,116 @@
+/* General Styles */
+.container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-around;
+    width: 100%;
+    margin-bottom: 20px;
+}
+
+.card-box {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    max-width: 300px;
+    height: auto;
+    padding: 15px;
+    border-radius: 10px;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease-in-out, border-color 0.3s ease-in-out;
+    border: 2px solid transparent;
+    margin: 10px; /* Adjust margins for mobile */
+}
+
+.card-box img {
+    width: 100%;
+    height: auto;
+    max-height: 350px; /* Ensure the image doesn't exceed this height */
+    object-fit: cover;
+}
+
+.card-box h3 {
+    color: #fff;
+    margin: 10px 0;
+    font-size: 16px; /* Adjust font size for mobile */
+}
+
+.card-box button {
+    width: 100%;
+    max-width: 140px;
+    height: 35px;
+    background-color: #d3d3d3;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 14px; /* Adjust font size for mobile */
+    transition: background-color 0.3s ease-in-out;
+}
+
+.card-box button:hover {
+    background-color: #bbb;
+}
+
+.card-box button.selected {
+    background-color: #3268a8;
+    color: white;
+}
+
+.card-box:hover {
+    transform: scale(1.05);
+}
+
+.card-box.selected {
+    border-color: #3268a8;
+}
+
+.proceed-container {
+    text-align: center; /* Center the proceed button on smaller screens */
+    margin-top: 30px; /* Adjust margin for mobile */
+}
+
+.proceed-btn {
+    width: 100%;
+    max-width: 120px;
+    height: 45px;
+    background-color: #3268a8;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    font-size: 14px; /* Adjust font size for mobile */
+    cursor: pointer;
+    opacity: 0.5;
+    pointer-events: none;
+    margin: 0 auto; /* Center the button */
+}
+
+.proceed-btn.active {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+.proceed-btn:hover {
+    background-color: #274e85;
+}
+
+
+
+/* Card Colors */
+.card-1 { background-color: #FF7F50; }
+.card-2 { background-color: #008B8B; }
+.card-3 { background-color: #7f8c8d; }
+
+/* Responsive Styles */
+@media (max-width: 768px) {
+    .container {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .card-box {
+        width: 90%;
+        max-width: 100%;
+        margin-left: 0; /* Remove margin-left for mobile */
+    }
+}
