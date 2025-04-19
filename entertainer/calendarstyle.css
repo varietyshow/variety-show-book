@@ -1,0 +1,100 @@
+.container {
+    display: flex;
+    flex-direction: column;
+    padding: 10px;
+    margin-top: 0%;
+}
+
+.left-panel, .right-panel {
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.left-panel {
+    margin-bottom: 20px;
+}
+
+.right-panel {
+    margin-bottom: 0;
+}
+
+.left-panel .calendar {
+    display: block;
+}
+
+.calendar-header {
+    flex-direction: column;
+    align-items: flex-start;
+    margin-bottom: 15px;
+}
+
+.calendar-header button {
+    width: 100%;
+    margin-top: 10px;
+}
+
+.calendar-header h2 {
+    font-size: 20px;
+}
+
+.calendar-grid {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 3px;
+}
+
+.calendar-grid .date-box {
+    height: 60px;
+}
+
+.calendar-grid .date-box .day-number {
+    font-size: 16px;
+}
+
+.calendar-grid .date-box .book-now {
+    padding: 6px;
+    font-size: 12px;
+}
+
+.legend {
+    margin-top: 15px;
+}
+
+.legend p {
+    margin: 3px 0;
+}
+
+.right-panel h2 {
+    font-size: 20px;
+}
+
+.form-group input[type="text"], .form-group input[type="date"], .form-group button {
+    font-size: 14px;
+}
+
+.form-group button {
+    padding: 8px;
+}
+
+/* Media Query for Mobile Devices */
+@media (max-width: 600px) {
+    .container {
+        flex-direction: row;
+    }
+
+    .left-panel, .right-panel {
+        width: 100%;
+        margin: 0;
+    }
+    
+    .left-panel {
+        margin-bottom: 20px;
+    }
+    
+    .right-panel {
+        margin-bottom: 0;
+    }
+    
+    .calendar-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}

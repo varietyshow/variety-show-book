@@ -1,0 +1,39 @@
+<?php
+session_start();
+
+// Database connection
+$servername = "localhost"; // Your database server name
+$username = "root";        // Your database username
+$password = "";            // Your database password
+$dbname = "db_booking_system"; // Your database name
+
+$conn = new mysqli($servername, $username, $password, $dbname);
+
+// Check connection
+if ($conn->connect_error) {
+    die("Connection failed: " . $conn->connect_error);
+}
+
+// Get the POST data
+$data = json_decode(file_get_contents("php://input"), true);
+$scheduleId = $data['scheduleId'];
+
+// Prepare the SQL statement for deletion
+$stmt = $conn->prepare("DELETE FROM sched_time WHERE sched_id = ?");
+if ($stmt) {
+    $stmt->bind_param("i", $scheduleId);
+    $stmt->execute();
+
+    // Check if any row has been affected
+    if ($stmt->affected_rows > 0) {
+        echo json_encode(['success' => true]);
+    } else {
+        echo json_encode(['success' => false, 'error' => 'No schedule found with the provided ID.']);
+    }
+} else {
+    echo json_encode(['success' => false, 'error' => 'Error preparing statement: ' . $conn->error]);
+}
+
+$stmt->close();
+$conn->close();
+?>
