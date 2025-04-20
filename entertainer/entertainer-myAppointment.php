@@ -10,10 +10,10 @@ if (!isset($_SESSION['first_name'])) {
 $first_name = htmlspecialchars($_SESSION['first_name']); // Retrieve and sanitize the first_name
 
 // Database configuration
-$host = 'localhost'; // replace with your host
-$db = 'db_booking_system'; // your database name
-$user = 'root'; // your database username
-$pass = ''; // your database password
+$host = 'sql12.freesqldatabase.com'; // replace with your host
+$db = 'sql12774230'; // your database name
+$user = 'sql12774230'; // your database username
+$pass = 'ytPEFx33BF'; // your database password
 $charset = 'utf8mb4';
 
 // Set up a DSN (Data Source Name)
