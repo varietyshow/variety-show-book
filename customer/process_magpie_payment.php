@@ -44,6 +44,11 @@ $amount_cents = intval(round($amount * 100));
 $api_url = 'https://api.magpie.im/v1/sources';
 $api_key = MAGPIE_SECRET_KEY;
 
+// Use a realistic test amount if the amount is too high (for debugging)
+if ($amount_cents > 100000) { // > 1,000 PHP
+    $amount_cents = 1000; // 10.00 PHP
+}
+
 $data = [
     'type' => $source_type,
     'amount' => $amount_cents,
@@ -64,8 +69,8 @@ error_log('Magpie data: ' . print_r($data, true));
 $ch = curl_init($api_url);
 curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 curl_setopt($ch, CURLOPT_USERPWD, $api_key . ':');
-curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($data));
-curl_setopt($ch, CURLOPT_HTTPHEADER, ['Content-Type: application/x-www-form-urlencoded']);
+curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($data));
+curl_setopt($ch, CURLOPT_HTTPHEADER, ['Content-Type: application/json']);
 
 $response = curl_exec($ch);
 $http_code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
