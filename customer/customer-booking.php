@@ -849,21 +849,6 @@ sort($provinces); // Sort provinces alphabetically
         flex: 1;
     }
 
-    .package-roles {
-        font-size: 14px;
-        color: #666;
-        margin-top: auto;
-        padding-top: 15px;
-        border-top: 1px solid #eee;
-    }
-
-    .roles-label {
-        color: #333;
-        font-weight: 500;
-        display: block;
-        margin-bottom: 5px;
-    }
-
     .package-price {
         background: #e9ecef;
         padding: 8px 16px;
@@ -874,8 +859,40 @@ sort($provinces); // Sort provinces alphabetically
         white-space: nowrap;
     }
 
+    .package-duration {
+        color: #666;
+        font-size: 0.9em;
+        margin: 5px 0;
+    }
+
+    .package-roles {
+        margin-top: auto;
+        font-size: 0.9em;
+        color: #666;
+    }
+
+    .roles-label {
+        font-weight: 600;
+        color: #2c3e50;
+    }
+
+    /* Responsive adjustments */
+    @media (max-width: 1024px) {
+        .package-list {
+            grid-template-columns: repeat(2, 1fr);
+        }
+    }
+
+    @media (max-width: 768px) {
+        .package-list {
+            grid-template-columns: 1fr;
+        }
+    }
+
+    /* Hide radio button but keep functionality */
     .package-option input[type="radio"] {
-        display: none;
+        position: absolute;
+        opacity: 0;
     }
 
     .package-option input[type="radio"]:checked + label {
