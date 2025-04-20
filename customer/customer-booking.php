@@ -58,6 +58,7 @@ sort($provinces); // Sort provinces alphabetically
     <link rel="stylesheet" href="style2.css">
     <link rel="stylesheet" href="cardstyle.css">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script defer src="https://checkout.magpie.im/v2/checkout.js"></script>
     
 </head>
 <style>
@@ -2482,96 +2483,6 @@ document.addEventListener('DOMContentLoaded', function() {
             </script>
 
 </body>
-<script src="https://checkout.magpie.im/v2/checkout.js"></script>
-<script>
-document.addEventListener('DOMContentLoaded', function() {
-    document.getElementById('bookingForm').addEventListener('submit', async function(event) {
-        // Get selected payment method
-        const paymentMethod = document.querySelector('input[name="payment_method"]:checked');
-        if (!paymentMethod) {
-            alert('Please select a payment method');
-            event.preventDefault();
-            return;
-        }
-        const method = paymentMethod.value;
-        // Only handle Magpie methods
-        if (["gcash", "paymaya", "paypal"].includes(method)) {
-            event.preventDefault();
-            const form = event.target;
-            const formData = new FormData(form);
-            const totalPriceElement = document.getElementById('total_price');
-            if (!totalPriceElement) {
-                alert('Error: Total price not found');
-                return;
-            }
-            const totalAmount = totalPriceElement.value.replace(/[^\d.]/g, '');
-            if (!totalAmount) {
-                alert('Error: Invalid total amount');
-                return;
-            }
-            // 1. Create booking first
-            let bookingResp;
-            try {
-                bookingResp = await fetch('process_booking.php', {
-                    method: 'POST',
-                    body: formData
-                });
-            } catch (err) {
-                alert('Booking error: ' + err.message);
-                return;
-            }
-            let bookingData;
-            try {
-                bookingData = await bookingResp.json();
-            } catch (err) {
-                alert('Invalid booking response');
-                return;
-            }
-            if (!bookingData.success || !bookingData.booking_id) {
-                alert(bookingData.message || 'Failed to create booking');
-                return;
-            }
-            // 2. Launch Magpie Checkout
-            var checkout = MagpieCheckout({
-                key: 'pk_test_YPbdpe8l5YTkg2lU35bDNk', // TODO: Replace with your publishable key or inject via server-side
-                amount: Math.round(parseFloat(totalAmount) * 100), // centavos
-                currency: 'PHP',
-                name: 'Variety Show Booking',
-                description: 'Booking #' + bookingData.booking_id,
-                email: form.email ? form.email.value : '',
-                onSuccess: function(result) {
-                    // Send token to backend
-                    fetch('process_magpie_payment.php', {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-                        body: new URLSearchParams({
-                            token: result.token,
-                            amount: Math.round(parseFloat(totalAmount) * 100),
-                            booking_id: bookingData.booking_id,
-                            first_name: form.first_name.value,
-                            last_name: form.last_name.value,
-                            email: form.email ? form.email.value : ''
-                        })
-                    })
-                    .then(resp => resp.json())
-                    .then(data => {
-                        if (data.success && data.checkout_url) {
-                            window.location.href = data.checkout_url;
-                        } else {
-                            alert(data.message || 'Failed to initialize payment');
-                        }
-                    });
-                },
-                onError: function(error) {
-                    alert('Payment error: ' + error.message);
-                }
-            });
-            checkout.open();
-        }
-    });
-});
-</script>
-
 <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </html>
