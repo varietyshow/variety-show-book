@@ -58,6 +58,9 @@ $data = [
     'email' => $email
 ];
 
+// Debug: log the data being sent to Magpie
+error_log('Magpie data: ' . print_r($data, true));
+
 $ch = curl_init($api_url);
 curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 curl_setopt($ch, CURLOPT_USERPWD, $api_key . ':');
@@ -66,6 +69,9 @@ curl_setopt($ch, CURLOPT_HTTPHEADER, ['Content-Type: application/x-www-form-urle
 
 $response = curl_exec($ch);
 $http_code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+
+// Debug: log the raw response from Magpie
+error_log('Magpie raw response: ' . $response);
 
 if ($response === false) {
     echo json_encode(['success' => false, 'message' => 'Magpie API error: ' . curl_error($ch)]);
