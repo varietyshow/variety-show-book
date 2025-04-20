@@ -1,6 +1,7 @@
 {
     "require": {
         "phpmailer/phpmailer": "^6.8",
-        "omise/omise-php": "^2.18"
+        "omise/omise-php": "^2.18",
+        "flairlabs/magpie-php-sdk": "^0.0.2"
     }
 }
