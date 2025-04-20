@@ -1,13 +1,11 @@
 <?php
-$config = require 'config.php';
+$host = getenv("DB_HOST");
+$dbname = getenv("DB_NAME");
+$username = getenv("DB_USER");
+$password = getenv("DB_PASS");
 
-$servername = $config['db_host'];
-$username = $config['db_user'];
-$password = $config['db_pass'];
-$dbname = $config['db_name'];
-
-// Create connection
-$conn = new mysqli($servername, $username, $password, $dbname);
+// Create mysqli connection
+$conn = new mysqli($host, $username, $password, $dbname);
 
 // Check connection
 if ($conn->connect_error) {
