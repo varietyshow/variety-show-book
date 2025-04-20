@@ -1,8 +1,8 @@
 <?php
-$host = getenv("sql.freedb.tech");
-$dbname = getenv("freedb_db_booking_system");
-$username = getenv("freedb_varietyshow");
-$password = getenv("D!H7nuCsrenD8WM");
+$host = getenv("DB_HOST");
+$dbname = getenv("DB_NAME");
+$username = getenv("DB_USER");
+$password = getenv("DB_PASS");
 
 // Create mysqli connection
 $conn = new mysqli($host, $username, $password, $dbname);
