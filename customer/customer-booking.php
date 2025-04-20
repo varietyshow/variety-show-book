@@ -58,7 +58,9 @@ sort($provinces); // Sort provinces alphabetically
     <link rel="stylesheet" href="style2.css">
     <link rel="stylesheet" href="cardstyle.css">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <script defer src="https://checkout.magpie.im/v2/checkout.js"></script>
+    <!-- Magpie Checkout.js (local copy) -->
+    <!-- Download from https://checkout.magpie.im/v2/checkout.js and save to customer/js/checkout.js -->
+    <script defer src="js/checkout.js"></script>
     
 </head>
 <style>
@@ -1857,9 +1859,14 @@ document.addEventListener('DOMContentLoaded', function() {
                 const price = parseFloat(this.getAttribute('data-price'));
                 const downPayment = price * 0.5;
                 
-                if (totalPriceInput) totalPriceInput.value = formatWithCommas(price.toFixed(2));
-                if (downPaymentInput) downPaymentInput.value = formatWithCommas(downPayment.toFixed(2));
-                if (balanceInput) balanceInput.value = formatWithCommas((price - downPayment).toFixed(2));
+                if (totalPriceInput) totalPriceInput.value = price.toFixed(2);
+                
+                // Calculate and set 50% down payment
+                const downPayment = price * 0.5;
+
+                // Update display with formatted numbers
+                document.getElementById('down_payment').value = formatWithCommas(downPayment.toFixed(2));
+                document.getElementById('balance').value = formatWithCommas((price - downPayment).toFixed(2));
             }
         });
     });
@@ -1903,105 +1910,6 @@ document.addEventListener('DOMContentLoaded', function() {
                     function updateDisplay() {
                         const hasSelectedEntertainer = document.querySelector('input[name="entertainers[]"]:checked');
                         message.style.display = hasSelectedEntertainer ? 'none' : 'block';
-                    }
-
-                    // Add event listeners
-                    document.querySelectorAll('input[name="entertainers[]"]').forEach(cb => {
-                        cb.addEventListener('change', updateDisplay);
-                    });
-
-                    // Initial update
-                    updateDisplay();
-
-                    // Debug log to verify initialization
-                    console.log('Roles container found:', document.getElementById('roles-container') !== null);
-                    console.log('Number of role sections:', document.querySelectorAll('.role-section').length);
-                    console.log('Initial roles container display:', document.getElementById('roles-container').style.display);
-                });
-            </script>
-
-
-
-                <script>
-                // Set minimum date to today
-                const dateInput = document.getElementById('date');
-                
-                function setMinDate() {
-                    const today = new Date();
-                    const year = today.getFullYear();
-                    const month = String(today.getMonth() + 1).padStart(2, '0');
-                    const day = String(today.getDate()).padStart(2, '0');
-                    const minDate = `${year}-${month}-${day}`;
-                    
-                    dateInput.min = minDate;
-                    
-                    // If current value is before min date, reset it
-                    if (dateInput.value < minDate) {
-                        dateInput.value = '';
-                    }
-                }
-
-                // Set initial min date
-                setMinDate();
-
-                // Update min date at midnight
-                setInterval(setMinDate, 60000); // Check every minute
-
-                // Add validation on change
-                dateInput.addEventListener('change', function() {
-                    const selectedDate = new Date(this.value);
-                    const today = new Date();
-                    today.setHours(0, 0, 0, 0); // Reset time part for proper comparison
-                    
-                    if (selectedDate < today) {
-                        event.preventDefault();
-                        openErrorModal('Please select a future date. You cannot book appointments for past dates.');
-                        dateInput.value = '';
-                    }
-                });
-
-                // Add validation before form submission
-                document.getElementById('bookingForm').addEventListener('submit', function(event) {
-                    const selectedDate = new Date(dateInput.value);
-                    const today = new Date();
-                    today.setHours(0, 0, 0, 0);
-                    
-                    if (selectedDate < today) {
-                        event.preventDefault();
-                        openErrorModal('Please select a future date. You cannot book appointments for past dates.');
-                        dateInput.value = '';
-                    }
-                });
-                </script>
-                    
-
-
-                <script>
-                document.addEventListener('DOMContentLoaded', function() {
-                    const message = document.getElementById('no-entertainer-message');
-                    
-                    function updateDisplay() {
-                        const hasSelectedEntertainer = document.querySelector('input[name="entertainers[]"]:checked');
-                        message.style.display = hasSelectedEntertainer ? 'none' : 'block';
-                        
-                        document.querySelectorAll('.role-section').forEach(section => {
-                            const entertainerId = section.id.replace('roles-', '');
-                            const entertainerCheckbox = document.getElementById('entertainer_' + entertainerId);
-                            const entertainerLabel = entertainerCheckbox ? entertainerCheckbox.nextElementSibling : null;
-                            const entertainerName = entertainerLabel ? entertainerLabel.textContent.trim() : 'Unknown Entertainer';
-                            
-                            const isChecked = document.querySelector(`input[name="entertainers[]"][value="${entertainerId}"]:checked`);
-                            section.style.display = isChecked ? 'block' : 'none';
-                            
-                            if (!isChecked) {
-                                section.querySelectorAll('input[type="checkbox"]').forEach(cb => cb.checked = false);
-                            }
-                        });
-                        
-                        // Update package options based on selected roles
-                        if (typeof updatePackageOptions === 'function') {
-                            updatePackageOptions();
-                        }
                     }
 
                     // Add event listeners
