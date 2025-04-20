@@ -2467,110 +2467,10 @@ document.addEventListener('DOMContentLoaded', function() {
 </body>
 </html>
 
-<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-
-<script>
-async function checkAvailability() {
-    const eventDate = document.getElementById('date').value;
-    const eventStartTime = document.getElementById('start_time').value;
-    const eventEndTime = document.getElementById('end_time').value;
-    const availabilityResults = document.getElementById('availabilityMessage');
-    const modal = document.getElementById('availabilityModal');
-
-    // Get selected entertainers
-    const selectedEntertainers = Array.from(document.querySelectorAll('input[name="entertainers[]"]:checked'))
-        .map(checkbox => checkbox.value);
-
-    // Only proceed if we have all required values
-    if (!eventDate || !eventStartTime || !eventEndTime || selectedEntertainers.length === 0) {
-        return;
-    }
-
-    // Show modal using Bootstrap
-    const myModal = bootstrap.Modal.getOrCreateInstance(modal);
-    myModal.show();
-    
-    availabilityResults.innerHTML = `
-        <div class="d-flex justify-content-center align-items-center">
-            <div class="spinner-border text-primary" role="status">
-                <span class="visually-hidden">Loading...</span>
-            </div>
-            <span class="ms-2">Checking availability...</span>
-        </div>
-    `;
-
-    try {
-        const response = await fetch('check_availability.php', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
-                date: eventDate,
-                start_time: eventStartTime,
-                end_time: eventEndTime,
-                entertainers: selectedEntertainers
-            })
-        });
-
-        const data = await response.json();
-        
-        // Update availability results
-        availabilityResults.innerHTML = data.map(status => `
-            <div class="alert ${status.available ? 'alert-success' : 'alert-danger'} mb-2">
-                <strong>${status.name}</strong> ${status.available ? 'is available' : 'is not available'}
-            </div>
-        `).join('');
-
-    } catch (error) {
-        console.error('Error checking availability:', error);
-        availabilityResults.innerHTML = `
-            <div class="alert alert-danger">
-                <i class="fas fa-exclamation-circle"></i> Error checking availability. Please try again.
-            </div>
-        `;
-    }
-}
-
-// Add event listeners when document is ready
-document.addEventListener('DOMContentLoaded', function() {
-    // Handle modal close events
-    const availabilityModal = document.getElementById('availabilityModal');
-    if (availabilityModal) {
-        availabilityModal.addEventListener('hidden.bs.modal', function () {
-            // Clean up any resources or reset state if needed
-            document.getElementById('availabilityMessage').innerHTML = '';
-        });
-    }
-
-    // Add event listeners for date and time inputs
-    const dateInput = document.getElementById('date');
-    const startTimeInput = document.getElementById('start_time');
-    const endTimeInput = document.getElementById('end_time');
-    
-    // Create a debounced version of checkAvailability
-    let timeoutId = null;
-    const debouncedCheck = () => {
-        if (timeoutId) clearTimeout(timeoutId);
-        timeoutId = setTimeout(checkAvailability, 500); // Wait 500ms after last change
-    };
-
-    // Add event listeners
-    if (dateInput) dateInput.addEventListener('change', debouncedCheck);
-    if (startTimeInput) startTimeInput.addEventListener('change', debouncedCheck);
-    if (endTimeInput) endTimeInput.addEventListener('change', debouncedCheck);
-    
-    // Add event listeners for entertainer checkboxes
-    document.querySelectorAll('input[name="entertainers[]"]').forEach(checkbox => {
-        checkbox.addEventListener('change', debouncedCheck);
-    });
-});
-</script>
-
-<!-- Magpie Checkout.js -->
+<!-- Place Magpie Checkout.js as close to the end of <body> as possible, before your custom scripts -->
 <script src="https://checkout.magpie.im/v2/checkout.js"></script>
 
+<!-- Your custom JS should come after the Magpie script -->
 <script>
 document.addEventListener('DOMContentLoaded', function() {
     document.getElementById('bookingForm').addEventListener('submit', async function(event) {
@@ -2660,4 +2560,5 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 </script>
 
-
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
