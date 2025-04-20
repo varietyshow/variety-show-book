@@ -7,6 +7,9 @@ RUN a2enmod rewrite
 # Install mysqli extension
 RUN docker-php-ext-install mysqli && docker-php-ext-enable mysqli
 
+# Install system dependencies for Composer (git, unzip)
+RUN apt-get update && apt-get install -y git unzip
+
 # Install Composer
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
