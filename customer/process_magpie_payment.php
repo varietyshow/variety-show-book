@@ -1,10 +1,15 @@
 <?php
-// Magpie Payment Source Creation Script
+// Magpie Payment Source/Charge Creation Script
+
+// Load Composer's autoloader (must be before using any SDK classes)
+require_once __DIR__ . '/../vendor/autoload.php';
+
+// Load your config file
+require_once '../config/magpie_config.php';
+
 // This script receives POST data with amount, booking_id, selected payment method, and creates a Magpie payment source.
 
 header('Content-Type: application/json');
-require_once '../config/magpie_config.php'; // Store your Magpie keys here
-require_once __DIR__ . '/../vendor/autoload.php'; // Composer autoloader for Magpie SDK
 
 use MagpieApi\Magpie;
 
