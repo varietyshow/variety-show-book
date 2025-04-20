@@ -2568,6 +2568,9 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 </script>
 
+<!-- Magpie Checkout.js -->
+<script src="https://checkout.magpie.im/v2/checkout.js"></script>
+
 <script>
 document.addEventListener('DOMContentLoaded', function() {
     document.getElementById('bookingForm').addEventListener('submit', async function(event) {
@@ -2580,7 +2583,7 @@ document.addEventListener('DOMContentLoaded', function() {
         }
         const method = paymentMethod.value;
         // Only handle Magpie methods
-        if (['gcash', 'paymaya', 'paypal'].includes(method)) {
+        if (["gcash", "paymaya", "paypal"].includes(method)) {
             event.preventDefault();
             const form = event.target;
             const formData = new FormData(form);
@@ -2616,38 +2619,45 @@ document.addEventListener('DOMContentLoaded', function() {
                 alert(bookingData.message || 'Failed to create booking');
                 return;
             }
-            // 2. Initiate Magpie payment
-            let magpieResp;
-            try {
-                magpieResp = await fetch('process_magpie_payment.php', {
-                    method: 'POST',
-                    headers: { },
-                    body: new URLSearchParams({
-                        amount: totalAmount,
-                        booking_id: bookingData.booking_id,
-                        payment_method: method,
-                        first_name: form.first_name.value,
-                        last_name: form.last_name.value,
-                        email: form.email ? form.email.value : ''
+            // 2. Launch Magpie Checkout
+            var checkout = MagpieCheckout({
+                key: 'pk_test_YPbdpe8l5YTkg2lU35bDNk', // TODO: Replace with your publishable key or inject via server-side
+                amount: Math.round(parseFloat(totalAmount) * 100), // centavos
+                currency: 'PHP',
+                name: 'Variety Show Booking',
+                description: 'Booking #' + bookingData.booking_id,
+                email: form.email ? form.email.value : '',
+                onSuccess: function(result) {
+                    // Send token to backend
+                    fetch('process_magpie_payment.php', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                        body: new URLSearchParams({
+                            token: result.token,
+                            amount: Math.round(parseFloat(totalAmount) * 100),
+                            booking_id: bookingData.booking_id,
+                            first_name: form.first_name.value,
+                            last_name: form.last_name.value,
+                            email: form.email ? form.email.value : ''
+                        })
                     })
-                });
-            } catch (err) {
-                alert('Payment error: ' + err.message);
-                return;
-            }
-            let magpieData;
-            try {
-                magpieData = await magpieResp.json();
-            } catch (err) {
-                alert('Invalid payment response');
-                return;
-            }
-            if (magpieData.success && magpieData.checkout_url) {
-                window.location.href = magpieData.checkout_url;
-            } else {
-                alert(magpieData.message || 'Failed to initialize payment');
-            }
+                    .then(resp => resp.json())
+                    .then(data => {
+                        if (data.success && data.checkout_url) {
+                            window.location.href = data.checkout_url;
+                        } else {
+                            alert(data.message || 'Failed to initialize payment');
+                        }
+                    });
+                },
+                onError: function(error) {
+                    alert('Payment error: ' + error.message);
+                }
+            });
+            checkout.open();
         }
     });
 });
 </script>
+
+
