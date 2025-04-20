@@ -4,7 +4,7 @@
 
 header('Content-Type: application/json');
 require_once '../config/magpie_config.php'; // Store your Magpie keys here
-require_once __DIR__ . '/../vendor/autoload.php'; // Composer autoloader for Magpie SDK
+require_once __DIR__ . 'vendor/autoload.php'; // Composer autoloader for Magpie SDK
 
 use MagpieApi\Magpie;
 
