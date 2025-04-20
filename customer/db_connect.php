@@ -1,5 +1,5 @@
 <?php
-$host = "sql.freedb.tech";
+$host = "sql.freedb.tech 3306";
 $dbname = "freedb_db_booking_system";
 $username = "freedb_varietyshow";
 $password = "D!H7nuCsrenD8WM";
