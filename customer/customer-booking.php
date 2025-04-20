@@ -2465,12 +2465,7 @@ document.addEventListener('DOMContentLoaded', function() {
             </script>
 
 </body>
-</html>
-
-<!-- Place Magpie Checkout.js as close to the end of <body> as possible, before your custom scripts -->
 <script src="https://checkout.magpie.im/v2/checkout.js"></script>
-
-<!-- Your custom JS should come after the Magpie script -->
 <script>
 document.addEventListener('DOMContentLoaded', function() {
     document.getElementById('bookingForm').addEventListener('submit', async function(event) {
@@ -2562,3 +2557,4 @@ document.addEventListener('DOMContentLoaded', function() {
 
 <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</html>
