@@ -1,5 +1,5 @@
 <?php
-$servername = getenv("sql.freedb.tech");
+$servername = getenv("sql.freedb.tech 3306");
 $username = getenv("freedb_varietyshow");  // Default XAMPP username
 $password = getenv("D!H7nuCsrenD8WM");      // Default XAMPP password
 $dbname = getenv("freedb_db_booking_system");
