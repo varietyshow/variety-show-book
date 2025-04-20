@@ -6,7 +6,7 @@ header('Content-Type: application/json');
 require_once '../config/magpie_config.php'; // Store your Magpie keys here
 
 // Validate required POST data
-$required = ['amount', 'booking_id', 'payment_method'];
+$required = ['amount', 'booking_id', 'payment_method', 'first_name', 'last_name', 'email'];
 foreach ($required as $field) {
     if (!isset($_POST[$field]) || empty($_POST[$field])) {
         http_response_code(400);
@@ -18,6 +18,9 @@ foreach ($required as $field) {
 $amount = floatval($_POST['amount']);
 $booking_id = $_POST['booking_id'];
 $payment_method = $_POST['payment_method'];
+$first_name = $_POST['first_name'];
+$last_name = $_POST['last_name'];
+$email = $_POST['email'];
 
 // Map form payment methods to Magpie source types
 $magpie_source_types = [
@@ -49,7 +52,10 @@ $data = [
         'success' => MAGPIE_SUCCESS_URL, // Set in config
         'failed' => MAGPIE_FAILED_URL
     ],
-    'description' => "Booking #$booking_id payment via $payment_method"
+    'description' => "Booking #$booking_id payment via $payment_method",
+    'first_name' => $first_name,
+    'last_name' => $last_name,
+    'email' => $email
 ];
 
 $ch = curl_init($api_url);
