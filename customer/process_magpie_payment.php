@@ -4,6 +4,9 @@
 
 header('Content-Type: application/json');
 require_once '../config/magpie_config.php'; // Store your Magpie keys here
+require_once __DIR__ . '/../vendor/autoload.php'; // Composer autoloader for Magpie SDK
+
+use MagpieApi\Magpie;
 
 // Validate required POST data
 $required = ['amount', 'booking_id', 'payment_method', 'first_name', 'last_name', 'email'];
@@ -40,60 +43,67 @@ $source_type = $magpie_source_types[$payment_method];
 // Magpie expects amount in centavos (PHP * 100)
 $amount_cents = intval(round($amount * 100));
 
-// Prepare Magpie API request
-$api_url = 'https://api.magpie.im/v1/sources';
-$api_key = MAGPIE_SECRET_KEY;
-
 // Use a realistic test amount if the amount is too high (for debugging)
 if ($amount_cents > 100000) { // > 1,000 PHP
     $amount_cents = 1000; // 10.00 PHP
 }
 
-$data = [
-    'type' => $source_type,
+// Initialize Magpie SDK
+$magpie = new Magpie(
+    MAGPIE_PUBLISHABLE_KEY, // publishable key (can be null if not needed)
+    MAGPIE_SECRET_KEY,      // secret key
+    true                   // sandbox mode
+);
+
+// Prepare charge data
+$charge_data = [
     'amount' => $amount_cents,
     'currency' => 'php',
-    'redirect' => [
-        'success' => MAGPIE_SUCCESS_URL, // Set in config
-        'failed' => MAGPIE_FAILED_URL
+    'source' => [
+        'type' => $source_type,
+        'first_name' => $first_name,
+        'last_name' => $last_name,
+        'email' => $email,
+        'redirect' => [
+            'success' => MAGPIE_SUCCESS_URL,
+            'failed' => MAGPIE_FAILED_URL
+        ]
     ],
     'description' => "Booking #$booking_id payment via $payment_method",
-    'first_name' => $first_name,
-    'last_name' => $last_name,
-    'email' => $email
+    'statement_descriptor' => '', // Optional, can be customized
+    'capture' => true
 ];
 
 // Debug: log the data being sent to Magpie
-error_log('Magpie data: ' . print_r($data, true));
+error_log('Magpie CHARGE data: ' . print_r($charge_data, true));
 
-$ch = curl_init($api_url);
-curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-curl_setopt($ch, CURLOPT_USERPWD, $api_key . ':');
-curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($data));
-curl_setopt($ch, CURLOPT_HTTPHEADER, ['Content-Type: application/json']);
-
-$response = curl_exec($ch);
-$http_code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-
-// Debug: log the raw response from Magpie
-error_log('Magpie raw response: ' . $response);
-
-if ($response === false) {
-    echo json_encode(['success' => false, 'message' => 'Magpie API error: ' . curl_error($ch)]);
-    curl_close($ch);
+try {
+    $response = $magpie->charge->create(
+        $charge_data['amount'],
+        $charge_data['currency'],
+        $charge_data['source'],
+        $charge_data['description'],
+        $charge_data['statement_descriptor'],
+        $charge_data['capture']
+    );
+    $result = $response->getData();
+    $http_code = $response->getHttpStatus();
+} catch (Exception $e) {
+    echo json_encode(['success' => false, 'message' => 'Magpie SDK error: ' . $e->getMessage()]);
     exit;
 }
 
-curl_close($ch);
-$result = json_decode($response, true);
+// Debug: log the raw response from Magpie
+error_log('Magpie CHARGE SDK/raw response: ' . print_r($result, true));
 
-if ($http_code === 200 && isset($result['redirect']['checkout_url'])) {
+// Success: Look for redirect URL for wallet payment
+if ($http_code === 201 && isset($result['source']['redirect']['checkout_url'])) {
     echo json_encode([
         'success' => true,
-        'checkout_url' => $result['redirect']['checkout_url'],
-        'source_id' => $result['id']
+        'checkout_url' => $result['source']['redirect']['checkout_url'],
+        'charge_id' => $result['id']
     ]);
 } else {
-    $error_message = isset($result['error']['message']) ? $result['error']['message'] : 'Unknown Magpie error';
+    $error_message = isset($result['error']['message']) ? $result['error']['message'] : (isset($result['message']) ? $result['message'] : 'Unknown Magpie error');
     echo json_encode(['success' => false, 'message' => $error_message, 'response' => $result]);
 }
