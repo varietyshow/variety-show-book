@@ -1,8 +1,8 @@
 <?php
-$servername = "localhost";
-$username = "root";  // Default XAMPP username
-$password = "";      // Default XAMPP password
-$dbname = "db_booking_system";
+$servername = "sql.freedb.tech";
+$username = "freedb_varietyshow";  // Default XAMPP username
+$password = "D!H7nuCsrenD8WM";      // Default XAMPP password
+$dbname = "freedb_db_booking_system";
 
 // Create connection
 $conn = new mysqli($servername, $username, $password, $dbname);
