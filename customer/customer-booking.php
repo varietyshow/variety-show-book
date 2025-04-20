@@ -25,10 +25,12 @@ if ($result->num_rows > 0) {
     $first_name = htmlspecialchars($customer['first_name']);
     $last_name = htmlspecialchars($customer['last_name']);
     $contact_number = htmlspecialchars($customer['contact_number']);
+    $email = htmlspecialchars($customer['email']);
 } else {
     $first_name = htmlspecialchars($_SESSION['first_name']);
     $last_name = "";
     $contact_number = "";
+    $email = "";
 }
 
 // Fetch payment methods and QR codes from the database
@@ -1366,6 +1368,11 @@ sort($provinces); // Sort provinces alphabetically
                 </div>
 
                 <div class="name-field">
+                    <label for="email">Email: <span class="required">*</span></label>
+                    <input type="email" id="email" name="email" value="<?php echo $email; ?>" required>
+                </div>
+
+                <div class="name-field">
                     <label for="contact_number">Contact Number: <span class="required">*</span></label>
                     <input type="tel" id="contact_number" name="contact_number" 
                            pattern="^(09|\+639)\d{9}$" 
@@ -2222,6 +2229,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     const selectedEntertainers = Array.from(document.querySelectorAll('input[name="entertainers[]"]:checked'))
                         .map(checkbox => checkbox.value);
 
+                    // Only proceed if we have all required values
                     if (!eventDate || !eventStartTime || !eventEndTime || selectedEntertainers.length === 0) {
                         return;
                     }
@@ -2243,7 +2251,7 @@ document.addEventListener('DOMContentLoaded', function() {
                         const response = await fetch('check_availability.php', {
                             method: 'POST',
                             headers: {
-                                'Content-Type': 'application/json',
+                                'Content-Type': 'application/json'
                             },
                             body: JSON.stringify({
                                 date: eventDate,
@@ -2617,7 +2625,10 @@ document.addEventListener('DOMContentLoaded', function() {
                     body: new URLSearchParams({
                         amount: totalAmount,
                         booking_id: bookingData.booking_id,
-                        payment_method: method
+                        payment_method: method,
+                        first_name: form.first_name.value,
+                        last_name: form.last_name.value,
+                        email: form.email ? form.email.value : ''
                     })
                 });
             } catch (err) {
