@@ -1,8 +1,8 @@
 <?php
-$servername = getenv("sql.freedb.tech");
-$username = getenv("freedb_varietyshow");  // Default XAMPP username
-$password = getenv("D!H7nuCsrenD8WM");      // Default XAMPP password
-$dbname = getenv("freedb_db_booking_system");
+$servername = getenv("sql12.freesqldatabase.com");
+$username = getenv("sql12774230");  // Default XAMPP username
+$password = getenv("ytPEFx33BF");      // Default XAMPP password
+$dbname = getenv("sql12774230");
 
 // Create connection
 $conn = new mysqli($servername, $username, $password, $dbname);
