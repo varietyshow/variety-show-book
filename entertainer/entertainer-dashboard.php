@@ -18,7 +18,7 @@ if (!isset($_SESSION['first_name'])) {
 $first_name = htmlspecialchars($_SESSION['first_name']);
 
 // Connect to database
-require_once '../db_connect.php';
+require_once 'db_connect.php';
 
 // Check if the user is logged in and is an entertainer
 if (!isset($_SESSION['entertainer_id'])) {
