@@ -1,9 +1,9 @@
 <?php
 // config.php
 return [
-    'db_host' => getenv('DB_HOST') ?: 'localhost',
-    'db_user' => getenv('DB_USER') ?: 'root',
-    'db_pass' => getenv('DB_PASS') ?: '',
-    'db_name' => getenv('DB_NAME') ?: 'db_booking_system'
+    'db_host' => getenv('DB_HOST') ?: 'sql.freedb.tech',
+    'db_user' => getenv('DB_USER') ?: 'freedb_varietyshow',
+    'db_pass' => getenv('DB_PASS') ?: 'D!H7nuCsrenD8WM',
+    'db_name' => getenv('DB_NAME') ?: 'freedb_db_booking_system'
 ];
 ?>
