@@ -1380,7 +1380,7 @@ window.formatWithCommas = function(x) {
 
         <section class="form-container">
             <h2>Appointment Details</h2>
-            <form id="bookingForm" method="post" action="">
+            <form id="bookingForm" method="post" action="process_booking.php">
                 <input type="hidden" id="perform_duration" name="perform_duration" value="">
                 <div class="form-group names-group">
                     <div class="name-field">
@@ -1698,7 +1698,7 @@ window.formatWithCommas = function(x) {
     
     .package-option input[type="radio"]:checked + label {
         border-color: #4a90e2;
-        box-shadow: inset 0 0 0 2px rgba(74, 144, 226, 0.3);
+        box-shadow: 0 0 0 2px rgba(74, 144, 226, 0.3);
     }
     
     .package-header {
@@ -1788,151 +1788,98 @@ window.formatWithCommas = function(x) {
 }
 
 document.addEventListener('DOMContentLoaded', function() {
-    const bookingForm = document.getElementById('bookingForm');
-    
-    if (bookingForm) {
-        bookingForm.addEventListener('submit', async function(e) {
-            e.preventDefault();
+    const bookingOption = document.getElementById('bookingOption');
+    const option1Section = document.getElementById('option1Section');
+    const option2Section = document.getElementById('option2Section');
+    const totalPriceInput = document.getElementById('total_price');
+    const downPaymentInput = document.getElementById('down_payment');
+    const balanceInput = document.getElementById('balance');
+
+    // Function to reset all price fields
+    function resetPriceFields() {
+        if (totalPriceInput) totalPriceInput.value = '';
+        if (downPaymentInput) downPaymentInput.value = '';
+        if (balanceInput) balanceInput.value = '';
+    }
+
+    // Function to update grand total
+    window.updateGrandTotal = function() {
+        const totals = Array.from(document.querySelectorAll('tbody .total-cell'))
+            .map(cell => parseFloat(cell.textContent.replace('₱', '').replace(/,/g, '')) || 0);
+        const grandTotal = totals.reduce((sum, total) => sum + total, 0);
+        const downPayment = grandTotal * 0.5;
+
+        // Update display with formatted numbers
+        document.getElementById('grand-total').textContent = `₱${formatWithCommas(grandTotal.toFixed(2))}`;
+        
+        if (totalPriceInput) totalPriceInput.value = formatWithCommas(grandTotal.toFixed(2));
+        if (downPaymentInput) downPaymentInput.value = formatWithCommas(downPayment.toFixed(2));
+        if (balanceInput) balanceInput.value = formatWithCommas((grandTotal - downPayment).toFixed(2));
+    }
+
+    // Function to update custom price table
+    window.updateCustomPriceTable = function() {
+        const totals = Array.from(document.querySelectorAll('tbody .total-cell'))
+            .map(cell => parseFloat(cell.textContent.replace('₱', '').replace(/,/g, '')) || 0);
+        const grandTotal = totals.reduce((sum, total) => sum + total, 0);
+        const downPayment = grandTotal * 0.5;
+
+        if (totalPriceInput) totalPriceInput.value = formatWithCommas(grandTotal.toFixed(2));
+        if (downPaymentInput) downPaymentInput.value = formatWithCommas(downPayment.toFixed(2));
+        if (balanceInput) balanceInput.value = formatWithCommas((grandTotal - downPayment).toFixed(2));
+    }
+
+    if (bookingOption) {
+        bookingOption.addEventListener('change', function() {
+            resetPriceFields();
+
+            if (option1Section) option1Section.style.display = 'none';
+            if (option2Section) option2Section.style.display = 'none';
             
-            // Get form data
-            const formData = new FormData(this);
-            
-            // Validate required fields
-            const requiredFields = ['first_name', 'last_name', 'contact_number', 'email', 'date', 'start_time', 'end_time', 'payment_method'];
-            let isValid = true;
-            
-            requiredFields.forEach(field => {
-                if (!formData.get(field)) {
-                    isValid = false;
-                    const element = document.getElementById(field);
-                    if (element) {
-                        element.classList.add('is-invalid');
-                    }
-                }
-            });
-            
-            // Check if at least one entertainer is selected for option1
-            if (formData.get('bookingOption') === 'option1') {
-                const hasSelectedEntertainer = document.querySelector('input[name="entertainers[]"]:checked');
-                if (!hasSelectedEntertainer) {
-                    isValid = false;
-                    alert('Please select at least one entertainer');
-                    return;
-                }
-            }
-            
-            // Check if a package is selected for option2
-            if (formData.get('bookingOption') === 'option2') {
-                if (!formData.get('packageSelect')) {
-                    isValid = false;
-                    alert('Please select a package');
-                    return;
-                }
-            }
-            
-            if (!isValid) {
-                alert('Please fill in all required fields');
-                return;
-            }
-            
-            // Get payment method
-            const paymentMethod = formData.get('payment_method');
-            
-            // Get amount (remove commas and convert to centavos)
-            const downPaymentValue = document.getElementById('down_payment').value;
-            const amount = Math.round(parseFloat(downPaymentValue.replace(/,/g, '')) * 100); // Convert to centavos
-            
-            // Process based on payment method
-            if (paymentMethod === 'gcash' || paymentMethod === 'paymaya' || paymentMethod === 'paypal') {
-                try {
-                    // First, submit the booking data to create a booking record
-                    const bookingResponse = await fetch('process_booking.php', {
-                        method: 'POST',
-                        body: formData
-                    });
-                    
-                    const bookingResult = await bookingResponse.json();
-                    
-                    if (!bookingResult.success) {
-                        alert('Error creating booking: ' + bookingResult.message);
-                        return;
-                    }
-                    
-                    const bookingId = bookingResult.booking_id;
-                    
-                    // Initialize Magpie checkout
-                    const checkout = new MagpieCheckout({
-                        publicKey: '<?php echo MAGPIE_PUBLISHABLE_KEY; ?>',
-                        amount: amount,
-                        source: paymentMethod,
-                        onSuccess: function(data) {
-                            // Process payment with token
-                            processPayment(data.token, amount, bookingId);
-                        },
-                        onError: function(error) {
-                            console.error('Magpie checkout error:', error);
-                            alert('Payment error: ' + error.message);
-                        },
-                        onClose: function() {
-                            console.log('Checkout closed');
-                        }
-                    });
-                    
-                    // Open the checkout
-                    checkout.open();
-                    
-                } catch (error) {
-                    console.error('Error:', error);
-                    alert('An error occurred during the booking process. Please try again.');
-                }
-            } else {
-                alert('Please select a valid payment method');
+            // Clear any selected package radios
+            const packageRadios = document.querySelectorAll('input[name="packageSelect"]');
+            packageRadios.forEach(radio => radio.checked = false);
+
+            // Clear any selected entertainers and roles
+            const entertainerCheckboxes = document.querySelectorAll('input[name="entertainers[]"]');
+            entertainerCheckboxes.forEach(cb => cb.checked = false);
+
+            const roleCheckboxes = document.querySelectorAll('.role-checkbox input');
+            roleCheckboxes.forEach(cb => cb.checked = false);
+
+            // Clear custom price table
+            const customPriceTable = document.getElementById('custom_price_table');
+            if (customPriceTable) customPriceTable.innerHTML = '';
+
+            if (this.value === 'option1') {
+                if (option1Section) option1Section.style.display = 'block';
+            } else if (this.value === 'option2') {
+                if (option2Section) option2Section.style.display = 'block';
             }
         });
     }
-    
-    // Function to process payment with token
-    async function processPayment(token, amount, bookingId) {
-        try {
-            const firstName = document.getElementById('first_name').value;
-            const lastName = document.getElementById('last_name').value;
-            const email = document.getElementById('email').value;
-            
-            const paymentData = new FormData();
-            paymentData.append('token', token);
-            paymentData.append('amount', amount);
-            paymentData.append('booking_id', bookingId);
-            paymentData.append('first_name', firstName);
-            paymentData.append('last_name', lastName);
-            paymentData.append('email', email);
-            
-            const response = await fetch('process_magpie_payment.php', {
-                method: 'POST',
-                body: paymentData
-            });
-            
-            const result = await response.json();
-            
-            if (result.success) {
-                if (result.checkout_url) {
-                    // Redirect to the payment gateway for wallet payments
-                    window.location.href = result.checkout_url;
-                } else {
-                    // Payment successful
-                    alert('Payment successful!');
-                    window.location.href = 'booking-success.php?id=' + bookingId;
-                }
-            } else {
-                alert('Payment failed: ' + result.message);
-            }
-        } catch (error) {
-            console.error('Payment processing error:', error);
-            alert('An error occurred while processing your payment. Please try again.');
-        }
-    }
-});
-</script>
 
+    // Package selection handler
+    const packageRadios = document.querySelectorAll('input[name="packageSelect"]');
+    packageRadios.forEach(radio => {
+        radio.addEventListener('change', function() {
+            if (this.checked) {
+                const price = parseFloat(this.dataset.price);
+                const downPayment = price * 0.5;
+                if (totalPriceInput) totalPriceInput.value = formatWithCommas(price.toFixed(2));
+                if (downPaymentInput) downPaymentInput.value = formatWithCommas(downPayment.toFixed(2));
+                if (balanceInput) balanceInput.value = formatWithCommas((price - downPayment).toFixed(2));
+            }
+        });
+    });
+
+    // Add event listeners for custom price calculations
+    document.querySelectorAll('input[name="entertainers[]"], .role-checkbox input').forEach(input => {
+        input.addEventListener('change', function() {
+            updateCustomPriceTable();
+        });
+    });
+});</script>
                 <script>
                             // Dropdown functionality
         function toggleDropdown() {
@@ -2479,6 +2426,20 @@ document.addEventListener('DOMContentLoaded', function() {
         var v = this.value;
         document.getElementById('option1Section').style.display = v === 'option1' ? 'block' : 'none';
         document.getElementById('option2Section').style.display = v === 'option2' ? 'block' : 'none';
+    });
+</script>
+<script>
+    // Handle form submission via AJAX
+    document.getElementById('bookingForm').addEventListener('submit', function(event) {
+        event.preventDefault();
+        const formData = new FormData(this);
+        fetch('process_booking.php', {
+            method: 'POST',
+            body: formData
+        })
+        .then(response => response.json())
+        .then(data => console.log(data))
+        .catch(error => console.error('Error:', error));
     });
 </script>
 </html>
