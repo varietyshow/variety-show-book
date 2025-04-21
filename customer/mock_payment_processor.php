@@ -45,20 +45,8 @@ try {
     $payment_reference = 'PAY-' . uniqid();
     $charge_id = 'ch_' . uniqid();
     
-    // Build the checkout URL based on the payment method
-    switch ($payment_method) {
-        case 'gcash':
-            $checkout_url = "payment-confirmation.php?ref={$payment_reference}&method=gcash&booking_id={$booking_id}&charge_id={$charge_id}&status=success";
-            break;
-        case 'paymaya':
-            $checkout_url = "payment-confirmation.php?ref={$payment_reference}&method=paymaya&booking_id={$booking_id}&charge_id={$charge_id}&status=success";
-            break;
-        case 'paypal':
-            $checkout_url = "payment-confirmation.php?ref={$payment_reference}&method=paypal&booking_id={$booking_id}&charge_id={$charge_id}&status=success";
-            break;
-        default:
-            throw new Exception("Unsupported payment method: {$payment_method}");
-    }
+    // Build the checkout URL to the mock payment gateway
+    $checkout_url = "mock_payment_gateway.php?ref={$payment_reference}&method={$payment_method}&booking_id={$booking_id}&charge_id={$charge_id}";
     
     // Log the checkout URL for debugging
     error_log("Generated checkout URL: {$checkout_url}");
