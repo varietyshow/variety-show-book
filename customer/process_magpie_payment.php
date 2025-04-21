@@ -1,5 +1,5 @@
 <?php
-// Magpie Payment Processing Script (Token-based)
+// Magpie Payment Processing Script (Server-side Source Creation)
 
 require_once __DIR__ . '/../vendor/autoload.php';
 require_once '../config/magpie_config.php';
@@ -9,7 +9,7 @@ use MagpieApi\Magpie;
 header('Content-Type: application/json');
 
 // Validate required POST data
-$required = ['token', 'amount', 'booking_id', 'first_name', 'last_name', 'email'];
+$required = ['payment_method', 'amount', 'booking_id', 'first_name', 'last_name', 'email', 'contact_number'];
 foreach ($required as $field) {
     if (!isset($_POST[$field]) || empty($_POST[$field])) {
         http_response_code(400);
@@ -18,32 +18,47 @@ foreach ($required as $field) {
     }
 }
 
-$token = $_POST['token'];
+$payment_method = $_POST['payment_method'];
 $amount = intval($_POST['amount']); // amount in centavos
 $booking_id = $_POST['booking_id'];
 $first_name = $_POST['first_name'];
 $last_name = $_POST['last_name'];
 $email = $_POST['email'];
+$contact_number = $_POST['contact_number'];
 
 try {
     $magpie = new Magpie(MAGPIE_PUBLISHABLE_KEY, MAGPIE_SECRET_KEY, true); // true = sandbox
-    $charge = $magpie->charge->create(
-        $amount,
-        'php',
-        $token,
-        "Booking #$booking_id payment",
-        '', // statement_descriptor
-        true // capture
-    );
-    $result = $charge->getData();
-    $http_code = $charge->getHttpStatus();
-
+    
+    // Create a source for the payment
+    $source_data = [
+        'type' => $payment_method,
+        'amount' => $amount,
+        'currency' => 'PHP',
+        'redirect' => [
+            'success' => MAGPIE_SUCCESS_URL . '&booking_id=' . $booking_id,
+            'failed' => MAGPIE_FAILED_URL . '&booking_id=' . $booking_id
+        ],
+        'billing' => [
+            'name' => $first_name . ' ' . $last_name,
+            'email' => $email,
+            'phone' => $contact_number
+        ],
+        'metadata' => [
+            'booking_id' => $booking_id
+        ]
+    ];
+    
+    // Create the source
+    $source = $magpie->source->create($source_data);
+    $result = $source->getData();
+    $http_code = $source->getHttpStatus();
+    
     // Success: Look for redirect URL for wallet payment
-    if ($http_code === 201 && isset($result['source']['redirect']['checkout_url'])) {
+    if ($http_code === 201 && isset($result['redirect']['checkout_url'])) {
         echo json_encode([
             'success' => true,
-            'checkout_url' => $result['source']['redirect']['checkout_url'],
-            'charge_id' => $result['id']
+            'checkout_url' => $result['redirect']['checkout_url'],
+            'source_id' => $result['id']
         ]);
     } else {
         $error_message = isset($result['error']['message']) ? $result['error']['message'] : (isset($result['message']) ? $result['message'] : 'Unknown Magpie error');
