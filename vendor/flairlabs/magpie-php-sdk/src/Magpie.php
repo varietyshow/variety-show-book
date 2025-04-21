@@ -25,7 +25,7 @@ class Magpie
         $this->isSandbox = $isSandbox;
         $this->version = $version;
         $this->token = new Token($this->isSandbox, $this->pkKey);
-        $this->charge = new Charge($this->isSandbox, $this->skKey, $this->version);
+        $this->charge = new Charge($this->version, $this->isSandbox, $this->skKey);
         $this->customer = new Customer($this->isSandbox, $this->skKey);
     }
 
@@ -53,14 +53,11 @@ class Magpie
                 }
 
                 $this->version = $value;
-                $this->charge->version = $this->value;
+                $this->charge->version = $value;
         }
     }
 
     public function __get($name) {
-        if ($name === 'token') {
-            return $this->token;
-        }
         switch($name) {
             case 'token':
                 return $this->token;
@@ -71,6 +68,8 @@ class Magpie
             case 'customer':
                 return $this->customer;
                 break;
+            default:
+                return null;
         }
     }
 }
