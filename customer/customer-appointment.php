@@ -10,10 +10,10 @@ if (!isset($_SESSION['first_name'])) {
 $first_name = htmlspecialchars($_SESSION['first_name']); // Retrieve and sanitize the first_name
 
 // Database connection
-$servername = "sql12.freesqldatabase.com"; // Update with your server name
-$username = "sql12774230"; // Update with your database username
-$password = "ytPEFx33BF"; // Update with your database password
-$dbname = "sql12774230"; // Update with your database name
+$servername = "localhost"; // Update with your server name
+$username = "root"; // Update with your database username
+$password = ""; // Update with your database password
+$dbname = "db_booking_system"; // Update with your database name
 
 $conn = new mysqli($servername, $username, $password, $dbname);
 
@@ -404,70 +404,64 @@ if (isset($_SESSION['message'])) {
 
         .pagination {
             display: flex;
-            justify-content: space-between;
+            justify-content: center;
             align-items: center;
+            margin-top: 20px;
+            flex-wrap: wrap;
+            gap: 8px;
         }
 
-        .pagination select {
-            padding: 5px;
-            border: 1px solid #ccc;
+        .pagination a, .pagination span {
+            display: inline-flex;
+            justify-content: center;
+            align-items: center;
+            min-width: 32px;
+            height: 32px;
+            padding: 0 10px;
             border-radius: 4px;
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 14px;
+            transition: all 0.3s ease;
         }
 
-        .pagination span {
-            color: #888;
+        .pagination a {
+            background-color: #f0f0f0;
+            color: #333;
+            border: 1px solid #ddd;
         }
 
-        .pagination-controls {
-            display: flex;
-            gap: 5px;
+        .pagination a:hover {
+            background-color: #4a90e2;
+            color: white;
+            border-color: #4a90e2;
         }
 
-        .pagination-controls img {
-            width: 20px;
-            height: 20px;
-            cursor: pointer;
+        .pagination span.active {
+            background-color: #4a90e2;
+            color: white;
+            border: 1px solid #4a90e2;
         }
 
-        /* Responsive Styles */
+        .pagination span.disabled {
+            background-color: #f5f5f5;
+            color: #aaa;
+            cursor: not-allowed;
+            border: 1px solid #eee;
+        }
+
         @media (max-width: 768px) {
-            .sidebar {
-                width: 100%;
-                height: auto;
-                position: relative;
-            }
-
-            .header {
-                width: 100%;
-                left: 0;
-            }
-
-            .content {
-                margin-left: 0;
-                padding-top: 60px; /* Adjust padding for smaller screens */
-                padding: 10px; /* Add padding to the content */
-            }
-
-            .schedule-container {
-                width: 100%; /* Full width for small screens */
-                padding: 10px; /* Adjust padding */
-            }
-
-            .schedule-header input[type="text"] {
-                width: 100%; /* Full width input for smaller screens */
-            }
-
             .pagination {
-                flex-direction: row; /* Stack pagination controls vertically */
-                align-items: flex-start;
+                gap: 5px;
             }
-
-            .pagination-controls {
-                width: 100%;
-                justify-content: space-between; /* Space out controls */
+            
+            .pagination a, .pagination span {
+                min-width: 28px;
+                height: 28px;
+                font-size: 12px;
+                padding: 0 8px;
             }
         }
-
 
         .button-group {
             display: flex;
@@ -1105,39 +1099,38 @@ if (isset($_SESSION['message'])) {
                 <?php endif; ?>
                 </tbody>
             </table>
-        </div>
-
-        <!-- Pagination controls -->
-        <div class="pagination">
-            <?php if($total_pages > 1): ?>
-                <?php if($page > 1): ?>
-                    <a href="?page=1">&laquo; First</a>
-                    <a href="?page=<?php echo $page-1; ?>">&lsaquo; Prev</a>
-                <?php else: ?>
-                    <span class="disabled">&laquo; First</span>
-                    <span class="disabled">&lsaquo; Prev</span>
-                <?php endif; ?>
-
-                <?php
-                $start_page = max(1, $page - 2);
-                $end_page = min($total_pages, $page + 2);
-                
-                for($i = $start_page; $i <= $end_page; $i++): ?>
-                    <?php if($i == $page): ?>
-                        <span class="active"><?php echo $i; ?></span>
+            <!-- Pagination controls -->
+            <div class="pagination">
+                <?php if($total_pages > 1): ?>
+                    <?php if($page > 1): ?>
+                        <a href="?page=1">&laquo; First</a>
+                        <a href="?page=<?php echo $page-1; ?>">&lsaquo; Prev</a>
                     <?php else: ?>
-                        <a href="?page=<?php echo $i; ?>"><?php echo $i; ?></a>
+                        <span class="disabled">&laquo; First</span>
+                        <span class="disabled">&lsaquo; Prev</span>
                     <?php endif; ?>
-                <?php endfor; ?>
 
-                <?php if($page < $total_pages): ?>
-                    <a href="?page=<?php echo $page+1; ?>">Next &rsaquo;</a>
-                    <a href="?page=<?php echo $total_pages; ?>">Last &raquo;</a>
-                <?php else: ?>
-                    <span class="disabled">Next &rsaquo;</span>
-                    <span class="disabled">Last &raquo;</span>
+                    <?php
+                    $start_page = max(1, $page - 2);
+                    $end_page = min($total_pages, $page + 2);
+                    
+                    for($i = $start_page; $i <= $end_page; $i++): ?>
+                        <?php if($i == $page): ?>
+                            <span class="active"><?php echo $i; ?></span>
+                        <?php else: ?>
+                            <a href="?page=<?php echo $i; ?>"><?php echo $i; ?></a>
+                        <?php endif; ?>
+                    <?php endfor; ?>
+
+                    <?php if($page < $total_pages): ?>
+                        <a href="?page=<?php echo $page+1; ?>">Next &rsaquo;</a>
+                        <a href="?page=<?php echo $total_pages; ?>">Last &raquo;</a>
+                    <?php else: ?>
+                        <span class="disabled">Next &rsaquo;</span>
+                        <span class="disabled">Last &raquo;</span>
+                    <?php endif; ?>
                 <?php endif; ?>
-            <?php endif; ?>
+            </div>
         </div>
     </div>
 
