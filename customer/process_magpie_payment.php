@@ -52,12 +52,18 @@ try {
     try {
         if ($payment_method === 'gcash') {
             // Use PayMongo API for GCash
-            // Convert amount from PHP to cents for PayMongo
-            $amount_in_php = $amount / 100; // Convert from centavos to PHP
+            // Convert amount from centavos to PHP if needed
+            $amount_in_php = $amount;
+            if ($amount > 1000) { // If amount seems to be in centavos (e.g., 10000 for PHP 100)
+                $amount_in_php = $amount / 100;
+            }
             
             // Build success and failed URLs with parameters
             $success_url = PAYMONGO_SUCCESS_URL . "&booking_id={$booking_id}&ref={$payment_reference}&method={$payment_method}";
             $failed_url = PAYMONGO_FAILED_URL . "&booking_id={$booking_id}&ref={$payment_reference}&method={$payment_method}";
+            
+            // Log the amount conversion
+            error_log("Amount conversion: original={$amount}, converted={$amount_in_php}");
             
             $source_response = createGCashSource(
                 $amount_in_php,
@@ -85,10 +91,20 @@ try {
                     'amount' => $amount_in_php,
                     'checkout_url' => $checkout_url
                 ]);
+                
+                error_log("SUCCESS: GCash source created. Redirecting to: {$checkout_url}");
             } else {
                 // Log error and throw exception
                 logPayMongoActivity("Failed to create GCash source", $source_response);
-                throw new Exception("Failed to create payment source. Please try again.");
+                
+                if (isset($source_response['errors'])) {
+                    $error_details = json_encode($source_response['errors']);
+                    error_log("PayMongo API Error: {$error_details}");
+                    throw new Exception("Failed to create payment source: {$error_details}");
+                } else {
+                    error_log("Unknown PayMongo API Error: " . json_encode($source_response));
+                    throw new Exception("Failed to create payment source. Please try again.");
+                }
             }
         } else {
             // For other payment methods, use the mock payment gateway
