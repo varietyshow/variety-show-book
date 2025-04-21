@@ -1,5 +1,5 @@
 <?php
-// Magpie Payment Processing Script
+// Payment Processing Script with PayMongo Integration
 
 // Disable error display
 ini_set('display_errors', 0);
@@ -14,9 +14,7 @@ try {
     
     // Include required files
     require_once 'db_connect.php';
-    require_once __DIR__ . '/../vendor/autoload.php';
-    require_once __DIR__ . '/../config/magpie_config.php';
-    require_once __DIR__ . '/../config/paymongo_config.php';
+    require_once dirname(__DIR__) . '/config/paymongo_config.php';
     require_once 'paymongo_integration.php';
     
     // Validate required POST data
@@ -35,120 +33,71 @@ try {
 
     // Get POST data
     $payment_method = $_POST['payment_method'];
-    $amount = intval($_POST['amount']); 
+    $amount = floatval($_POST['amount']);
     $booking_id = $_POST['booking_id'];
     $first_name = $_POST['first_name'];
     $last_name = $_POST['last_name'];
     $email = $_POST['email'];
     $contact_number = $_POST['contact_number'];
+    $customer_name = $first_name . ' ' . $last_name;
 
     // Log the request data for debugging
     error_log("Payment request received: method={$payment_method}, amount={$amount}, booking_id={$booking_id}");
     
-    // Create a unique reference for this payment
+    // Create a unique reference and charge ID for this payment
     $payment_reference = 'PAY-' . uniqid();
     $charge_id = 'ch_' . uniqid();
     
-    // Initialize Magpie with test keys
+    // Process payment based on payment method
     try {
-        $magpie = new Magpie(MAGPIE_PUBLISHABLE_KEY, MAGPIE_SECRET_KEY, true, 'v1'); // true = sandbox mode
-        
-        // Try to create a payment source with Magpie API
-        switch ($payment_method) {
-            case 'gcash':
-                // Use PayMongo API for GCash
-                $source_response = createGCashSource(
-                    $amount / 100, // Convert from centavos to PHP
-                    $first_name . ' ' . $last_name,
-                    $email,
-                    $contact_number,
-                    PAYMONGO_SUCCESS_URL . "&booking_id={$booking_id}&ref={$payment_reference}&method={$payment_method}",
-                    PAYMONGO_FAILED_URL . "&booking_id={$booking_id}&ref={$payment_reference}&method={$payment_method}",
-                    $payment_reference
-                );
+        if ($payment_method === 'gcash') {
+            // Use PayMongo API for GCash
+            // Convert amount from PHP to cents for PayMongo
+            $amount_in_php = $amount / 100; // Convert from centavos to PHP
+            
+            // Build success and failed URLs with parameters
+            $success_url = PAYMONGO_SUCCESS_URL . "&booking_id={$booking_id}&ref={$payment_reference}&method={$payment_method}";
+            $failed_url = PAYMONGO_FAILED_URL . "&booking_id={$booking_id}&ref={$payment_reference}&method={$payment_method}";
+            
+            $source_response = createGCashSource(
+                $amount_in_php,
+                $customer_name,
+                $email,
+                $contact_number,
+                $success_url,
+                $failed_url,
+                $payment_reference
+            );
+            
+            // Log the full response for debugging
+            error_log("PayMongo response: " . json_encode($source_response));
+            
+            // Check if source creation was successful
+            if (isset($source_response['data']) && isset($source_response['data']['id'])) {
+                $source_id = $source_response['data']['id'];
+                $checkout_url = $source_response['data']['attributes']['redirect']['checkout_url'];
+                $charge_id = $source_id; // Use source ID as charge ID
                 
-                // Check if source creation was successful
-                if (isset($source_response['data']) && isset($source_response['data']['id'])) {
-                    $source_id = $source_response['data']['id'];
-                    $checkout_url = $source_response['data']['attributes']['redirect']['checkout_url'];
-                    $charge_id = $source_id; // Use source ID as charge ID
-                    
-                    // Log successful source creation
-                    logPayMongoActivity("GCash source created successfully", [
-                        'source_id' => $source_id,
-                        'booking_id' => $booking_id,
-                        'amount' => $amount
-                    ]);
-                } else {
-                    // Log error and throw exception
-                    logPayMongoActivity("Failed to create GCash source", $source_response);
-                    throw new Exception("Failed to create payment source. Please try again.");
-                }
-                break;
-                
-            case 'paymaya':
-                // Create a PayMaya payment source using Magpie's API
-                $response = $magpie->charge->create(
-                    $amount,                   // Amount in centavos
-                    'PHP',                     // Currency
-                    'source_paymaya',          // Source type for PayMaya
-                    "Booking ID: {$booking_id}", // Description
-                    "Variety Show Booking",    // Statement descriptor
-                    false                      // Don't capture immediately
-                );
-                
-                if ($response->isSuccess()) {
-                    $responseData = $response->getData();
-                    $checkout_url = $responseData['redirect']['checkout_url'];
-                    $charge_id = $responseData['id'];
-                    error_log("PayMaya source created successfully: " . json_encode($responseData));
-                } else {
-                    throw new Exception("Failed to create PayMaya source: " . $response->getMessage());
-                }
-                break;
-                
-            case 'paypal':
-                // Create a PayPal payment source using Magpie's API
-                $response = $magpie->charge->create(
-                    $amount,                   // Amount in centavos
-                    'PHP',                     // Currency
-                    'source_paypal',           // Source type for PayPal
-                    "Booking ID: {$booking_id}", // Description
-                    "Variety Show Booking",    // Statement descriptor
-                    false                      // Don't capture immediately
-                );
-                
-                if ($response->isSuccess()) {
-                    $responseData = $response->getData();
-                    $checkout_url = $responseData['redirect']['checkout_url'];
-                    $charge_id = $responseData['id'];
-                    error_log("PayPal source created successfully: " . json_encode($responseData));
-                } else {
-                    throw new Exception("Failed to create PayPal source: " . $response->getMessage());
-                }
-                break;
-                
-            default:
-                throw new Exception("Unsupported payment method: {$payment_method}");
+                // Log successful source creation
+                logPayMongoActivity("GCash source created successfully", [
+                    'source_id' => $source_id,
+                    'booking_id' => $booking_id,
+                    'amount' => $amount_in_php,
+                    'checkout_url' => $checkout_url
+                ]);
+            } else {
+                // Log error and throw exception
+                logPayMongoActivity("Failed to create GCash source", $source_response);
+                throw new Exception("Failed to create payment source. Please try again.");
+            }
+        } else {
+            // For other payment methods, use the mock payment gateway
+            $checkout_url = "mock_payment_gateway.php?ref={$payment_reference}&method={$payment_method}&booking_id={$booking_id}&charge_id={$charge_id}";
         }
     } catch (Exception $e) {
-        // If Magpie API fails, fall back to mock implementation
-        error_log("Magpie API error, falling back to mock implementation: " . $e->getMessage());
-        
-        // Build the checkout URL based on the payment method
-        switch ($payment_method) {
-            case 'gcash':
-                $checkout_url = "payment-confirmation.php?ref={$payment_reference}&method=gcash&booking_id={$booking_id}&charge_id={$charge_id}&status=success";
-                break;
-            case 'paymaya':
-                $checkout_url = "payment-confirmation.php?ref={$payment_reference}&method=paymaya&booking_id={$booking_id}&charge_id={$charge_id}&status=success";
-                break;
-            case 'paypal':
-                $checkout_url = "payment-confirmation.php?ref={$payment_reference}&method=paypal&booking_id={$booking_id}&charge_id={$charge_id}&status=success";
-                break;
-            default:
-                throw new Exception("Unsupported payment method: {$payment_method}");
-        }
+        // If PayMongo API fails, fall back to mock payment gateway
+        error_log("PayMongo API error, falling back to mock implementation: " . $e->getMessage());
+        $checkout_url = "mock_payment_gateway.php?ref={$payment_reference}&method={$payment_method}&booking_id={$booking_id}&charge_id={$charge_id}";
     }
     
     // Log the checkout URL for debugging
@@ -166,7 +115,9 @@ try {
     }
     
     // Clear any output buffer before sending JSON response
-    ob_clean();
+    while (ob_get_level()) {
+        ob_end_clean();
+    }
     
     // Return success response with checkout URL
     echo json_encode([
@@ -178,7 +129,9 @@ try {
     
 } catch (Exception $e) {
     // Clear any output buffer
-    ob_clean();
+    while (ob_get_level()) {
+        ob_end_clean();
+    }
     
     // Log the error
     error_log("Payment processing error: " . $e->getMessage());
@@ -189,6 +142,3 @@ try {
         'message' => 'Payment processing error: ' . $e->getMessage()
     ]);
 }
-
-// End output buffering
-ob_end_flush();
