@@ -9,14 +9,20 @@ error_reporting(E_ALL);
 ob_start();
 
 try {
+    // Make sure no output has been sent before setting headers
+    if (headers_sent($file, $line)) {
+        throw new Exception("Headers already sent in $file on line $line");
+    }
+    
+    // Set JSON content type header
+    header('Content-Type: application/json');
+    
     require_once __DIR__ . '/../vendor/autoload.php';
     require_once __DIR__ . '/../config/magpie_config.php';
     require_once 'db_connect.php';
 
     // Use the Magpie SDK
     use MagpieApi\Magpie;
-
-    header('Content-Type: application/json');
 
     // Validate required POST data
     $required = ['payment_method', 'amount', 'booking_id', 'first_name', 'last_name', 'email', 'contact_number'];
@@ -141,6 +147,9 @@ try {
         error_log("Could not insert payment transaction: " . $e->getMessage());
     }
     
+    // Clear any output buffer before sending JSON response
+    ob_clean();
+    
     // Return success response with checkout URL
     echo json_encode([
         'success' => true,
@@ -158,10 +167,16 @@ try {
     error_log("Stack trace: " . $e->getTraceAsString());
     
     // Return JSON error response
-    header('Content-Type: application/json');
-    http_response_code(500);
-    echo json_encode(['success' => false, 'message' => 'Payment processing error: ' . $e->getMessage()]);
+    if (!headers_sent()) {
+        header('Content-Type: application/json');
+        http_response_code(500);
+    }
+    
+    echo json_encode([
+        'success' => false, 
+        'message' => 'Payment processing error: ' . $e->getMessage()
+    ]);
 }
 
-// End output buffering and discard any unexpected output
+// End output buffering
 ob_end_flush();
