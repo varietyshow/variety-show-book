@@ -58,9 +58,8 @@ sort($provinces); // Sort provinces alphabetically
     <link rel="stylesheet" href="style2.css">
     <link rel="stylesheet" href="cardstyle.css">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <!-- Magpie Checkout.js (local copy) -->
-    <!-- Download from https://checkout.magpie.im/v2/checkout.js and save to customer/js/checkout.js -->
-    <script defer src="js/checkout.js"></script>
+    <!-- Magpie Checkout.js from CDN -->
+    <script src="https://checkout.magpie.im/v2/checkout.js"></script>
     
 </head>
 <style>
@@ -2455,7 +2454,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 
                 if (paymentMethod === 'gcash' || paymentMethod === 'paymaya' || paymentMethod === 'paypal') {
                     // Initialize Magpie checkout
-                    const checkout = new Checkout({
+                    const magpieCheckout = MagpieCheckout.init({
                         publicKey: 'pk_test_vRWJzWnMgUVXm5Juc2BpFbxj', // Replace with your actual Magpie public key
                         amount: parseFloat(document.getElementById('down_payment').value.replace(/,/g, '')),
                         currency: 'PHP',
@@ -2472,7 +2471,7 @@ document.addEventListener('DOMContentLoaded', function() {
                             quantity: 1,
                             amount: parseFloat(document.getElementById('down_payment').value.replace(/,/g, ''))
                         }],
-                        onCheckoutComplete: function(response) {
+                        onSuccess: function(response) {
                             // Process the payment with the token
                             const paymentData = new FormData();
                             paymentData.append('token', response.id);
@@ -2504,15 +2503,20 @@ document.addEventListener('DOMContentLoaded', function() {
                                 submitBtn.innerHTML = originalBtnText;
                             });
                         },
-                        onCheckoutFail: function(error) {
+                        onError: function(error) {
                             console.error('Checkout failed:', error);
                             alert('Payment checkout failed: ' + error.message);
+                            submitBtn.disabled = false;
+                            submitBtn.innerHTML = originalBtnText;
+                        },
+                        onCancel: function() {
+                            console.log('Checkout cancelled');
                             submitBtn.disabled = false;
                             submitBtn.innerHTML = originalBtnText;
                         }
                     });
                     
-                    checkout.open();
+                    magpieCheckout.open();
                 } else {
                     // Redirect to a success page for other payment methods
                     window.location.href = 'booking-success.php?id=' + data.booking_id;
