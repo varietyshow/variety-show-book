@@ -2464,11 +2464,16 @@ document.addEventListener('DOMContentLoaded', function() {
                     paymentData.append('contact_number', document.getElementById('contact_number').value);
                     
                     // Process payment server-side and get redirect URL
-                    fetch('process_magpie_payment.php', {
+                    fetch('mock_payment_processor.php', {
                         method: 'POST',
                         body: paymentData
                     })
-                    .then(response => response.json())
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error('Network response was not ok: ' + response.status);
+                        }
+                        return response.json();
+                    })
                     .then(paymentResult => {
                         if (paymentResult.success && paymentResult.checkout_url) {
                             // Redirect to checkout URL
