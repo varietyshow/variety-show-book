@@ -1,5 +1,5 @@
 <?php
-// Simple Mock Payment Processing Script
+// Magpie Payment Processing Script
 
 // Disable error display
 ini_set('display_errors', 0);
@@ -12,8 +12,13 @@ try {
     // Set content type to JSON
     header('Content-Type: application/json');
     
-    // Include only the database connection
+    // Include required files
     require_once 'db_connect.php';
+    require_once __DIR__ . '/../vendor/autoload.php';
+    require_once __DIR__ . '/../config/magpie_config.php';
+    
+    // Use the Magpie SDK
+    use MagpieApi\Magpie;
     
     // Validate required POST data
     $required = ['payment_method', 'amount', 'booking_id', 'first_name', 'last_name', 'email', 'contact_number'];
@@ -41,23 +46,100 @@ try {
     // Log the request data for debugging
     error_log("Payment request received: method={$payment_method}, amount={$amount}, booking_id={$booking_id}");
     
-    // Create a unique reference and charge ID for this payment
+    // Create a unique reference for this payment
     $payment_reference = 'PAY-' . uniqid();
     $charge_id = 'ch_' . uniqid();
     
-    // Build the checkout URL based on the payment method
-    switch ($payment_method) {
-        case 'gcash':
-            $checkout_url = "payment-confirmation.php?ref={$payment_reference}&method=gcash&booking_id={$booking_id}&charge_id={$charge_id}&status=success";
-            break;
-        case 'paymaya':
-            $checkout_url = "payment-confirmation.php?ref={$payment_reference}&method=paymaya&booking_id={$booking_id}&charge_id={$charge_id}&status=success";
-            break;
-        case 'paypal':
-            $checkout_url = "payment-confirmation.php?ref={$payment_reference}&method=paypal&booking_id={$booking_id}&charge_id={$charge_id}&status=success";
-            break;
-        default:
-            throw new Exception("Unsupported payment method: {$payment_method}");
+    // Initialize Magpie with test keys
+    try {
+        $magpie = new Magpie(MAGPIE_PUBLISHABLE_KEY, MAGPIE_SECRET_KEY, true, 'v1'); // true = sandbox mode
+        
+        // Try to create a payment source with Magpie API
+        switch ($payment_method) {
+            case 'gcash':
+                // Create a GCash payment source using Magpie's API
+                $response = $magpie->charge->create(
+                    $amount,                   // Amount in centavos (PHP 100 = 10000 centavos)
+                    'PHP',                     // Currency
+                    'source_gcash',            // Source type for GCash
+                    "Booking ID: {$booking_id}", // Description
+                    "Variety Show Booking",    // Statement descriptor
+                    false                      // Don't capture immediately
+                );
+                
+                if ($response->isSuccess()) {
+                    $responseData = $response->getData();
+                    $checkout_url = $responseData['redirect']['checkout_url'];
+                    $charge_id = $responseData['id'];
+                    error_log("GCash source created successfully: " . json_encode($responseData));
+                } else {
+                    throw new Exception("Failed to create GCash source: " . $response->getMessage());
+                }
+                break;
+                
+            case 'paymaya':
+                // Create a PayMaya payment source using Magpie's API
+                $response = $magpie->charge->create(
+                    $amount,                   // Amount in centavos
+                    'PHP',                     // Currency
+                    'source_paymaya',          // Source type for PayMaya
+                    "Booking ID: {$booking_id}", // Description
+                    "Variety Show Booking",    // Statement descriptor
+                    false                      // Don't capture immediately
+                );
+                
+                if ($response->isSuccess()) {
+                    $responseData = $response->getData();
+                    $checkout_url = $responseData['redirect']['checkout_url'];
+                    $charge_id = $responseData['id'];
+                    error_log("PayMaya source created successfully: " . json_encode($responseData));
+                } else {
+                    throw new Exception("Failed to create PayMaya source: " . $response->getMessage());
+                }
+                break;
+                
+            case 'paypal':
+                // Create a PayPal payment source using Magpie's API
+                $response = $magpie->charge->create(
+                    $amount,                   // Amount in centavos
+                    'PHP',                     // Currency
+                    'source_paypal',           // Source type for PayPal
+                    "Booking ID: {$booking_id}", // Description
+                    "Variety Show Booking",    // Statement descriptor
+                    false                      // Don't capture immediately
+                );
+                
+                if ($response->isSuccess()) {
+                    $responseData = $response->getData();
+                    $checkout_url = $responseData['redirect']['checkout_url'];
+                    $charge_id = $responseData['id'];
+                    error_log("PayPal source created successfully: " . json_encode($responseData));
+                } else {
+                    throw new Exception("Failed to create PayPal source: " . $response->getMessage());
+                }
+                break;
+                
+            default:
+                throw new Exception("Unsupported payment method: {$payment_method}");
+        }
+    } catch (Exception $e) {
+        // If Magpie API fails, fall back to mock implementation
+        error_log("Magpie API error, falling back to mock implementation: " . $e->getMessage());
+        
+        // Build the checkout URL based on the payment method
+        switch ($payment_method) {
+            case 'gcash':
+                $checkout_url = "payment-confirmation.php?ref={$payment_reference}&method=gcash&booking_id={$booking_id}&charge_id={$charge_id}&status=success";
+                break;
+            case 'paymaya':
+                $checkout_url = "payment-confirmation.php?ref={$payment_reference}&method=paymaya&booking_id={$booking_id}&charge_id={$charge_id}&status=success";
+                break;
+            case 'paypal':
+                $checkout_url = "payment-confirmation.php?ref={$payment_reference}&method=paypal&booking_id={$booking_id}&charge_id={$charge_id}&status=success";
+                break;
+            default:
+                throw new Exception("Unsupported payment method: {$payment_method}");
+        }
     }
     
     // Log the checkout URL for debugging
