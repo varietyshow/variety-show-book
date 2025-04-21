@@ -21,12 +21,12 @@ class Charge
      * @param bool   $isSandbox Determines if the API will use sandbox URL or production URL (optional)
      * @param string $key       The authorization key to be used for calling endpoints (optional)
      */
-    public function __construct($version, $isSandbox = false, $key = null)
+    public function __construct($version = 'v1', $isSandbox = false, $key = null)
     {
+        $this->version = $version;
         $this->isSandbox = $isSandbox;
         $this->request = new Request($this->isSandbox);
         $this->key = $key;
-        $this->version = $version;
     }
 
     public function __set($name, $value)
