@@ -1336,6 +1336,13 @@ sort($provinces); // Sort provinces alphabetically
 </style>
 
 <body>
+<script>
+// Define formatWithCommas as a global function (must be at the top for all scripts to use)
+window.formatWithCommas = function(x) {
+    if (typeof x === 'number') x = x.toString();
+    return x.replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+}
+</script>
 <header>
         <a class="navbar-brand" href="#">
             <img src="../images/logo.jpg" alt="Brand Logo">
@@ -1775,8 +1782,9 @@ sort($provinces); // Sort provinces alphabetically
 <!-- Add this JavaScript code at the end of your file -->
 <script>
 // Define formatWithCommas as a global function
-function formatWithCommas(number) {
-    return number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+window.formatWithCommas = function(x) {
+    if (typeof x === 'number') x = x.toString();
+    return x.replace(/\B(?=(\d{3})+(?!\d))/g, ",");
 }
 
 document.addEventListener('DOMContentLoaded', function() {
@@ -1789,9 +1797,9 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Function to reset all price fields
     function resetPriceFields() {
-        if (totalPriceInput) totalPriceInput.value = '0.00';
-        if (downPaymentInput) downPaymentInput.value = '0.00';
-        if (balanceInput) balanceInput.value = '0.00';
+        if (totalPriceInput) totalPriceInput.value = '';
+        if (downPaymentInput) downPaymentInput.value = '';
+        if (balanceInput) balanceInput.value = '';
     }
 
     // Function to update grand total
@@ -1856,17 +1864,11 @@ document.addEventListener('DOMContentLoaded', function() {
     packageRadios.forEach(radio => {
         radio.addEventListener('change', function() {
             if (this.checked) {
-                const price = parseFloat(this.getAttribute('data-price'));
+                const price = parseFloat(this.dataset.price);
                 const downPayment = price * 0.5;
-                
-                if (totalPriceInput) totalPriceInput.value = price.toFixed(2);
-                
-                // Calculate and set 50% down payment
-                const downPayment = price * 0.5;
-
-                // Update display with formatted numbers
-                document.getElementById('down_payment').value = formatWithCommas(downPayment.toFixed(2));
-                document.getElementById('balance').value = formatWithCommas((price - downPayment).toFixed(2));
+                if (totalPriceInput) totalPriceInput.value = formatWithCommas(price.toFixed(2));
+                if (downPaymentInput) downPaymentInput.value = formatWithCommas(downPayment.toFixed(2));
+                if (balanceInput) balanceInput.value = formatWithCommas((price - downPayment).toFixed(2));
             }
         });
     });
@@ -1914,10 +1916,14 @@ document.addEventListener('DOMContentLoaded', function() {
 
                     // Add event listeners
                     document.querySelectorAll('input[name="entertainers[]"]').forEach(cb => {
-                        cb.addEventListener('change', updateDisplay);
+                        cb.addEventListener('change', function() {
+                            // Toggle role section
+                            const section = document.getElementById('roles-' + this.value);
+                            if (section) section.style.display = this.checked ? 'block' : 'none';
+                            updateDisplay();
+                        });
                     });
-
-                    // Initial update
+                    // Run on page load in case of pre-checked boxes (e.g. after validation error)
                     updateDisplay();
 
                     // Debug log to verify initialization
@@ -2316,6 +2322,27 @@ document.addEventListener('DOMContentLoaded', function() {
                     } else {
                         this.setCustomValidity('');
                     }
+                });
+            </script>
+
+            <script>
+                document.addEventListener('DOMContentLoaded', function() {
+                    const entertainerCheckboxes = document.querySelectorAll('input[name="entertainers[]"]');
+                    function updateNoEntertainerMessage() {
+                        const noMsg = document.getElementById('no-entertainer-message');
+                        const anyChecked = Array.from(entertainerCheckboxes).some(c => c.checked);
+                        if (noMsg) noMsg.style.display = anyChecked ? 'none' : 'block';
+                    }
+                    entertainerCheckboxes.forEach(function(cb) {
+                        cb.addEventListener('change', function() {
+                            // Toggle role section
+                            const section = document.getElementById('roles-' + this.value);
+                            if (section) section.style.display = this.checked ? 'block' : 'none';
+                            updateNoEntertainerMessage();
+                        });
+                    });
+                    // Run on page load in case of pre-checked boxes (e.g. after validation error)
+                    updateNoEntertainerMessage();
                 });
             </script>
 
