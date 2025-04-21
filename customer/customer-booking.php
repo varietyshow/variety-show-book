@@ -2487,7 +2487,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     });
                 } else {
                     // Redirect to a success page for other payment methods
-                    window.location.href = 'booking-success.php?id=' + data.booking_id;
+                    window.location.href = 'payment-confirmation.php?booking_id=' + data.booking_id + '&status=success';
                 }
             } else {
                 console.error('Booking error:', data);
