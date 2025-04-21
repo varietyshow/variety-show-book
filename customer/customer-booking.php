@@ -2393,4 +2393,12 @@ document.addEventListener('DOMContentLoaded', function() {
 </body>
 <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    // Toggle booking option sections
+    document.getElementById('bookingOption').addEventListener('change', function() {
+        var v = this.value;
+        document.getElementById('option1Section').style.display = v === 'option1' ? 'block' : 'none';
+        document.getElementById('option2Section').style.display = v === 'option2' ? 'block' : 'none';
+    });
+</script>
 </html>
