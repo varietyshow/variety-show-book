@@ -35,17 +35,18 @@ try {
     
     // Create a unique reference for this payment
     $payment_reference = 'PAY-' . uniqid();
+    $mock_charge_id = 'ch_' . uniqid();
     
     // Build the checkout URL based on the payment method
     switch ($payment_method) {
         case 'gcash':
-            $checkout_url = "https://variety-show-book-2.onrender.com/customer/payment-confirmation.php?ref={$payment_reference}&method=gcash&booking_id={$booking_id}";
+            $checkout_url = "https://variety-show-book-2.onrender.com/customer/payment-confirmation.php?ref={$payment_reference}&method=gcash&booking_id={$booking_id}&charge_id={$mock_charge_id}";
             break;
         case 'paymaya':
-            $checkout_url = "https://variety-show-book-2.onrender.com/customer/payment-confirmation.php?ref={$payment_reference}&method=paymaya&booking_id={$booking_id}";
+            $checkout_url = "https://variety-show-book-2.onrender.com/customer/payment-confirmation.php?ref={$payment_reference}&method=paymaya&booking_id={$booking_id}&charge_id={$mock_charge_id}";
             break;
         case 'paypal':
-            $checkout_url = "https://variety-show-book-2.onrender.com/customer/payment-confirmation.php?ref={$payment_reference}&method=paypal&booking_id={$booking_id}";
+            $checkout_url = "https://variety-show-book-2.onrender.com/customer/payment-confirmation.php?ref={$payment_reference}&method=paypal&booking_id={$booking_id}&charge_id={$mock_charge_id}";
             break;
         default:
             throw new Exception("Unsupported payment method: {$payment_method}");
@@ -58,7 +59,8 @@ try {
     echo json_encode([
         'success' => true,
         'checkout_url' => $checkout_url,
-        'payment_reference' => $payment_reference
+        'payment_reference' => $payment_reference,
+        'charge_id' => $mock_charge_id
     ]);
     
 } catch (Exception $e) {
