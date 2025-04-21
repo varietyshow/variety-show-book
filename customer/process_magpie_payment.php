@@ -1,5 +1,5 @@
 <?php
-// Magpie Payment Processing Script (Server-side Source Creation)
+// Simple Payment Processing Script (Mock Implementation)
 
 // Ensure no HTML errors are output
 ini_set('display_errors', 0);
@@ -9,11 +9,6 @@ error_reporting(E_ALL);
 ob_start();
 
 try {
-    require_once __DIR__ . '/../vendor/autoload.php';
-    require_once '../config/magpie_config.php';
-
-    use MagpieApi\Magpie;
-
     header('Content-Type: application/json');
 
     // Validate required POST data
@@ -35,56 +30,43 @@ try {
     // Log the request data for debugging
     error_log("Payment request: " . json_encode($_POST));
 
-    // Create Magpie instance
-    $magpie = new Magpie(MAGPIE_PUBLISHABLE_KEY, MAGPIE_SECRET_KEY, true); // true = sandbox
+    // For demonstration purposes, create a mock checkout URL
+    // In a real implementation, you would integrate with the specific payment gateway's API
     
-    // Create a source for the payment
-    $source_data = [
-        'type' => $payment_method,
-        'amount' => $amount,
-        'currency' => 'PHP',
-        'redirect' => [
-            'success' => MAGPIE_SUCCESS_URL . '&booking_id=' . $booking_id,
-            'failed' => MAGPIE_FAILED_URL . '&booking_id=' . $booking_id
-        ],
-        'billing' => [
-            'name' => $first_name . ' ' . $last_name,
-            'email' => $email,
-            'phone' => $contact_number
-        ],
-        'metadata' => [
-            'booking_id' => $booking_id
-        ]
-    ];
+    // Create a unique reference for this payment
+    $payment_reference = 'PAY-' . uniqid();
     
-    // Log the source data for debugging
-    error_log("Source data: " . json_encode($source_data));
-    
-    // Create the source
-    $source = $magpie->source->create($source_data);
-    $result = $source->getData();
-    $http_code = $source->getHttpStatus();
-    
-    // Log the response for debugging
-    error_log("Magpie response: " . json_encode($result));
-    
-    // Success: Look for redirect URL for wallet payment
-    if ($http_code === 201 && isset($result['redirect']['checkout_url'])) {
-        echo json_encode([
-            'success' => true,
-            'checkout_url' => $result['redirect']['checkout_url'],
-            'source_id' => $result['id']
-        ]);
-    } else {
-        $error_message = isset($result['error']['message']) ? $result['error']['message'] : (isset($result['message']) ? $result['message'] : 'Unknown Magpie error');
-        echo json_encode(['success' => false, 'message' => $error_message, 'response' => $result]);
+    // Build the checkout URL based on the payment method
+    switch ($payment_method) {
+        case 'gcash':
+            $checkout_url = "https://variety-show-book-2.onrender.com/customer/payment-confirmation.php?ref={$payment_reference}&method=gcash&booking_id={$booking_id}";
+            break;
+        case 'paymaya':
+            $checkout_url = "https://variety-show-book-2.onrender.com/customer/payment-confirmation.php?ref={$payment_reference}&method=paymaya&booking_id={$booking_id}";
+            break;
+        case 'paypal':
+            $checkout_url = "https://variety-show-book-2.onrender.com/customer/payment-confirmation.php?ref={$payment_reference}&method=paypal&booking_id={$booking_id}";
+            break;
+        default:
+            throw new Exception("Unsupported payment method: {$payment_method}");
     }
+    
+    // Log the checkout URL for debugging
+    error_log("Generated checkout URL: {$checkout_url}");
+    
+    // Return success response with checkout URL
+    echo json_encode([
+        'success' => true,
+        'checkout_url' => $checkout_url,
+        'payment_reference' => $payment_reference
+    ]);
+    
 } catch (Exception $e) {
     // Clear any output buffer
     ob_clean();
     
     // Log the error
-    error_log("Magpie payment error: " . $e->getMessage());
+    error_log("Payment processing error: " . $e->getMessage());
     error_log("Stack trace: " . $e->getTraceAsString());
     
     // Return JSON error response
