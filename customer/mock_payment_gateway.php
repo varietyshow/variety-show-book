@@ -31,9 +31,23 @@ $formatted_amount = number_format($amount, 2);
 $success_url = "payment-confirmation.php?ref={$payment_reference}&method={$payment_method}&booking_id={$booking_id}&charge_id={$charge_id}&status=success";
 $cancel_url = "customer-booking.php";
 $step2_url = "mock_payment_gateway.php?ref={$payment_reference}&method={$payment_method}&booking_id={$booking_id}&charge_id={$charge_id}&step=2";
+$step3_url = "mock_payment_gateway.php?ref={$payment_reference}&method={$payment_method}&booking_id={$booking_id}&charge_id={$charge_id}&step=3";
 
-// Reference number
-$reference_number = "LFQacFk";
+// Format payment reference for display
+$display_reference = !empty($charge_id) ? $charge_id : (!empty($payment_reference) ? $payment_reference : "");
+
+// Get form data from session if available (for step 3)
+session_start();
+$email = isset($_GET['email']) ? $_GET['email'] : (isset($_SESSION['payment_email']) ? $_SESSION['payment_email'] : '');
+$name = isset($_GET['name']) ? $_GET['name'] : (isset($_SESSION['payment_name']) ? $_SESSION['payment_name'] : '');
+$phone = isset($_GET['phone']) ? $_GET['phone'] : (isset($_SESSION['payment_phone']) ? $_SESSION['payment_phone'] : '');
+
+// Store form data in session if coming from step 2
+if ($step == 3 && isset($_GET['email'])) {
+    $_SESSION['payment_email'] = $email;
+    $_SESSION['payment_name'] = $name;
+    $_SESSION['payment_phone'] = $phone;
+}
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -262,6 +276,48 @@ $reference_number = "LFQacFk";
             display: inline-block;
             margin-left: 10px;
         }
+        .summary-section {
+            padding: 20px;
+            background-color: white;
+        }
+        .summary-card {
+            border: 1px solid #eee;
+            border-radius: 5px;
+            padding: 15px;
+            margin-bottom: 20px;
+        }
+        .summary-title {
+            font-size: 16px;
+            font-weight: 500;
+            margin-bottom: 15px;
+            color: #333;
+            display: flex;
+            justify-content: space-between;
+        }
+        .summary-title .edit-link {
+            font-size: 14px;
+            color: #00bfa5;
+            text-decoration: none;
+        }
+        .summary-content {
+            font-size: 14px;
+            color: #666;
+        }
+        .summary-item {
+            margin-bottom: 8px;
+        }
+        .summary-item strong {
+            color: #333;
+        }
+        .summary-total {
+            font-size: 18px;
+            font-weight: 500;
+            color: #333;
+            text-align: right;
+            margin-top: 20px;
+            padding-top: 15px;
+            border-top: 1px solid #eee;
+        }
     </style>
 </head>
 <body>
@@ -279,7 +335,7 @@ $reference_number = "LFQacFk";
         <div class="container">
             <div class="row">
                 <div class="col">
-                    Reference Number: <?php echo $reference_number; ?> <?php if($step > 1): ?><span class="method-badge"><?php echo ucfirst($payment_method); ?></span><?php endif; ?>
+                    Payment Reference: <?php echo $display_reference; ?> <?php if($step > 1): ?><span class="method-badge"><?php echo ucfirst($payment_method); ?></span><?php endif; ?>
                 </div>
             </div>
         </div>
@@ -302,13 +358,8 @@ $reference_number = "LFQacFk";
             </div>
             <div class="step-connector"></div>
             <div class="step-item">
-                <div class="step-circle <?php echo ($step > 3) ? 'completed' : ($step == 3 ? 'active' : ''); ?>">3</div>
+                <div class="step-circle <?php echo ($step == 3) ? 'active' : ''; ?>">3</div>
                 <div class="step-text <?php echo ($step == 3) ? 'active' : ''; ?>">Summary</div>
-            </div>
-            <div class="step-connector"></div>
-            <div class="step-item">
-                <div class="step-circle <?php echo ($step == 4) ? 'active' : ''; ?>">4</div>
-                <div class="step-text <?php echo ($step == 4) ? 'active' : ''; ?>">Payment</div>
             </div>
         </div>
         
@@ -368,36 +419,99 @@ $reference_number = "LFQacFk";
         <div class="billing-details">
             <div class="section-title">Customer Information</div>
             
-            <form id="billingForm">
+            <form id="billingForm" action="<?php echo $step3_url; ?>" method="GET">
+                <!-- Hidden fields to preserve URL parameters -->
+                <input type="hidden" name="ref" value="<?php echo $payment_reference; ?>">
+                <input type="hidden" name="method" value="<?php echo $payment_method; ?>">
+                <input type="hidden" name="booking_id" value="<?php echo $booking_id; ?>">
+                <input type="hidden" name="charge_id" value="<?php echo $charge_id; ?>">
+                <input type="hidden" name="step" value="3">
+                
                 <div class="row">
                     <div class="col-md-6">
                         <div class="form-group">
                             <label for="email" class="form-label required">E-mail Address</label>
-                            <input type="email" id="email" class="form-control" required>
+                            <input type="email" id="email" name="email" class="form-control" required value="<?php echo htmlspecialchars($email); ?>">
                         </div>
                     </div>
                     <div class="col-md-6">
                         <div class="form-group">
                             <label for="phone" class="form-label">Contact Number</label>
-                            <input type="tel" id="phone" class="form-control">
+                            <input type="tel" id="phone" name="phone" class="form-control" value="<?php echo htmlspecialchars($phone); ?>">
                         </div>
                     </div>
                 </div>
                 
                 <div class="form-group">
                     <label for="name" class="form-label required">Name</label>
-                    <input type="text" id="name" class="form-control" required>
+                    <input type="text" id="name" name="name" class="form-control" required value="<?php echo htmlspecialchars($name); ?>">
+                </div>
+                
+                <div class="powered-by">
+                    <img src="https://magpie.im/wp-content/uploads/2023/01/magpie-logo.png" alt="Powered by Magpie">
+                </div>
+                
+                <div class="actions">
+                    <a href="<?php echo str_replace('step=2', 'step=1', $_SERVER['REQUEST_URI']); ?>" class="btn-back">Back</a>
+                    <button type="submit" class="btn-next">Next</button>
                 </div>
             </form>
+        </div>
+        
+        <?php elseif($step == 3): ?>
+        <!-- Step 3: Summary -->
+        <div class="summary-section">
+            <div class="summary-card">
+                <div class="summary-title">
+                    Payment Method <a href="<?php echo str_replace('step=3', 'step=1', $_SERVER['REQUEST_URI']); ?>" class="edit-link">Edit</a>
+                </div>
+                <div class="summary-content">
+                    <div class="summary-item">
+                        <strong><?php echo ucfirst($payment_method); ?></strong>
+                    </div>
+                </div>
+            </div>
             
-            <div class="powered-by">
-                <img src="https://www.paymongo.com/static/paymongo-logo-6e0d7a1c.svg" alt="Powered by PayMongo">
+            <div class="summary-card">
+                <div class="summary-title">
+                    Billing Details <a href="<?php echo str_replace('step=3', 'step=2', $_SERVER['REQUEST_URI']); ?>" class="edit-link">Edit</a>
+                </div>
+                <div class="summary-content">
+                    <div class="summary-item">
+                        <strong>Name:</strong> <?php echo htmlspecialchars($name); ?>
+                    </div>
+                    <div class="summary-item">
+                        <strong>Email:</strong> <?php echo htmlspecialchars($email); ?>
+                    </div>
+                    <?php if (!empty($phone)): ?>
+                    <div class="summary-item">
+                        <strong>Phone:</strong> <?php echo htmlspecialchars($phone); ?>
+                    </div>
+                    <?php endif; ?>
+                </div>
+            </div>
+            
+            <div class="summary-card">
+                <div class="summary-title">
+                    Payment Details
+                </div>
+                <div class="summary-content">
+                    <div class="summary-item">
+                        <strong>Booking ID:</strong> <?php echo htmlspecialchars($booking_id); ?>
+                    </div>
+                    <div class="summary-item">
+                        <strong>Payment Reference:</strong> <?php echo htmlspecialchars($display_reference); ?>
+                    </div>
+                    <div class="summary-total">
+                        Total Amount: <span class="currency">₱</span><?php echo $formatted_amount; ?>
+                    </div>
+                </div>
             </div>
         </div>
         
         <div class="actions">
-            <a href="<?php echo str_replace('step=2', 'step=1', $_SERVER['REQUEST_URI']); ?>" class="btn-back">Back</a>
-            <a href="<?php echo $success_url; ?>" class="btn-pay" id="payButton">Next</a>
+            <a href="<?php echo str_replace('step=3', 'step=2', $_SERVER['REQUEST_URI']); ?>" class="btn-back">Back</a>
+            <a href="<?php echo $success_url; ?>" class="btn-pay" id="payButton">Pay Now</a>
         </div>
         <?php endif; ?>
     </div>
@@ -426,23 +540,10 @@ $reference_number = "LFQacFk";
             });
         });
         
-        // Form validation for billing details
-        const billingForm = document.getElementById('billingForm');
+        // Add loading animation when Pay Now button is clicked
         const payButton = document.getElementById('payButton');
-        
-        if (billingForm && payButton) {
+        if (payButton) {
             payButton.addEventListener('click', function(e) {
-                // Check if form is valid
-                const email = document.getElementById('email');
-                const name = document.getElementById('name');
-                
-                if (!email.value || !name.value) {
-                    e.preventDefault();
-                    alert('Please fill in all required fields.');
-                    return false;
-                }
-                
-                // Show loading state
                 this.innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Processing...';
                 this.classList.add('disabled');
                 
