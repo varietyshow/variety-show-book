@@ -2453,70 +2453,38 @@ document.addEventListener('DOMContentLoaded', function() {
                 const paymentMethod = document.querySelector('input[name="payment_method"]:checked').value;
                 
                 if (paymentMethod === 'gcash' || paymentMethod === 'paymaya' || paymentMethod === 'paypal') {
-                    // Initialize Magpie checkout
-                    const checkout = new Checkout({
-                        publicKey: 'pk_test_vRWJzWnMgUVXm5Juc2BpFbxj', // Replace with your actual Magpie public key
-                        amount: parseFloat(document.getElementById('down_payment').value.replace(/,/g, '')),
-                        currency: 'PHP',
-                        source: {
-                            type: paymentMethod
-                        },
-                        billing: {
-                            name: document.getElementById('first_name').value + ' ' + document.getElementById('last_name').value,
-                            email: document.getElementById('email').value,
-                            phone: document.getElementById('contact_number').value
-                        },
-                        items: [{
-                            name: 'Booking Payment',
-                            quantity: 1,
-                            amount: parseFloat(document.getElementById('down_payment').value.replace(/,/g, ''))
-                        }],
-                        onCheckoutComplete: function(response) {
-                            // Process the payment with the token
-                            const paymentData = new FormData();
-                            paymentData.append('token', response.id);
-                            paymentData.append('amount', Math.round(parseFloat(document.getElementById('down_payment').value.replace(/,/g, '')) * 100)); // Convert to centavos
-                            paymentData.append('booking_id', data.booking_id);
-                            paymentData.append('first_name', document.getElementById('first_name').value);
-                            paymentData.append('last_name', document.getElementById('last_name').value);
-                            paymentData.append('email', document.getElementById('email').value);
-                            
-                            fetch('process_magpie_payment.php', {
-                                method: 'POST',
-                                body: paymentData
-                            })
-                            .then(response => response.json())
-                            .then(paymentResult => {
-                                if (paymentResult.success && paymentResult.checkout_url) {
-                                    // Redirect to checkout URL
-                                    window.location.href = paymentResult.checkout_url;
-                                } else {
-                                    alert('Payment processing error: ' + (paymentResult.message || 'Unknown error'));
-                                    submitBtn.disabled = false;
-                                    submitBtn.innerHTML = originalBtnText;
-                                }
-                            })
-                            .catch(error => {
-                                console.error('Payment error:', error);
-                                alert('Payment processing error. Please try again.');
-                                submitBtn.disabled = false;
-                                submitBtn.innerHTML = originalBtnText;
-                            });
-                        },
-                        onCheckoutFail: function(error) {
-                            console.error('Checkout failed:', error);
-                            alert('Payment checkout failed: ' + error.message);
-                            submitBtn.disabled = false;
-                            submitBtn.innerHTML = originalBtnText;
-                        },
-                        onCheckoutClose: function() {
-                            console.log('Checkout closed');
+                    // Create payment data for server-side processing
+                    const paymentData = new FormData();
+                    paymentData.append('payment_method', paymentMethod);
+                    paymentData.append('amount', Math.round(parseFloat(document.getElementById('down_payment').value.replace(/,/g, '')) * 100)); // Convert to centavos
+                    paymentData.append('booking_id', data.booking_id);
+                    paymentData.append('first_name', document.getElementById('first_name').value);
+                    paymentData.append('last_name', document.getElementById('last_name').value);
+                    paymentData.append('email', document.getElementById('email').value);
+                    paymentData.append('contact_number', document.getElementById('contact_number').value);
+                    
+                    // Process payment server-side and get redirect URL
+                    fetch('process_magpie_payment.php', {
+                        method: 'POST',
+                        body: paymentData
+                    })
+                    .then(response => response.json())
+                    .then(paymentResult => {
+                        if (paymentResult.success && paymentResult.checkout_url) {
+                            // Redirect to checkout URL
+                            window.location.href = paymentResult.checkout_url;
+                        } else {
+                            alert('Payment processing error: ' + (paymentResult.message || 'Unknown error'));
                             submitBtn.disabled = false;
                             submitBtn.innerHTML = originalBtnText;
                         }
+                    })
+                    .catch(error => {
+                        console.error('Payment error:', error);
+                        alert('Payment processing error. Please try again.');
+                        submitBtn.disabled = false;
+                        submitBtn.innerHTML = originalBtnText;
                     });
-                    
-                    checkout.open();
                 } else {
                     // Redirect to a success page for other payment methods
                     window.location.href = 'booking-success.php?id=' + data.booking_id;
