@@ -49,6 +49,9 @@ function createGCashSource($amount, $name, $email, $phone, $success_url, $failed
         $data['data']['attributes']['reference_number'] = $reference_number;
     }
     
+    // Log the request data for debugging
+    error_log("PayMongo source request: " . json_encode($data));
+    
     // Make the API request
     $response = makePayMongoRequest('sources', $data);
     
@@ -134,14 +137,32 @@ function makePayMongoRequest($endpoint, $data = null, $method = 'POST') {
     // Return the response instead of outputting it
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
     
+    // Enable SSL verification
+    curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, true);
+    curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 2);
+    
+    // Set timeout
+    curl_setopt($ch, CURLOPT_TIMEOUT, 30);
+    
     // Execute the request
     $response = curl_exec($ch);
+    
+    // Check for cURL errors
+    if (curl_errno($ch)) {
+        $error = curl_error($ch);
+        curl_close($ch);
+        error_log("cURL Error: " . $error);
+        return ['error' => $error, 'http_code' => 0];
+    }
     
     // Get the HTTP status code
     $http_code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
     
     // Close cURL
     curl_close($ch);
+    
+    // Log the raw response for debugging
+    error_log("PayMongo raw response: " . $response);
     
     // Decode the response
     $decoded_response = json_decode($response, true);
@@ -177,4 +198,7 @@ function logPayMongoActivity($message, $data = []) {
     
     // Append to log file
     file_put_contents($log_file, $log_message . PHP_EOL, FILE_APPEND);
+    
+    // Also log to PHP error log for easier debugging
+    error_log($log_message);
 }
