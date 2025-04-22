@@ -1,9 +1,14 @@
 <?php
 // Payment Processing Script with PayMongo Integration
 
-// Disable error display
-ini_set('display_errors', 0);
-error_reporting(0);
+// Enable error display for debugging
+ini_set('display_errors', 1);
+error_reporting(E_ALL);
+
+// Create a debug log file
+$debug_log = dirname(__DIR__) . '/logs/payment_debug.log';
+file_put_contents($debug_log, '[' . date('Y-m-d H:i:s') . '] Payment process started' . PHP_EOL, FILE_APPEND);
+file_put_contents($debug_log, '[' . date('Y-m-d H:i:s') . '] POST data: ' . json_encode($_POST) . PHP_EOL, FILE_APPEND);
 
 // Start output buffering to catch any unexpected output
 ob_start();
@@ -17,6 +22,9 @@ try {
     require_once dirname(__DIR__) . '/config/paymongo_config.php';
     require_once 'paymongo_integration.php';
     
+    // Log the included files
+    file_put_contents($debug_log, '[' . date('Y-m-d H:i:s') . '] Required files included' . PHP_EOL, FILE_APPEND);
+    
     // Validate required POST data
     $required = ['payment_method', 'amount', 'booking_id', 'first_name', 'last_name', 'email', 'contact_number'];
     $missing = [];
@@ -28,6 +36,7 @@ try {
     }
     
     if (!empty($missing)) {
+        file_put_contents($debug_log, '[' . date('Y-m-d H:i:s') . '] Missing fields: ' . implode(', ', $missing) . PHP_EOL, FILE_APPEND);
         throw new Exception("Missing required fields: " . implode(', ', $missing));
     }
 
@@ -43,6 +52,7 @@ try {
 
     // Log the request data for debugging
     error_log("Payment request received: method={$payment_method}, amount={$amount}, booking_id={$booking_id}");
+    file_put_contents($debug_log, '[' . date('Y-m-d H:i:s') . '] Payment request received: method=' . $payment_method . ', amount=' . $amount . ', booking_id=' . $booking_id . PHP_EOL, FILE_APPEND);
     
     // Create a unique reference and charge ID for this payment
     $payment_reference = 'PAY-' . uniqid();
@@ -64,6 +74,7 @@ try {
             
             // Log the amount conversion
             error_log("Amount conversion: original={$amount}, converted={$amount_in_php}");
+            file_put_contents($debug_log, '[' . date('Y-m-d H:i:s') . '] Amount conversion: original=' . $amount . ', converted=' . $amount_in_php . PHP_EOL, FILE_APPEND);
             
             $source_response = createGCashSource(
                 $amount_in_php,
@@ -77,6 +88,7 @@ try {
             
             // Log the full response for debugging
             error_log("PayMongo response: " . json_encode($source_response));
+            file_put_contents($debug_log, '[' . date('Y-m-d H:i:s') . '] PayMongo response: ' . json_encode($source_response) . PHP_EOL, FILE_APPEND);
             
             // Check if source creation was successful
             if (isset($source_response['data']) && isset($source_response['data']['id'])) {
@@ -91,33 +103,41 @@ try {
                     'amount' => $amount_in_php,
                     'checkout_url' => $checkout_url
                 ]);
+                file_put_contents($debug_log, '[' . date('Y-m-d H:i:s') . '] GCash source created successfully' . PHP_EOL, FILE_APPEND);
                 
                 error_log("SUCCESS: GCash source created. Redirecting to: {$checkout_url}");
+                file_put_contents($debug_log, '[' . date('Y-m-d H:i:s') . '] SUCCESS: GCash source created. Redirecting to: ' . $checkout_url . PHP_EOL, FILE_APPEND);
             } else {
                 // Log error and throw exception
                 logPayMongoActivity("Failed to create GCash source", $source_response);
+                file_put_contents($debug_log, '[' . date('Y-m-d H:i:s') . '] Failed to create GCash source' . PHP_EOL, FILE_APPEND);
                 
                 if (isset($source_response['errors'])) {
                     $error_details = json_encode($source_response['errors']);
                     error_log("PayMongo API Error: {$error_details}");
+                    file_put_contents($debug_log, '[' . date('Y-m-d H:i:s') . '] PayMongo API Error: ' . $error_details . PHP_EOL, FILE_APPEND);
                     throw new Exception("Failed to create payment source: {$error_details}");
                 } else {
                     error_log("Unknown PayMongo API Error: " . json_encode($source_response));
+                    file_put_contents($debug_log, '[' . date('Y-m-d H:i:s') . '] Unknown PayMongo API Error: ' . json_encode($source_response) . PHP_EOL, FILE_APPEND);
                     throw new Exception("Failed to create payment source. Please try again.");
                 }
             }
         } else {
             // For other payment methods, use the mock payment gateway
             $checkout_url = "mock_payment_gateway.php?ref={$payment_reference}&method={$payment_method}&booking_id={$booking_id}&charge_id={$charge_id}";
+            file_put_contents($debug_log, '[' . date('Y-m-d H:i:s') . '] Using mock payment gateway' . PHP_EOL, FILE_APPEND);
         }
     } catch (Exception $e) {
         // If PayMongo API fails, fall back to mock payment gateway
         error_log("PayMongo API error, falling back to mock implementation: " . $e->getMessage());
+        file_put_contents($debug_log, '[' . date('Y-m-d H:i:s') . '] PayMongo API error, falling back to mock implementation: ' . $e->getMessage() . PHP_EOL, FILE_APPEND);
         $checkout_url = "mock_payment_gateway.php?ref={$payment_reference}&method={$payment_method}&booking_id={$booking_id}&charge_id={$charge_id}";
     }
     
     // Log the checkout URL for debugging
     error_log("Generated checkout URL: {$checkout_url}");
+    file_put_contents($debug_log, '[' . date('Y-m-d H:i:s') . '] Generated checkout URL: ' . $checkout_url . PHP_EOL, FILE_APPEND);
     
     // Insert a record into the payment_transactions table if it exists
     try {
@@ -125,9 +145,11 @@ try {
         $status = 'pending';
         $stmt->bind_param("isids", $booking_id, $charge_id, $amount, $payment_method, $status);
         $stmt->execute();
+        file_put_contents($debug_log, '[' . date('Y-m-d H:i:s') . '] Payment transaction inserted' . PHP_EOL, FILE_APPEND);
     } catch (Exception $e) {
         // Table might not exist, just log the error and continue
         error_log("Could not insert payment transaction: " . $e->getMessage());
+        file_put_contents($debug_log, '[' . date('Y-m-d H:i:s') . '] Could not insert payment transaction: ' . $e->getMessage() . PHP_EOL, FILE_APPEND);
     }
     
     // Clear any output buffer before sending JSON response
@@ -142,6 +164,7 @@ try {
         'payment_reference' => $payment_reference,
         'charge_id' => $charge_id
     ]);
+    file_put_contents($debug_log, '[' . date('Y-m-d H:i:s') . '] Payment process completed' . PHP_EOL, FILE_APPEND);
     
 } catch (Exception $e) {
     // Clear any output buffer
@@ -151,10 +174,12 @@ try {
     
     // Log the error
     error_log("Payment processing error: " . $e->getMessage());
+    file_put_contents($debug_log, '[' . date('Y-m-d H:i:s') . '] Payment processing error: ' . $e->getMessage() . PHP_EOL, FILE_APPEND);
     
     // Return JSON error response
     echo json_encode([
         'success' => false, 
         'message' => 'Payment processing error: ' . $e->getMessage()
     ]);
+    file_put_contents($debug_log, '[' . date('Y-m-d H:i:s') . '] Payment process failed' . PHP_EOL, FILE_APPEND);
 }
