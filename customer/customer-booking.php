@@ -2213,7 +2213,8 @@ document.addEventListener('DOMContentLoaded', function() {
                     };
                     
                     // Function to update balance based on total price and down payment
-                    function updateBalance() {
+                    // Define in global scope so it's available to all scripts
+                    window.updateBalance = function() {
                         const totalPriceStr = document.getElementById('total_price').value.replace(/,/g, '');
                         const downPaymentStr = document.getElementById('down_payment').value.replace(/,/g, '');
                         
@@ -2644,4 +2645,44 @@ document.addEventListener('DOMContentLoaded', function() {
                     submitBtn.innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Processing...';
                     
                     const formData = new FormData(this);
+                    
+                    // Submit the form data to process_booking.php
+                    fetch('process_booking.php', {
+                        method: 'POST',
+                        body: formData
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        console.log('Booking response:', data);
+                        
+                        if (data.success) {
+                            // Store booking details in session storage for reference
+                            sessionStorage.setItem('booking_id', data.booking_id);
+                            sessionStorage.setItem('booking_reference', data.booking_reference);
+                            
+                            // Get payment method
+                            const paymentMethod = document.querySelector('input[name="payment_method"]:checked').value;
+                            
+                            if (paymentMethod === 'gcash') {
+                                // Redirect to PayMongo integration
+                                window.location.href = 'paymongo_integration.php?booking_id=' + data.booking_id + '&amount=' + downPayment;
+                            } else {
+                                // Fallback for other payment methods (should not happen with current setup)
+                                alert('Payment method not supported. Please contact support.');
+                                submitBtn.disabled = false;
+                                submitBtn.innerHTML = originalBtnText;
+                            }
+                        } else {
+                            // Show error message
+                            alert('Error: ' + (data.message || 'Failed to create booking. Please try again.'));
+                            submitBtn.disabled = false;
+                            submitBtn.innerHTML = originalBtnText;
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                        alert('An error occurred while processing your booking. Please try again.');
+                        submitBtn.disabled = false;
+                        submitBtn.innerHTML = originalBtnText;
+                    });
 {{ ... }}
