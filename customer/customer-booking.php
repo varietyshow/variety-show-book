@@ -825,11 +825,6 @@ sort($provinces); // Sort provinces alphabetically
         opacity: 0;
     }
 
-    .package-option input[type="radio"]:checked + label {
-        background: #f0f7ff;
-        box-shadow: inset 0 0 0 2px #4a90e2;
-    }
-
     .package-option label {
         flex: 1;
         display: flex;
@@ -1330,6 +1325,66 @@ sort($provinces); // Sort provinces alphabetically
         background-color: #f8f9fa;
         border-bottom-left-radius: 8px;
         border-bottom-right-radius: 8px;
+    }
+</style>
+
+<style>
+    /* Payment Method Styles */
+    .payment-methods {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 15px;
+        margin-top: 10px;
+    }
+
+    .payment-method-option {
+        position: relative;
+        margin: 0;
+        cursor: pointer;
+    }
+
+    .payment-method-option input[type="radio"] {
+        position: absolute;
+        opacity: 0;
+        width: 0;
+        height: 0;
+    }
+
+    .payment-method-button {
+        display: flex;
+        align-items: center;
+        padding: 10px 15px;
+        border: 1px solid #aaa;  /* Changed to gray border */
+        border-radius: 5px;
+        background-color: white;
+        transition: all 0.3s ease;
+        min-width: 150px;
+    }
+
+    .payment-logo {
+        width: 30px;
+        height: 30px;
+        margin-right: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .payment-logo img {
+        max-width: 100%;
+        max-height: 100%;
+        object-fit: contain;
+    }
+
+    .payment-method-option input[type="radio"]:checked + .payment-method-button {
+        border-color: #0066cc;  /* Changed to blue border */
+        border-width: 2px;  /* Make the border slightly thicker when selected */
+        box-shadow: 0 0 5px rgba(0, 102, 204, 0.3);  /* Add a subtle blue glow */
+        background-color: #f8f9fa;
+    }
+
+    .payment-method-button span {
+        font-weight: 500;
     }
 </style>
 
@@ -2248,9 +2303,15 @@ document.addEventListener('DOMContentLoaded', function() {
                 <div class="form-group">
                     <label><strong>Select Payment Method:</strong> <span class="required">*</span></label>
                     <div class="payment-methods">
-                        <label><input type="radio" name="payment_method" value="gcash" required> GCash</label><br>
-                        <label><input type="radio" name="payment_method" value="paymaya"> PayMaya</label><br>
-                        <label><input type="radio" name="payment_method" value="paypal"> PayPal</label>
+                        <label class="payment-method-option">
+                            <input type="radio" name="payment_method" value="gcash" required checked>
+                            <div class="payment-method-button">
+                                <div class="payment-logo">
+                                    <img src="assets/images/gcash-logo.png" alt="GCash">
+                                </div>
+                                <span>Gcash</span>
+                            </div>
+                        </label>
                     </div>
                 </div>
 
