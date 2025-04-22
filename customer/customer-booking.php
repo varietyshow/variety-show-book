@@ -2492,15 +2492,17 @@ document.addEventListener('DOMContentLoaded', function() {
             </script>
 
                 <div class="form-group">
-                    <label><strong>Select Payment Method:</strong> <span class="required">*</span></label>
-                    <div class="payment-methods">
-                        <label class="payment-method-option">
-                            <input type="radio" name="payment_method" value="gcash" required checked>
-                            <div class="payment-method-button">
-                                <div class="payment-logo">
-                                    <img src="assets/images/gcash-logo.png" alt="GCash">
+                    <label><strong>Select Payment Method: </strong><span class="required">*</span></label>
+                    <div class="payment-method-container" style="max-width: 500px; border: 1px solid #ddd; border-radius: 8px; padding: 15px; background-color: white;">
+                        <label class="payment-method-option" style="display: block; margin-bottom: 0;">
+                            <input type="radio" name="payment_method" value="gcash" required checked style="margin-right: 10px; vertical-align: middle;">
+                            <div style="display: inline-block; vertical-align: middle;">
+                                <div style="display: flex; align-items: center;">
+                                    <div style="width: 50px; height: 50px; margin-right: 15px;">
+                                        <img src="assets/images/gcash-logo.png" alt="GCash" style="width: 100%; height: 100%; object-fit: contain;">
+                                    </div>
+                                    <span style="font-weight: 500; font-size: 16px;">GCash</span>
                                 </div>
-                                <span>Gcash</span>
                             </div>
                         </label>
                     </div>
