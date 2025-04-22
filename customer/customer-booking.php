@@ -61,6 +61,104 @@ sort($provinces); // Sort provinces alphabetically
     <!-- Magpie Checkout.js from CDN -->
     <script src="https://checkout.magpie.im/v2/checkout.js"></script>
     
+    <!-- Location Selection JavaScript -->
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const provinceSelect = document.getElementById('province');
+        const municipalitySelect = document.getElementById('municipality');
+        const barangaySelect = document.getElementById('barangay');
+        
+        // Function to load municipalities based on selected province
+        function loadMunicipalities() {
+            const selectedProvince = provinceSelect.value;
+            
+            // Reset municipality and barangay dropdowns
+            municipalitySelect.innerHTML = '<option value="">Select Municipality/City</option>';
+            barangaySelect.innerHTML = '<option value="">Select Barangay</option>';
+            
+            if (selectedProvince) {
+                // Show loading indicator
+                municipalitySelect.innerHTML += '<option value="" disabled>Loading...</option>';
+                
+                // Send AJAX request to get municipalities
+                const formData = new FormData();
+                formData.append('province', selectedProvince);
+                
+                fetch('get_locations.php', {
+                    method: 'POST',
+                    body: formData
+                })
+                .then(response => response.json())
+                .then(data => {
+                    // Remove loading indicator
+                    municipalitySelect.innerHTML = '<option value="">Select Municipality/City</option>';
+                    
+                    // Add municipalities to dropdown
+                    data.forEach(municipality => {
+                        const option = document.createElement('option');
+                        option.value = municipality;
+                        option.textContent = municipality;
+                        municipalitySelect.appendChild(option);
+                    });
+                })
+                .catch(error => {
+                    console.error('Error loading municipalities:', error);
+                    municipalitySelect.innerHTML = '<option value="">Error loading data</option>';
+                });
+            }
+        }
+        
+        // Function to load barangays based on selected municipality
+        function loadBarangays() {
+            const selectedProvince = provinceSelect.value;
+            const selectedMunicipality = municipalitySelect.value;
+            
+            // Reset barangay dropdown
+            barangaySelect.innerHTML = '<option value="">Select Barangay</option>';
+            
+            if (selectedProvince && selectedMunicipality) {
+                // Show loading indicator
+                barangaySelect.innerHTML += '<option value="" disabled>Loading...</option>';
+                
+                // Send AJAX request to get barangays
+                const formData = new FormData();
+                formData.append('province', selectedProvince);
+                formData.append('municipality', selectedMunicipality);
+                
+                fetch('get_locations.php', {
+                    method: 'POST',
+                    body: formData
+                })
+                .then(response => response.json())
+                .then(data => {
+                    // Remove loading indicator
+                    barangaySelect.innerHTML = '<option value="">Select Barangay</option>';
+                    
+                    // Add barangays to dropdown
+                    data.forEach(barangay => {
+                        const option = document.createElement('option');
+                        option.value = barangay;
+                        option.textContent = barangay;
+                        barangaySelect.appendChild(option);
+                    });
+                })
+                .catch(error => {
+                    console.error('Error loading barangays:', error);
+                    barangaySelect.innerHTML = '<option value="">Error loading data</option>';
+                });
+            }
+        }
+        
+        // Add event listeners
+        provinceSelect.addEventListener('change', loadMunicipalities);
+        municipalitySelect.addEventListener('change', loadBarangays);
+        
+        // Initialize if province is already selected (e.g., on page refresh)
+        if (provinceSelect.value) {
+            loadMunicipalities();
+        }
+    });
+    </script>
 </head>
 <style>
     body {
@@ -1585,9 +1683,45 @@ window.formatWithCommas = function(x) {
     <div class="form-group names-group">
         <div class="name-field" id="entertainer-section" style="width: 100%;">
             <label>Entertainer Role: <span class="required">*</span></label>
+            <style>
+                input[name="entertainers[]"]:checked ~ #entertainer-section #no-entertainer-message {
+                    display: none !important;
+                }
+                input[name="entertainers[]"]:checked ~ #entertainer-section .role-section {
+                    display: block !important;
+                }
+            </style>
             <p id="no-entertainer-message" style="color: #6c757d; background: #f8f9fa; padding: 10px; border: 1px dashed #ccc; text-align: center; margin: 10px 0;">
                 No entertainer selected
             </p>
+            <script>
+            // Immediate fix for the "No entertainer selected" message
+            document.addEventListener('DOMContentLoaded', function() {
+                // Check if any entertainer is selected on page load
+                function checkEntertainers() {
+                    const hasSelectedEntertainer = document.querySelector('input[name="entertainers[]"]:checked');
+                    const message = document.getElementById('no-entertainer-message');
+                    if (message && hasSelectedEntertainer) {
+                        message.style.display = 'none';
+                    }
+                }
+                
+                // Add event listeners to all entertainer checkboxes
+                const checkboxes = document.querySelectorAll('input[name="entertainers[]"]');
+                checkboxes.forEach(function(checkbox) {
+                    checkbox.addEventListener('change', function() {
+                        const message = document.getElementById('no-entertainer-message');
+                        if (message) {
+                            message.style.display = this.checked ? 'none' : 'block';
+                        }
+                    });
+                });
+                
+                // Check immediately and again after a short delay
+                checkEntertainers();
+                setTimeout(checkEntertainers, 100);
+            });
+            </script>
             <div id="roles-container">
                             <?php
                             // First, get all roles from the roles table
@@ -1952,30 +2086,81 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         });
         
+                // Immediate fix for the "No entertainer selected" message
+                function fixNoEntertainerMessage() {
+                    const message = document.getElementById('no-entertainer-message');
+                    const selectedEntertainers = document.querySelectorAll('input[name="entertainers[]"]:checked');
+                    
+                    if (message && selectedEntertainers.length > 0) {
+                        // Force hide the message if any entertainer is selected
+                        message.style.display = 'none';
+                        console.log('Hiding no entertainer message');
+                        
+                        // Show the role sections for selected entertainers
+                        selectedEntertainers.forEach(checkbox => {
+                            const section = document.getElementById('roles-' + checkbox.value);
+                            if (section) {
+                                section.style.display = 'block';
+                                console.log('Showing role section for entertainer ID:', checkbox.value);
+                            }
+                        });
+                    }
+                }
+                
+                // Run the fix immediately
+                fixNoEntertainerMessage();
+                
+                // Also run when DOM is fully loaded
                 document.addEventListener('DOMContentLoaded', function() {
                     const message = document.getElementById('no-entertainer-message');
+                    const rolesContainer = document.getElementById('roles-container');
                     
+                    // Run the fix again
+                    fixNoEntertainerMessage();
+                    
+                    // Function to update display based on selected entertainers
                     function updateDisplay() {
-                        const hasSelectedEntertainer = document.querySelector('input[name="entertainers[]"]:checked');
-                        message.style.display = hasSelectedEntertainer ? 'none' : 'block';
+                        const selectedEntertainers = document.querySelectorAll('input[name="entertainers[]"]:checked');
+                        const hasSelectedEntertainer = selectedEntertainers.length > 0;
+                        
+                        // Hide the message if any entertainer is selected
+                        if (message) {
+                            message.style.display = hasSelectedEntertainer ? 'none' : 'block';
+                        }
+                        
+                        // Show/hide individual role sections based on selected entertainers
+                        document.querySelectorAll('.role-section').forEach(section => {
+                            section.style.display = 'none'; // Hide all by default
+                        });
+                        
+                        // Show role sections for selected entertainers
+                        selectedEntertainers.forEach(checkbox => {
+                            const section = document.getElementById('roles-' + checkbox.value);
+                            if (section) {
+                                section.style.display = 'block';
+                            }
+                        });
                     }
 
-                    // Add event listeners
+                    // Add event listeners to entertainer checkboxes
                     document.querySelectorAll('input[name="entertainers[]"]').forEach(cb => {
                         cb.addEventListener('change', function() {
-                            // Toggle role section
-                            const section = document.getElementById('roles-' + this.value);
-                            if (section) section.style.display = this.checked ? 'block' : 'none';
                             updateDisplay();
+                            // Run the fix again after a change
+                            setTimeout(fixNoEntertainerMessage, 10);
                         });
                     });
-                    // Run on page load in case of pre-checked boxes (e.g. after validation error)
+                    
+                    // Run on page load to handle pre-selected entertainers
                     updateDisplay();
 
-                    // Debug log to verify initialization
+                    // Debug log
                     console.log('Roles container found:', document.getElementById('roles-container') !== null);
                     console.log('Number of role sections:', document.querySelectorAll('.role-section').length);
-                    console.log('Initial roles container display:', document.getElementById('roles-container').style.display);
+                    console.log('Selected entertainers:', document.querySelectorAll('input[name="entertainers[]"]:checked').length);
+                    
+                    // Run the fix one more time after a short delay
+                    setTimeout(fixNoEntertainerMessage, 100);
                 });
             </script>
 
