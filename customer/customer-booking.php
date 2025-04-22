@@ -671,12 +671,6 @@ sort($provinces); // Sort provinces alphabetically
             }
         }
 
-        @media (min-width: 769px) {
-            .mobile-profile-links {
-                display: none;
-            }
-        }
-
         @media screen and (min-width: 769px) {
             .nav-items {
                 display: flex;
@@ -1036,7 +1030,6 @@ sort($provinces); // Sort provinces alphabetically
     .package-option input[type="radio"]:checked + label {
         background: #f8f9ff;
         border: 2px solid #4a90e2;
-        border-radius: 6px;
         padding: 18px;
     }
     
@@ -2024,15 +2017,27 @@ document.addEventListener('DOMContentLoaded', function() {
                     // Function to update price when package is selected
                     window.updatePackagePrice = function(packageInput) {
                         const price = parseFloat(packageInput.dataset.price);
-                        document.getElementById('total_price').value = price.toFixed(2);
+                        document.getElementById('total_price').value = formatWithCommas(price.toFixed(2));
                         
                         // Calculate and set 50% down payment
                         const downPayment = price * 0.5;
 
                         // Update display with formatted numbers
                         document.getElementById('down_payment').value = formatWithCommas(downPayment.toFixed(2));
-                        document.getElementById('balance').value = formatWithCommas((price - downPayment).toFixed(2));
+                        updateBalance();
                     };
+                    
+                    // Function to update balance based on total price and down payment
+                    function updateBalance() {
+                        const totalPriceStr = document.getElementById('total_price').value.replace(/,/g, '');
+                        const downPaymentStr = document.getElementById('down_payment').value.replace(/,/g, '');
+                        
+                        const totalPrice = parseFloat(totalPriceStr) || 0;
+                        const downPayment = parseFloat(downPaymentStr) || 0;
+                        
+                        const balance = totalPrice - downPayment;
+                        document.getElementById('balance').value = formatWithCommas(balance.toFixed(2));
+                    }
 
                     // Function to update custom price table
                     async function updateCustomPriceTable() {
@@ -2320,254 +2325,138 @@ document.addEventListener('DOMContentLoaded', function() {
         <input type="text" id="total_price" name="total_price" class="form-control" readonly style="font-weight:bold; color:#2c3e50; background:#f8f9fa;">
     </div>
     <div class="form-group">
-        <label for="down_payment">Down Payment (50%):</label>
-        <input type="text" id="down_payment" name="down_payment" class="form-control" readonly style="font-weight:bold; color:#2c3e50; background:#f8f9fa;">
+        <label for="down_payment">Down Payment (min 50%):</label>
+        <input type="text" id="down_payment" name="down_payment" class="form-control" style="font-weight:bold; color:#2c3e50;">
+        <small class="text-muted">Minimum down payment is 50% of the total price</small>
     </div>
     <div class="form-group">
         <label for="balance">Balance:</label>
         <input type="text" id="balance" name="balance" class="form-control" readonly style="font-weight:bold; color:#2c3e50; background:#f8f9fa;">
     </div>
 
+                <script>
+                // Add event listener for down payment input
+                document.addEventListener('DOMContentLoaded', function() {
+                    const downPaymentInput = document.getElementById('down_payment');
+                    
+                    // Handle down payment input changes - only format on blur or enter key
+                    downPaymentInput.addEventListener('keydown', function(e) {
+                        // If Enter key is pressed
+                        if (e.key === 'Enter') {
+                            formatAndValidateDownPayment();
+                            e.preventDefault(); // Prevent form submission
+                        }
+                    });
+                    
+                    // Format and validate when focus is lost
+                    downPaymentInput.addEventListener('blur', function() {
+                        // Only validate if not already in validation process
+                        if (downPaymentInput.dataset.validating !== 'true') {
+                            formatAndValidateDownPayment();
+                        }
+                    });
+                    
+                    // Function to format and validate down payment
+                    function formatAndValidateDownPayment() {
+                        // Remove commas from the input value
+                        let value = downPaymentInput.value.replace(/,/g, '');
+                        
+                        // Ensure it's a valid number
+                        if (value === '' || isNaN(value)) {
+                            value = '0';
+                        }
+                        
+                        const numValue = parseFloat(value);
+                        
+                        // Format with commas and 2 decimal places
+                        downPaymentInput.value = formatWithCommas(numValue.toFixed(2));
+                        
+                        // Validate minimum down payment
+                        const totalPriceStr = document.getElementById('total_price').value.replace(/,/g, '');
+                        const totalPrice = parseFloat(totalPriceStr) || 0;
+                        const minimumDownPayment = totalPrice * 0.5;
+                        
+                        // Show warning if less than minimum
+                        if (numValue < minimumDownPayment) {
+                            // Set a flag to prevent recursive validation
+                            downPaymentInput.dataset.validating = 'true';
+                            
+                            // Highlight the input to indicate error
+                            downPaymentInput.style.borderColor = 'red';
+                            
+                            // Show alert with a slight delay to prevent focus issues
+                            setTimeout(function() {
+                                alert('Down payment must be at least 50% of the total price (' + formatWithCommas(minimumDownPayment.toFixed(2)) + ')');
+                                // Set focus after alert is closed
+                                setTimeout(function() {
+                                    downPaymentInput.focus();
+                                    // Reset the validation flag
+                                    delete downPaymentInput.dataset.validating;
+                                }, 100);
+                            }, 100);
+                        } else {
+                            // Reset border if valid
+                            downPaymentInput.style.borderColor = '';
+                        }
+                        
+                        // Update the balance
+                        updateBalance();
+                    }
+                    
+                    // Add validation to the form submission
+                    const bookingForm = document.getElementById('bookingForm');
+                    const originalSubmit = bookingForm.onsubmit;
+                    
+                    bookingForm.onsubmit = function(event) {
+                        // Validate minimum down payment
+                        const totalPriceStr = document.getElementById('total_price').value.replace(/,/g, '');
+                        const downPaymentStr = document.getElementById('down_payment').value.replace(/,/g, '');
+                        
+                        const totalPrice = parseFloat(totalPriceStr) || 0;
+                        const downPayment = parseFloat(downPaymentStr) || 0;
+                        const minimumDownPayment = totalPrice * 0.5;
+                        
+                        if (downPayment < minimumDownPayment) {
+                            event.preventDefault();
+                            alert('Down payment must be at least 50% of the total price (' + formatWithCommas(minimumDownPayment.toFixed(2)) + ')');
+                            downPaymentInput.focus();
+                            return false;
+                        }
+                        
+                        // Call the original submit handler
+                        if (originalSubmit) {
+                            return originalSubmit.call(this, event);
+                        }
+                    };
+                });
+                </script>
                 <button type="submit" class="btn btn-primary">Submit Booking & Pay</button>
             </form>
 
             <script>
-                // Function to format phone number
-                function formatPhoneNumber(value) {
-                    // Remove all non-digit characters except + sign at the start
-                    let phoneNumber = value.replace(/[^\d+]/g, '');
+                // Form submission handler
+                document.getElementById('bookingForm').addEventListener('submit', function(event) {
+                    event.preventDefault();
                     
-                    // Handle +63 prefix
-                    if (phoneNumber.startsWith('+63')) {
-                        // Remove the +63 prefix for formatting
-                        phoneNumber = phoneNumber.substring(3);
-                        if (phoneNumber.length > 10) {
-                            phoneNumber = phoneNumber.substring(0, 10);
-                        }
-                        // Format the number and add back the +63 prefix
-                        if (phoneNumber.length <= 4) {
-                            return '+63' + phoneNumber;
-                        } else if (phoneNumber.length <= 7) {
-                            return '+63' + phoneNumber.slice(0, 3) + '-' + phoneNumber.slice(3);
-                        } else {
-                            return '+63' + phoneNumber.slice(0, 3) + '-' + phoneNumber.slice(3, 6) + '-' + phoneNumber.slice(6);
-                        }
-                    } else {
-                        // Handle 09 prefix
-                        if (!phoneNumber.startsWith('09') && phoneNumber.length >= 2) {
-                            phoneNumber = '09' + phoneNumber.substring(2);
-                        }
-                        if (phoneNumber.length > 11) {
-                            phoneNumber = phoneNumber.substring(0, 11);
-                        }
-                        // Format the number
-                        if (phoneNumber.length <= 4) {
-                            return phoneNumber;
-                        } else if (phoneNumber.length <= 7) {
-                            return phoneNumber.slice(0, 4) + '-' + phoneNumber.slice(4);
-                        } else {
-                            return phoneNumber.slice(0, 4) + '-' + phoneNumber.slice(4, 7) + '-' + phoneNumber.slice(7);
-                        }
-                    }
-                }
-
-                // Add event listener to validate on blur
-                document.getElementById('contact_number').addEventListener('blur', function() {
-                    const phoneNumber = this.value.replace(/[^\d+]/g, '');
-                    const isValid = /^(09|\+639)\d{9}$/.test(phoneNumber);
+                    // Validate minimum down payment
+                    const totalPriceStr = document.getElementById('total_price').value.replace(/,/g, '');
+                    const downPaymentStr = document.getElementById('down_payment').value.replace(/,/g, '');
                     
-                    if (!isValid) {
-                        this.setCustomValidity('Please enter a valid Philippine mobile number (e.g., 0917-123-4567 or +63917-123-4567)');
-                    } else {
-                        this.setCustomValidity('');
-                    }
-                });
-            </script>
-
-            <script>
-                document.addEventListener('DOMContentLoaded', function() {
-                    const entertainerCheckboxes = document.querySelectorAll('input[name="entertainers[]"]');
-                    function updateNoEntertainerMessage() {
-                        const noMsg = document.getElementById('no-entertainer-message');
-                        const anyChecked = Array.from(entertainerCheckboxes).some(c => c.checked);
-                        if (noMsg) noMsg.style.display = anyChecked ? 'none' : 'block';
-                    }
-                    entertainerCheckboxes.forEach(function(cb) {
-                        cb.addEventListener('change', function() {
-                            // Toggle role section
-                            const section = document.getElementById('roles-' + this.value);
-                            if (section) section.style.display = this.checked ? 'block' : 'none';
-                            updateNoEntertainerMessage();
-                        });
-                    });
-                    // Run on page load in case of pre-checked boxes (e.g. after validation error)
-                    updateNoEntertainerMessage();
-                });
-            </script>
-
-            <script>
-                // Handle province and municipality selection
-                document.addEventListener('DOMContentLoaded', function() {
-                    const provinceSelect = document.getElementById('province');
-                    const municipalitySelect = document.getElementById('municipality');
-                    const barangaySelect = document.getElementById('barangay');
-
-                    // When province is selected
-                    provinceSelect.addEventListener('change', async function() {
-                        const selectedProvince = this.value;
-                        municipalitySelect.innerHTML = '<option value="">Select Municipality/City</option>';
-                        barangaySelect.innerHTML = '<option value="">Select Barangay</option>';
-
-                        if (selectedProvince) {
-                            try {
-                                const response = await fetch('get_locations.php', {
-                                    method: 'POST',
-                                    headers: {
-                                        'Content-Type': 'application/x-www-form-urlencoded',
-                                    },
-                                    body: `province=${encodeURIComponent(selectedProvince)}`
-                                });
-
-                                if (response.ok) {
-                                    const municipalities = await response.json();
-                                    municipalities.forEach(municipality => {
-                                        const option = document.createElement('option');
-                                        option.value = municipality;
-                                        option.textContent = municipality;
-                                        municipalitySelect.appendChild(option);
-                                    });
-                                }
-                            } catch (error) {
-                                console.error('Error fetching municipalities:', error);
-                            }
-                        }
-                    });
-
-                    // When municipality is selected
-                    municipalitySelect.addEventListener('change', async function() {
-                        const selectedProvince = provinceSelect.value;
-                        const selectedMunicipality = this.value;
-                        barangaySelect.innerHTML = '<option value="">Select Barangay</option>';
-
-                        if (selectedProvince && selectedMunicipality) {
-                            try {
-                                const response = await fetch('get_locations.php', {
-                                    method: 'POST',
-                                    headers: {
-                                        'Content-Type': 'application/x-www-form-urlencoded',
-                                    },
-                                    body: `province=${encodeURIComponent(selectedProvince)}&municipality=${encodeURIComponent(selectedMunicipality)}`
-                                });
-
-                                if (response.ok) {
-                                    const barangays = await response.json();
-                                    barangays.forEach(barangay => {
-                                        const option = document.createElement('option');
-                                        option.value = barangay;
-                                        option.textContent = barangay;
-                                        barangaySelect.appendChild(option);
-                                    });
-                                }
-                            } catch (error) {
-                                console.error('Error fetching barangays:', error);
-                            }
-                        }
-                    });
-                });
-            </script>
-
-</body>
-<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-<script>
-    // Toggle booking option sections
-    document.getElementById('bookingOption').addEventListener('change', function() {
-        var v = this.value;
-        document.getElementById('option1Section').style.display = v === 'option1' ? 'block' : 'none';
-        document.getElementById('option2Section').style.display = v === 'option2' ? 'block' : 'none';
-    });
-</script>
-<script>
-    // Handle form submission via AJAX
-    document.getElementById('bookingForm').addEventListener('submit', function(event) {
-        event.preventDefault();
-        
-        // Show loading indicator
-        const submitBtn = this.querySelector('button[type="submit"]');
-        const originalBtnText = submitBtn.innerHTML;
-        submitBtn.disabled = true;
-        submitBtn.innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Processing...';
-        
-        const formData = new FormData(this);
-        
-        // First, submit the booking data
-        fetch('process_booking.php', {
-            method: 'POST',
-            body: formData
-        })
-        .then(response => response.json())
-        .then(data => {
-            if (data.success) {
-                console.log('Booking successful:', data);
-                
-                // Get payment method
-                const paymentMethod = document.querySelector('input[name="payment_method"]:checked').value;
-                
-                if (paymentMethod === 'gcash' || paymentMethod === 'paymaya' || paymentMethod === 'paypal') {
-                    // Create payment data for server-side processing
-                    const paymentData = new FormData();
-                    paymentData.append('payment_method', paymentMethod);
-                    paymentData.append('amount', Math.round(parseFloat(document.getElementById('down_payment').value.replace(/,/g, '')) * 100)); // Convert to centavos
-                    paymentData.append('booking_id', data.booking_id);
-                    paymentData.append('first_name', document.getElementById('first_name').value);
-                    paymentData.append('last_name', document.getElementById('last_name').value);
-                    paymentData.append('email', document.getElementById('email').value);
-                    paymentData.append('contact_number', document.getElementById('contact_number').value);
+                    const totalPrice = parseFloat(totalPriceStr) || 0;
+                    const downPayment = parseFloat(downPaymentStr) || 0;
+                    const minimumDownPayment = totalPrice * 0.5;
                     
-                    // Process payment server-side and get redirect URL
-                    fetch('process_magpie_payment.php', {
-                        method: 'POST',
-                        body: paymentData
-                    })
-                    .then(response => {
-                        if (!response.ok) {
-                            throw new Error('Network response was not ok: ' + response.status);
-                        }
-                        return response.json();
-                    })
-                    .then(paymentResult => {
-                        if (paymentResult.success && paymentResult.checkout_url) {
-                            // Redirect to checkout URL
-                            window.location.href = paymentResult.checkout_url;
-                        } else {
-                            alert('Payment processing error: ' + (paymentResult.message || 'Unknown error'));
-                            submitBtn.disabled = false;
-                            submitBtn.innerHTML = originalBtnText;
-                        }
-                    })
-                    .catch(error => {
-                        console.error('Payment error:', error);
-                        alert('Payment processing error. Please try again.');
-                        submitBtn.disabled = false;
-                        submitBtn.innerHTML = originalBtnText;
-                    });
-                } else {
-                    // Redirect to a success page for other payment methods
-                    window.location.href = 'payment-confirmation.php?booking_id=' + data.booking_id + '&status=success';
-                }
-            } else {
-                console.error('Booking error:', data);
-                alert('Booking error: ' + (data.message || 'Unknown error'));
-                submitBtn.disabled = false;
-                submitBtn.innerHTML = originalBtnText;
-            }
-        })
-        .catch(error => {
-            console.error('Error:', error);
-            alert('An error occurred. Please try again.');
-            submitBtn.disabled = false;
-            submitBtn.innerHTML = originalBtnText;
-        });
-    });
-</script>
-</html>
+                    if (downPayment < minimumDownPayment) {
+                        alert('Down payment must be at least 50% of the total price (' + formatWithCommas(minimumDownPayment.toFixed(2)) + ')');
+                        document.getElementById('down_payment').focus();
+                        return;
+                    }
+                    
+                    // Show loading indicator
+                    const submitBtn = this.querySelector('button[type="submit"]');
+                    const originalBtnText = submitBtn.innerHTML;
+                    submitBtn.disabled = true;
+                    submitBtn.innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Processing...';
+                    
+                    const formData = new FormData(this);
+{{ ... }}
