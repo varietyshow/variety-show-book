@@ -1,17 +1,17 @@
 <?php
 // Payment Processing Script with PayMongo Integration
 
-// Enable error display for debugging
-ini_set('display_errors', 1);
+// Prevent any output before headers are sent
+ob_start();
+
+// Disable error display in output
+ini_set('display_errors', 0);
 error_reporting(E_ALL);
 
 // Create a debug log file
 $debug_log = dirname(__DIR__) . '/logs/payment_debug.log';
 file_put_contents($debug_log, '[' . date('Y-m-d H:i:s') . '] Payment process started' . PHP_EOL, FILE_APPEND);
 file_put_contents($debug_log, '[' . date('Y-m-d H:i:s') . '] POST data: ' . json_encode($_POST) . PHP_EOL, FILE_APPEND);
-
-// Start output buffering to catch any unexpected output
-ob_start();
 
 try {
     // Set content type to JSON
@@ -183,3 +183,4 @@ try {
     ]);
     file_put_contents($debug_log, '[' . date('Y-m-d H:i:s') . '] Payment process failed' . PHP_EOL, FILE_APPEND);
 }
+exit(); // Ensure no additional output
