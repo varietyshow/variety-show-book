@@ -5,7 +5,7 @@ use PHPMailer\PHPMailer\Exception;
 
 require __DIR__ . '/../vendor/autoload.php';
 
-function sendEmail($to, $subject, $body) {
+function sendEmail($to, $subject, $body, $altBody = '') {
     error_log("[Email] Starting email send process to: " . $to);
     
     // Check if email is empty or invalid
@@ -60,7 +60,13 @@ function sendEmail($to, $subject, $body) {
         $mail->isHTML(true);
         $mail->Subject = $subject;
         $mail->Body = $body;
-        $mail->AltBody = strip_tags($body);
+        
+        // Set alternative plain text body if provided, otherwise strip HTML tags
+        if (!empty($altBody)) {
+            $mail->AltBody = $altBody;
+        } else {
+            $mail->AltBody = strip_tags($body);
+        }
 
         error_log("[Email] Email content set - Subject: " . $subject);
 
