@@ -2664,8 +2664,8 @@ document.addEventListener('DOMContentLoaded', function() {
                             const paymentMethod = document.querySelector('input[name="payment_method"]:checked').value;
                             
                             if (paymentMethod === 'gcash') {
-                                // Redirect to PayMongo integration
-                                window.location.href = 'paymongo_integration.php?booking_id=' + data.booking_id + '&amount=' + downPayment;
+                                // Redirect to PayMongo payment processing
+                                window.location.href = 'process_paymongo_payment.php?booking_id=' + data.booking_id + '&amount=' + downPayment;
                             } else {
                                 // Fallback for other payment methods (should not happen with current setup)
                                 alert('Payment method not supported. Please contact support.');
