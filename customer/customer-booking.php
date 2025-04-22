@@ -2464,7 +2464,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     paymentData.append('contact_number', document.getElementById('contact_number').value);
                     
                     // Process payment server-side and get redirect URL
-                    fetch('mock_payment_processor.php', {
+                    fetch('process_magpie_payment.php', {
                         method: 'POST',
                         body: paymentData
                     })
