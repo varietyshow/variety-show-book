@@ -10,10 +10,10 @@ if (!isset($_SESSION['first_name'])) {
 $first_name = htmlspecialchars($_SESSION['first_name']); // Retrieve and sanitize the first_name
 
 // Database connection
-$servername = "sql12.freesqldatabase.com"; // Update with your server name
-$username = "sql12774230"; // Update with your database username
-$password = "ytPEFx33BF"; // Update with your database password
-$dbname = "sql12774230"; // Update with your database name
+$servername = "localhost"; // Update with your server name
+$username = "root"; // Update with your database username
+$password = ""; // Update with your database password
+$dbname = "db_booking_system"; // Update with your database name
 
 $conn = new mysqli($servername, $username, $password, $dbname);
 
@@ -1252,50 +1252,162 @@ if (isset($_SESSION['message'])) {
 }
 
 function cancelAppointment(appointmentId) {
+    console.log('cancelAppointment called with ID:', appointmentId);
     if (confirm('Are you sure you want to cancel this appointment?')) {
-        // Create and show the modal for entering cancellation reason
-        const modalHtml = `
-            <div id="cancel-reason-modal" style="display: flex; position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
-                background-color: rgba(0,0,0,0.5); justify-content: center; align-items: center; z-index: 1000;">
-                <div style="background: white; padding: 20px; border-radius: 8px; width: 500px; max-height: 80vh; overflow-y: auto;">
-                    <h2 style="margin-bottom: 20px;">Enter Reason for Cancellation</h2>
-                    <textarea 
-                        id="cancel-reason-text" 
-                        style="width: 100%; 
-                        padding: 10px; 
-                        margin-bottom: 20px; 
-                        border: 1px solid #ddd; 
-                        border-radius: 4px; 
-                        min-height: 100px; 
-                        resize: vertical;"
-                        placeholder="Please provide a reason for cancelling this appointment..."
-                    ></textarea>
-                    <div style="display: flex; justify-content: flex-end; gap: 10px;">
-                        <button onclick="closeReasonModal()" 
-                            style="padding: 8px 15px; 
-                            border-radius: 4px; 
-                            border: 1px solid #ddd; 
-                            background: #f5f5f5; 
-                            cursor: pointer;">Cancel</button>
-                        <button onclick="submitCancellation(${appointmentId})" 
-                            style="padding: 8px 15px; 
-                            border-radius: 4px; 
-                            border: none; 
-                            background: #dc3545; 
-                            color: white; 
-                            cursor: pointer;">Submit</button>
-                    </div>
-                </div>
-            </div>
-        `;
+        // Create modal container with animation
+        const modalContainer = document.createElement('div');
+        modalContainer.id = 'cancel-reason-modal';
+        modalContainer.style.cssText = 'display: flex; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.5); justify-content: center; align-items: center; z-index: 1000; opacity: 0; transition: opacity 0.3s ease;';
         
-        // Add modal to body
-        document.body.insertAdjacentHTML('beforeend', modalHtml);
+        // Create modal content with animation
+        const modalContent = document.createElement('div');
+        modalContent.style.cssText = 'background: white; padding: 28px 32px; border-radius: 12px; width: 500px; max-height: 80vh; overflow-y: auto; box-shadow: 0 10px 25px rgba(0,0,0,0.2); transform: translateY(20px); transition: transform 0.3s ease; font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;';
+        
+        // Create header
+        const header = document.createElement('h2');
+        header.style.cssText = 'margin-bottom: 24px; color: #333; font-size: 22px; font-weight: 600; border-bottom: 1px solid #eee; padding-bottom: 12px;';
+        header.textContent = 'Enter Reason for Cancellation';
+        
+        // Create textarea
+        const textarea = document.createElement('textarea');
+        textarea.id = 'cancel-reason-text';
+        textarea.style.cssText = 'width: 100%; padding: 12px; margin-bottom: 20px; border: 1px solid #ccc; border-radius: 6px; min-height: 120px; resize: vertical; font-family: inherit; font-size: 14px; line-height: 1.5; box-shadow: inset 0 1px 3px rgba(0,0,0,0.1); transition: border-color 0.2s, box-shadow 0.2s;';
+        textarea.placeholder = 'Please provide a reason for cancelling this appointment...';
+        
+        // Add focus effect
+        textarea.addEventListener('focus', function() {
+            this.style.borderColor = '#80bdff';
+            this.style.boxShadow = '0 0 0 0.2rem rgba(0,123,255,0.25)';
+        });
+        
+        textarea.addEventListener('blur', function() {
+            this.style.borderColor = '#ccc';
+            this.style.boxShadow = 'inset 0 1px 3px rgba(0,0,0,0.1)';
+        });
+        
+        // Create button container
+        const buttonContainer = document.createElement('div');
+        buttonContainer.style.cssText = 'display: flex; justify-content: flex-end; gap: 12px; margin-top: 10px;';
+        
+        // Create cancel button
+        const cancelButton = document.createElement('button');
+        cancelButton.textContent = 'Cancel';
+        cancelButton.style.cssText = 'padding: 10px 18px; border-radius: 6px; border: 1px solid #ddd; background: #f8f9fa; cursor: pointer; font-weight: 500; font-size: 14px; transition: all 0.2s ease; color: #495057;';
+        cancelButton.onmouseover = function() {
+            this.style.backgroundColor = '#e9ecef';
+            this.style.borderColor = '#ced4da';
+        };
+        cancelButton.onmouseout = function() {
+            this.style.backgroundColor = '#f8f9fa';
+            this.style.borderColor = '#ddd';
+        };
+        cancelButton.onclick = function() {
+            console.log('Cancel button clicked');
+            modalContainer.style.opacity = '0';
+            modalContent.style.transform = 'translateY(20px)';
+            setTimeout(() => {
+                document.body.removeChild(modalContainer);
+            }, 300); // Match the transition duration
+        };
+        
+        // Create submit button
+        const submitButton = document.createElement('button');
+        submitButton.textContent = 'Submit';
+        submitButton.style.cssText = 'padding: 10px 18px; border-radius: 6px; border: none; background: #dc3545; color: white; cursor: pointer; font-weight: 500; font-size: 14px; transition: all 0.2s ease; box-shadow: 0 2px 4px rgba(220, 53, 69, 0.3);';
+        submitButton.onmouseover = function() {
+            this.style.backgroundColor = '#c82333';
+            this.style.boxShadow = '0 4px 8px rgba(220, 53, 69, 0.4)';
+        };
+        submitButton.onmouseout = function() {
+            this.style.backgroundColor = '#dc3545';
+            this.style.boxShadow = '0 2px 4px rgba(220, 53, 69, 0.3)';
+        };
+        submitButton.onclick = function() {
+            console.log('Submit button clicked for appointment ID:', appointmentId);
+            // Store the reason text before removing the modal
+            const reasonText = textarea.value.trim();
+            
+            if (!reasonText) {
+                alert('Please enter a reason for cancellation.');
+                return;
+            }
+            
+            // Disable the submit button and show loading state
+            submitButton.disabled = true;
+            submitButton.textContent = 'Cancelling...';
+            
+            // Send the cancellation request
+            fetch('cancel-appointment.php', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                },
+                body: `appointment_id=${appointmentId}&reason=${encodeURIComponent(reasonText)}`
+            })
+            .then(response => {
+                console.log('Response status:', response.status);
+                return response.text().then(text => {
+                    console.log('Raw response:', text);
+                    try {
+                        return JSON.parse(text);
+                    } catch (e) {
+                        console.error('Failed to parse response as JSON:', e);
+                        throw new Error('Invalid JSON response from server');
+                    }
+                });
+            })
+            .then(data => {
+                console.log('Parsed data:', data);
+                if (data.success) {
+                    // Animate modal closing before showing success message and reloading
+                    modalContainer.style.opacity = '0';
+                    modalContent.style.transform = 'translateY(20px)';
+                    
+                    setTimeout(() => {
+                        document.body.removeChild(modalContainer);
+                        alert('Appointment cancelled successfully');
+                        location.reload(); // Refresh the page
+                    }, 300);
+                } else {
+                    alert(data.message || 'Failed to cancel appointment');
+                    submitButton.disabled = false;
+                    submitButton.textContent = 'Submit';
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('An error occurred while cancelling the appointment: ' + error.message);
+                submitButton.disabled = false;
+                submitButton.textContent = 'Submit';
+            });
+        };
+        
+        // Assemble the modal
+        buttonContainer.appendChild(cancelButton);
+        buttonContainer.appendChild(submitButton);
+        
+        modalContent.appendChild(header);
+        modalContent.appendChild(textarea);
+        modalContent.appendChild(buttonContainer);
+        
+        modalContainer.appendChild(modalContent);
+        
+        // Add to document
+        document.body.appendChild(modalContainer);
+        
+        // Trigger animation after a small delay to ensure the DOM is updated
+        setTimeout(() => {
+            modalContainer.style.opacity = '1';
+            modalContent.style.transform = 'translateY(0)';
+        }, 10);
+        
+        // Focus the textarea
+        textarea.focus();
     }
 }
 
 function closeReasonModal() {
-    // Handle both types of modals (reason view modal and cancel reason modal)
+    // This function is kept for compatibility with other parts of the code
     const reasonViewModal = document.getElementById('reason-modal');
     const cancelReasonModal = document.getElementById('cancel-reason-modal');
     
@@ -1304,13 +1416,24 @@ function closeReasonModal() {
     }
     
     if (cancelReasonModal) {
-        cancelReasonModal.remove(); // Remove the dynamically added modal
+        cancelReasonModal.remove();
     }
 }
 
 function submitCancellation(appointmentId) {
-    const reasonText = document.getElementById('cancel-reason-text').value.trim();
+    console.log('submitCancellation called with ID:', appointmentId);
+    const reasonText = document.getElementById('cancel-reason-text')?.value.trim();
+    console.log('Reason text:', reasonText);
+    
+    // Check if cancel-reason-text element exists
+    if (!document.getElementById('cancel-reason-text')) {
+        console.error('cancel-reason-text element not found');
+        alert('Error: Could not find the reason text field. Please try again.');
+        return;
+    }
+    
     const submitButton = document.querySelector(`button[onclick="submitCancellation(${appointmentId})"]`);
+    console.log('Submit button found:', !!submitButton);
     
     if (!reasonText) {
         alert('Please enter a reason for cancellation.');
@@ -1318,8 +1441,12 @@ function submitCancellation(appointmentId) {
     }
 
     // Disable the submit button and show loading state
-    submitButton.disabled = true;
-    submitButton.innerHTML = 'Cancelling...';
+    if (submitButton) {
+        submitButton.disabled = true;
+        submitButton.innerHTML = 'Cancelling...';
+    }
+    
+    console.log('Sending fetch request to cancel-appointment.php');
     
     // Send the cancellation request to the server
     fetch('cancel-appointment.php', {
@@ -1329,24 +1456,42 @@ function submitCancellation(appointmentId) {
         },
         body: `appointment_id=${appointmentId}&reason=${encodeURIComponent(reasonText)}`
     })
-    .then(response => response.json())
+    .then(response => {
+        console.log('Response status:', response.status);
+        // Log the raw response for debugging
+        return response.text().then(text => {
+            console.log('Raw response:', text);
+            try {
+                // Try to parse as JSON
+                return JSON.parse(text);
+            } catch (e) {
+                console.error('Failed to parse response as JSON:', e);
+                throw new Error('Invalid JSON response from server');
+            }
+        });
+    })
     .then(data => {
+        console.log('Parsed data:', data);
         if (data.success) {
             alert('Appointment cancelled successfully');
             location.reload(); // Refresh the page to show updated status
         } else {
             alert(data.message || 'Failed to cancel appointment');
             // Re-enable the button on failure
-            submitButton.disabled = false;
-            submitButton.innerHTML = 'Submit';
+            if (submitButton) {
+                submitButton.disabled = false;
+                submitButton.innerHTML = 'Submit';
+            }
         }
     })
     .catch(error => {
         console.error('Error:', error);
-        alert('An error occurred while cancelling the appointment');
+        alert('An error occurred while cancelling the appointment: ' + error.message);
         // Re-enable the button on error
-        submitButton.disabled = false;
-        submitButton.innerHTML = 'Submit';
+        if (submitButton) {
+            submitButton.disabled = false;
+            submitButton.innerHTML = 'Submit';
+        }
     })
     .finally(() => {
         closeReasonModal();
