@@ -2439,7 +2439,7 @@ document.addEventListener('DOMContentLoaded', function() {
         <input type="text" id="balance" name="balance" class="form-control" readonly style="font-weight:bold; color:#2c3e50; background:#f8f9fa;">
     </div>
 
-                <button type="submit" class="btn btn-primary">Submit Booking & Pay</button>
+                <button type="submit" class="btn btn-primary" id="submitBookingBtn">Submit Booking & Pay</button>
             </form>
 
             <script>
@@ -2602,6 +2602,20 @@ document.addEventListener('DOMContentLoaded', function() {
     // Handle form submission via AJAX
     document.getElementById('bookingForm').addEventListener('submit', function(event) {
         event.preventDefault();
+        
+        // Validate down payment before submitting
+        const totalPriceField = document.getElementById('total_price');
+        const downPaymentField = document.getElementById('down_payment');
+        
+        const totalPrice = parseFloat(totalPriceField.value.replace(/,/g, '')) || 0;
+        const minDownPayment = totalPrice * 0.5;
+        const currentDownPayment = parseFloat(downPaymentField.value.replace(/,/g, '')) || 0;
+        
+        // Check if down payment is at least 50% of total price
+        if (currentDownPayment < minDownPayment) {
+            alert('Down payment must be at least 50% of the total price (₱' + formatWithCommas(minDownPayment.toFixed(2)) + ')');
+            return false; // Prevent form submission
+        }
         
         // Show loading indicator
         const submitBtn = this.querySelector('button[type="submit"]');
