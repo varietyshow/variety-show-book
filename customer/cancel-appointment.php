@@ -1,16 +1,21 @@
 <?php
+// Turn off error display for production - this prevents PHP errors from breaking JSON output
+ini_set('display_errors', 0);
+error_reporting(E_ALL);
+
+// Start output buffering to catch any unexpected output
+ob_start();
+
 session_start();
 
 // Check if user is logged in
 if (!isset($_SESSION['customer_id'])) {
-    echo json_encode(['success' => false, 'message' => 'Not logged in']);
-    exit();
+    sendJsonResponse(false, 'Not logged in');
 }
 
 // Check if required parameters are present
 if (!isset($_POST['appointment_id']) || !isset($_POST['reason'])) {
-    echo json_encode(['success' => false, 'message' => 'Missing required parameters']);
-    exit();
+    sendJsonResponse(false, 'Missing required parameters');
 }
 
 // Include mail configuration
@@ -25,8 +30,7 @@ $dbname = "db_booking_system";
 $conn = new mysqli($servername, $username, $password, $dbname);
 
 if ($conn->connect_error) {
-    echo json_encode(['success' => false, 'message' => 'Database connection failed']);
-    exit();
+    sendJsonResponse(false, 'Database connection failed');
 }
 
 $appointment_id = intval($_POST['appointment_id']);
@@ -53,10 +57,9 @@ try {
     if ($result->num_rows === 0) {
         // Either the appointment doesn't exist, is already cancelled, or belongs to another customer
         $conn->rollback();
-        echo json_encode(['success' => false, 'message' => 'Invalid appointment or already cancelled']);
-        $check_stmt->close();
+        if (isset($check_stmt)) $check_stmt->close();
         $conn->close();
-        exit();
+        sendJsonResponse(false, 'Invalid appointment or already cancelled');
     }
 
     $appointment_details = $result->fetch_assoc();
@@ -70,41 +73,72 @@ try {
         // Get admin email
         $admin_sql = "SELECT email FROM admin_account WHERE admin_id = 1";
         $admin_result = $conn->query($admin_sql);
-        if ($admin_result && $admin_row = $admin_result->fetch_assoc()) {
-            $admin_email = $admin_row['email'];
-            
-            // Prepare email content
-            $subject = "Appointment Cancellation Notification";
-            $body = "Dear Admin,\n\n";
-            $body .= "An appointment has been cancelled. Here are the details:\n\n";
-            $body .= "Appointment ID: " . $appointment_id . "\n";
-            $body .= "Customer Name: " . $appointment_details['customer_fname'] . " " . $appointment_details['customer_lname'] . "\n";
-            $body .= "Date: " . $appointment_details['date_schedule'] . "\n";
-            $body .= "Time: " . $appointment_details['time_start'] . " - " . $appointment_details['time_end'] . "\n";
-            $body .= "Entertainer(s): " . $appointment_details['entertainer_name'] . "\n";
-            $body .= "Cancellation Reason: " . $reason . "\n\n";
-            $body .= "Please review this cancellation in your admin dashboard.\n\n";
-            $body .= "Best regards,\nBooking System";
+        
+        // Try to send email, but don't let email failures prevent cancellation
+        try {
+            if ($admin_result && $admin_row = $admin_result->fetch_assoc()) {
+                $admin_email = $admin_row['email'];
+                
+                // Prepare email content
+                $subject = "Appointment Cancellation Notification";
+                $body = "Dear Admin,<br><br>";
+                $body .= "An appointment has been cancelled. Here are the details:<br><br>";
+                $body .= "<b>Appointment ID:</b> " . $appointment_id . "<br>";
+                $body .= "<b>Customer Name:</b> " . $appointment_details['customer_fname'] . " " . $appointment_details['customer_lname'] . "<br>";
+                $body .= "<b>Date:</b> " . $appointment_details['date_schedule'] . "<br>";
+                $body .= "<b>Time:</b> " . $appointment_details['time_start'] . " - " . $appointment_details['time_end'] . "<br>";
+                $body .= "<b>Entertainer(s):</b> " . $appointment_details['entertainer_name'] . "<br>";
+                $body .= "<b>Cancellation Reason:</b> " . $reason . "<br><br>";
+                $body .= "Please review this cancellation in your admin dashboard.<br><br>";
+                $body .= "Best regards,<br>Booking System";
 
-            // Send email notification
-            sendEmail($admin_email, $subject, $body);
+                // Send email notification - but don't let email failures affect the transaction
+                sendEmail($admin_email, $subject, $body);
+            }
+        } catch (Exception $emailEx) {
+            // Log email error but continue with cancellation
+            error_log("Email sending failed: " . $emailEx->getMessage());
         }
         
         // Commit the transaction
         $conn->commit();
-        echo json_encode(['success' => true, 'message' => 'Appointment cancelled successfully']);
+        
+        if (isset($check_stmt)) $check_stmt->close();
+        if (isset($update_stmt)) $update_stmt->close();
+        $conn->close();
+        
+        sendJsonResponse(true, 'Appointment cancelled successfully');
     } else {
         // Rollback if update fails
         $conn->rollback();
-        echo json_encode(['success' => false, 'message' => 'Failed to cancel appointment']);
+        
+        if (isset($check_stmt)) $check_stmt->close();
+        if (isset($update_stmt)) $update_stmt->close();
+        $conn->close();
+        
+        sendJsonResponse(false, 'Failed to cancel appointment');
     }
 } catch (Exception $e) {
     // Rollback on any error
     $conn->rollback();
-    echo json_encode(['success' => false, 'message' => 'An error occurred while cancelling the appointment']);
-} finally {
+    
     if (isset($check_stmt)) $check_stmt->close();
     if (isset($update_stmt)) $update_stmt->close();
     $conn->close();
+    
+    sendJsonResponse(false, 'An error occurred while cancelling the appointment: ' . $e->getMessage());
+}
+
+// Helper function to send JSON response and exit
+function sendJsonResponse($success, $message) {
+    // Clear any output that might have been generated
+    ob_end_clean();
+    
+    // Set proper content type
+    header('Content-Type: application/json');
+    
+    // Output JSON response
+    echo json_encode(['success' => $success, 'message' => $message]);
+    exit();
 }
 ?>
