@@ -2666,8 +2666,23 @@ document.addEventListener('DOMContentLoaded', function() {
                             const paymentMethod = document.querySelector('input[name="payment_method"]:checked').value;
                             
                             if (paymentMethod === 'gcash') {
-                                // Redirect to PayMongo payment processing
-                                window.location.href = 'process_paymongo_payment.php?booking_id=' + data.booking_id + '&amount=' + downPayment;
+                                // Log the redirection for debugging
+                                console.log('Redirecting to payment page:', 'process_paymongo_payment.php?booking_id=' + data.booking_id + '&amount=' + downPayment);
+                                
+                                // Create a direct link and click it (more reliable than window.location)
+                                const paymentLink = document.createElement('a');
+                                paymentLink.href = 'process_paymongo_payment.php?booking_id=' + data.booking_id + '&amount=' + downPayment;
+                                paymentLink.style.display = 'none';
+                                document.body.appendChild(paymentLink);
+                                
+                                // Show a message to the user
+                                alert('Booking successful! You will now be redirected to the payment page.');
+                                
+                                // Trigger the click after a short delay
+                                setTimeout(() => {
+                                    paymentLink.click();
+                                    document.body.removeChild(paymentLink);
+                                }, 500);
                             } else {
                                 // Fallback for other payment methods (should not happen with current setup)
                                 alert('Payment method not supported. Please contact support.');
