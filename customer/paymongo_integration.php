@@ -1,3 +1,4 @@
+
 <?php
 /**
  * PayMongo Integration Helper
@@ -25,6 +26,39 @@ require_once dirname(__DIR__) . '/config/paymongo_config.php';
  * @return array Response from PayMongo API
  */
 function createGCashSource($amount, $name, $email, $phone, $success_url, $failed_url, $reference_number = '') {
+    return createPaymongoSource('gcash', $amount, $name, $email, $phone, $success_url, $failed_url, $reference_number);
+}
+
+/**
+ * Create a PayMongo source for PayMaya payments
+ * 
+ * @param float $amount Amount in PHP (will be converted to cents)
+ * @param string $name Customer name
+ * @param string $email Customer email
+ * @param string $phone Customer phone number
+ * @param string $success_url URL to redirect on successful payment
+ * @param string $failed_url URL to redirect on failed payment
+ * @param string $reference_number Optional reference number for the transaction
+ * @return array Response from PayMongo API
+ */
+function createPayMayaSource($amount, $name, $email, $phone, $success_url, $failed_url, $reference_number = '') {
+    return createPaymongoSource('paymaya', $amount, $name, $email, $phone, $success_url, $failed_url, $reference_number);
+}
+
+/**
+ * Create a PayMongo source for any supported payment type
+ * 
+ * @param string $type Payment type (gcash, paymaya, etc.)
+ * @param float $amount Amount in PHP (will be converted to cents)
+ * @param string $name Customer name
+ * @param string $email Customer email
+ * @param string $phone Customer phone number
+ * @param string $success_url URL to redirect on successful payment
+ * @param string $failed_url URL to redirect on failed payment
+ * @param string $reference_number Optional reference number for the transaction
+ * @return array Response from PayMongo API
+ */
+function createPaymongoSource($type, $amount, $name, $email, $phone, $success_url, $failed_url, $reference_number = '') {
     try {
         // Convert amount to cents (PayMongo requires amount in cents)
         $amount_in_cents = round($amount * 100);
@@ -43,7 +77,7 @@ function createGCashSource($amount, $name, $email, $phone, $success_url, $failed
                         'email' => $email,
                         'phone' => $phone
                     ],
-                    'type' => 'gcash',
+                    'type' => $type,
                     'currency' => 'PHP'
                 ]
             ]
@@ -55,14 +89,14 @@ function createGCashSource($amount, $name, $email, $phone, $success_url, $failed
         }
         
         // Log the request data for debugging
-        error_log("PayMongo source request: " . json_encode($data));
+        error_log("PayMongo {$type} source request: " . json_encode($data));
         
         // Make the API request
         $response = makePayMongoRequest('sources', $data);
         
         return $response;
     } catch (Exception $e) {
-        error_log("Error in createGCashSource: " . $e->getMessage());
+        error_log("Error in createPaymongoSource: " . $e->getMessage());
         return ['error' => $e->getMessage()];
     }
 }
