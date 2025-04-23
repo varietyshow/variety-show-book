@@ -60,8 +60,8 @@ try {
     
     // Process payment based on payment method
     try {
-        if ($payment_method === 'gcash') {
-            // Use PayMongo API for GCash
+        // For GCash or PayMaya, use PayMongo API
+        if ($payment_method === 'gcash' || $payment_method === 'paymaya') {
             // Convert amount from centavos to PHP if needed
             $amount_in_php = $amount;
             if ($amount > 1000) { // If amount seems to be in centavos (e.g., 10000 for PHP 100)
@@ -76,15 +76,28 @@ try {
             error_log("Amount conversion: original={$amount}, converted={$amount_in_php}");
             file_put_contents($debug_log, '[' . date('Y-m-d H:i:s') . '] Amount conversion: original=' . $amount . ', converted=' . $amount_in_php . PHP_EOL, FILE_APPEND);
             
-            $source_response = createGCashSource(
-                $amount_in_php,
-                $customer_name,
-                $email,
-                $contact_number,
-                $success_url,
-                $failed_url,
-                $payment_reference
-            );
+            // Create the appropriate source based on payment method
+            if ($payment_method === 'gcash') {
+                $source_response = createGCashSource(
+                    $amount_in_php,
+                    $customer_name,
+                    $email,
+                    $contact_number,
+                    $success_url,
+                    $failed_url,
+                    $payment_reference
+                );
+            } else { // PayMaya
+                $source_response = createPayMayaSource(
+                    $amount_in_php,
+                    $customer_name,
+                    $email,
+                    $contact_number,
+                    $success_url,
+                    $failed_url,
+                    $payment_reference
+                );
+            }
             
             // Log the full response for debugging
             error_log("PayMongo response: " . json_encode($source_response));
@@ -97,20 +110,20 @@ try {
                 $charge_id = $source_id; // Use source ID as charge ID
                 
                 // Log successful source creation
-                logPayMongoActivity("GCash source created successfully", [
+                logPayMongoActivity("{$payment_method} source created successfully", [
                     'source_id' => $source_id,
                     'booking_id' => $booking_id,
                     'amount' => $amount_in_php,
                     'checkout_url' => $checkout_url
                 ]);
-                file_put_contents($debug_log, '[' . date('Y-m-d H:i:s') . '] GCash source created successfully' . PHP_EOL, FILE_APPEND);
+                file_put_contents($debug_log, '[' . date('Y-m-d H:i:s') . '] ' . ucfirst($payment_method) . ' source created successfully' . PHP_EOL, FILE_APPEND);
                 
-                error_log("SUCCESS: GCash source created. Redirecting to: {$checkout_url}");
-                file_put_contents($debug_log, '[' . date('Y-m-d H:i:s') . '] SUCCESS: GCash source created. Redirecting to: ' . $checkout_url . PHP_EOL, FILE_APPEND);
+                error_log("SUCCESS: {$payment_method} source created. Redirecting to: {$checkout_url}");
+                file_put_contents($debug_log, '[' . date('Y-m-d H:i:s') . '] SUCCESS: ' . ucfirst($payment_method) . ' source created. Redirecting to: ' . $checkout_url . PHP_EOL, FILE_APPEND);
             } else {
                 // Log error and throw exception
-                logPayMongoActivity("Failed to create GCash source", $source_response);
-                file_put_contents($debug_log, '[' . date('Y-m-d H:i:s') . '] Failed to create GCash source' . PHP_EOL, FILE_APPEND);
+                logPayMongoActivity("Failed to create {$payment_method} source", $source_response);
+                file_put_contents($debug_log, '[' . date('Y-m-d H:i:s') . '] Failed to create ' . $payment_method . ' source' . PHP_EOL, FILE_APPEND);
                 
                 if (isset($source_response['errors'])) {
                     $error_details = json_encode($source_response['errors']);
@@ -124,9 +137,9 @@ try {
                 }
             }
         } else {
-            // For other payment methods, use the mock payment gateway
+            // For other payment methods (PayPal), use the mock payment gateway
             $checkout_url = "mock_payment_gateway.php?ref={$payment_reference}&method={$payment_method}&booking_id={$booking_id}&charge_id={$charge_id}";
-            file_put_contents($debug_log, '[' . date('Y-m-d H:i:s') . '] Using mock payment gateway' . PHP_EOL, FILE_APPEND);
+            file_put_contents($debug_log, '[' . date('Y-m-d H:i:s') . '] Using mock payment gateway for ' . $payment_method . PHP_EOL, FILE_APPEND);
         }
     } catch (Exception $e) {
         // If PayMongo API fails, fall back to mock payment gateway
