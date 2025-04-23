@@ -792,6 +792,92 @@ sort($provinces); // Sort provinces alphabetically
     #package_options {
         margin-top: 20px;
     }
+    
+    /* Payment Method Styles */
+    .payment-methods-container {
+        margin-top: 10px;
+    }
+    
+    .payment-method-options {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 10px;
+    }
+    
+    .payment-option {
+        position: relative;
+    }
+    
+    .payment-option input[type="radio"] {
+        position: absolute;
+        opacity: 0;
+    }
+    
+    .payment-option label {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        padding: 10px;
+        background: #ffffff;
+        border: 1px solid #e0e0e0;
+        border-radius: 6px;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        height: 100%;
+    }
+    
+    .payment-option:hover label {
+        border-color: #4a90e2;
+        transform: translateY(-2px);
+        box-shadow: 0 3px 8px rgba(0, 0, 0, 0.08);
+    }
+    
+    .payment-option input[type="radio"]:checked + label {
+        background: #f0f7ff;
+        border-color: #4a90e2;
+        box-shadow: 0 0 0 1px rgba(74, 144, 226, 0.3);
+    }
+    
+    .payment-logo {
+        height: 30px;
+        width: 40px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-right: 10px;
+    }
+    
+    .payment-logo img {
+        max-height: 100%;
+        max-width: 100%;
+        object-fit: contain;
+    }
+    
+    .payment-details {
+        text-align: left;
+    }
+    
+    .payment-details h4 {
+        margin: 0;
+        color: #2c3e50;
+        font-size: 0.9em;
+    }
+    
+    .payment-details p {
+        display: none;
+    }
+    
+    @media (max-width: 768px) {
+        .payment-method-options {
+            grid-template-columns: repeat(2, 1fr);
+        }
+    }
+    
+    @media (max-width: 480px) {
+        .payment-method-options {
+            grid-template-columns: 1fr;
+        }
+    }
 
     .package-option {
         background: #ffffff;
@@ -2114,13 +2200,57 @@ document.addEventListener('DOMContentLoaded', function() {
                     document.getElementById('total_price').value = formatWithCommas(grandTotal.toFixed(2));
                     
                     // Calculate and set 50% down payment with comma formatting
-                    const downPayment = grandTotal * 0.5;
-                    document.getElementById('down_payment').value = formatWithCommas(downPayment.toFixed(2));
+                    const minDownPayment = grandTotal * 0.5;
                     
-                    // Calculate balance with comma formatting
-                    document.getElementById('balance').value = formatWithCommas((grandTotal - downPayment).toFixed(2));
+                    // Always set the default down payment when total price changes
+                    const downPaymentField = document.getElementById('down_payment');
+                    downPaymentField.value = formatWithCommas(minDownPayment.toFixed(2));
+                    
+                    // Update balance based on current down payment
+                    updateBalance();
                 }
 
+                        // Function to update balance based on current down payment
+                        function updateBalance() {
+                            const totalPriceField = document.getElementById('total_price');
+                            const downPaymentField = document.getElementById('down_payment');
+                            const balanceField = document.getElementById('balance');
+                            
+                            const totalPrice = parseFloat(totalPriceField.value.replace(/,/g, '')) || 0;
+                            const currentDownPayment = parseFloat(downPaymentField.value.replace(/,/g, '')) || 0;
+                            
+                            // Calculate and update balance (ensure it's never negative)
+                            const balance = Math.max(0, totalPrice - currentDownPayment);
+                            balanceField.value = formatWithCommas(balance.toFixed(2));
+                        }
+                        
+                        // Call updateBalance immediately to ensure down payment is set
+                        updateBalance();
+                        
+                        // Add event listener for down payment validation
+                        document.getElementById('down_payment').addEventListener('blur', function() {
+                            const totalPriceField = document.getElementById('total_price');
+                            const downPaymentField = document.getElementById('down_payment');
+                            
+                            // Parse values, removing commas
+                            const totalPrice = parseFloat(totalPriceField.value.replace(/,/g, '')) || 0;
+                            const minDownPayment = totalPrice * 0.5;
+                            let currentDownPayment = parseFloat(downPaymentField.value.replace(/,/g, '')) || 0;
+                            
+                            // Check if down payment is at least 50% of total price
+                            if (currentDownPayment < minDownPayment) {
+                                alert('Down payment must be at least 50% of the total price (₱' + formatWithCommas(minDownPayment.toFixed(2)) + ')');
+                                currentDownPayment = minDownPayment;
+                                downPaymentField.value = formatWithCommas(minDownPayment.toFixed(2));
+                            } else {
+                                // Format the down payment with commas
+                                downPaymentField.value = formatWithCommas(currentDownPayment.toFixed(2));
+                            }
+                            
+                            // Update balance
+                            updateBalance();
+                        });
+                        
                         updateGrandTotal();
                     }
 
@@ -2248,9 +2378,48 @@ document.addEventListener('DOMContentLoaded', function() {
                 <div class="form-group">
                     <label><strong>Select Payment Method:</strong> <span class="required">*</span></label>
                     <div class="payment-methods">
-                        <label><input type="radio" name="payment_method" value="gcash" required> GCash</label><br>
-                        <label><input type="radio" name="payment_method" value="paymaya"> PayMaya</label><br>
-                        <label><input type="radio" name="payment_method" value="paypal"> PayPal</label>
+                        <div class="payment-methods-container">
+                            <div class="payment-method-options">
+                                <div class="payment-option">
+                                    <input type="radio" id="gcash" name="payment_method" value="gcash" required>
+                                    <label for="gcash">
+                                        <div class="payment-logo">
+                                            <img src="assets/images/gcash-logo.png" alt="GCash">
+                                        </div>
+                                        <div class="payment-details">
+                                            <h4>GCash</h4>
+                                            <p>Pay using your GCash account</p>
+                                        </div>
+                                    </label>
+                                </div>
+                                
+                                <div class="payment-option">
+                                    <input type="radio" id="paymaya" name="payment_method" value="paymaya">
+                                    <label for="paymaya">
+                                        <div class="payment-logo">
+                                            <img src="assets/images/paymaya-logo.jpg" alt="PayMaya">
+                                        </div>
+                                        <div class="payment-details">
+                                            <h4>PayMaya</h4>
+                                            <p>Pay using your PayMaya account</p>
+                                        </div>
+                                    </label>
+                                </div>
+                                
+                                <div class="payment-option">
+                                    <input type="radio" id="paypal" name="payment_method" value="paypal">
+                                    <label for="paypal">
+                                        <div class="payment-logo">
+                                            <img src="assets/images/paypal-logo.png" alt="PayPal">
+                                        </div>
+                                        <div class="payment-details">
+                                            <h4>PayPal</h4>
+                                            <p>Pay using your PayPal account</p>
+                                        </div>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
 
@@ -2259,8 +2428,11 @@ document.addEventListener('DOMContentLoaded', function() {
         <input type="text" id="total_price" name="total_price" class="form-control" readonly style="font-weight:bold; color:#2c3e50; background:#f8f9fa;">
     </div>
     <div class="form-group">
-        <label for="down_payment">Down Payment (50%):</label>
-        <input type="text" id="down_payment" name="down_payment" class="form-control" readonly style="font-weight:bold; color:#2c3e50; background:#f8f9fa;">
+        <label for="down_payment">Down Payment (min 50%):</label>
+        <div class="input-group">
+            <span class="input-group-text">₱</span>
+            <input type="text" id="down_payment" name="down_payment" class="form-control" style="font-weight:bold; color:#2c3e50;">
+        </div>
     </div>
     <div class="form-group">
         <label for="balance">Balance:</label>
