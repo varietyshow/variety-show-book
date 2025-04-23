@@ -22,10 +22,10 @@ if (!isset($_POST['appointment_id']) || !isset($_POST['reason'])) {
 require_once '../includes/mail-config.php';
 
 // Database connection
-$servername = "localhost";
-$username = "root";
-$password = "";
-$dbname = "db_booking_system";
+$servername = "sql12.freesqldatabase.com";
+$username = "sql12774230";
+$password = "ytPEFx33BF";
+$dbname = "sql12774230";
 
 $conn = new mysqli($servername, $username, $password, $dbname);
 
