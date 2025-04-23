@@ -61,104 +61,6 @@ sort($provinces); // Sort provinces alphabetically
     <!-- Magpie Checkout.js from CDN -->
     <script src="https://checkout.magpie.im/v2/checkout.js"></script>
     
-    <!-- Location Selection JavaScript -->
-    <script>
-    document.addEventListener('DOMContentLoaded', function() {
-        const provinceSelect = document.getElementById('province');
-        const municipalitySelect = document.getElementById('municipality');
-        const barangaySelect = document.getElementById('barangay');
-        
-        // Function to load municipalities based on selected province
-        function loadMunicipalities() {
-            const selectedProvince = provinceSelect.value;
-            
-            // Reset municipality and barangay dropdowns
-            municipalitySelect.innerHTML = '<option value="">Select Municipality/City</option>';
-            barangaySelect.innerHTML = '<option value="">Select Barangay</option>';
-            
-            if (selectedProvince) {
-                // Show loading indicator
-                municipalitySelect.innerHTML += '<option value="" disabled>Loading...</option>';
-                
-                // Send AJAX request to get municipalities
-                const formData = new FormData();
-                formData.append('province', selectedProvince);
-                
-                fetch('get_locations.php', {
-                    method: 'POST',
-                    body: formData
-                })
-                .then(response => response.json())
-                .then(data => {
-                    // Remove loading indicator
-                    municipalitySelect.innerHTML = '<option value="">Select Municipality/City</option>';
-                    
-                    // Add municipalities to dropdown
-                    data.forEach(municipality => {
-                        const option = document.createElement('option');
-                        option.value = municipality;
-                        option.textContent = municipality;
-                        municipalitySelect.appendChild(option);
-                    });
-                })
-                .catch(error => {
-                    console.error('Error loading municipalities:', error);
-                    municipalitySelect.innerHTML = '<option value="">Error loading data</option>';
-                });
-            }
-        }
-        
-        // Function to load barangays based on selected municipality
-        function loadBarangays() {
-            const selectedProvince = provinceSelect.value;
-            const selectedMunicipality = municipalitySelect.value;
-            
-            // Reset barangay dropdown
-            barangaySelect.innerHTML = '<option value="">Select Barangay</option>';
-            
-            if (selectedProvince && selectedMunicipality) {
-                // Show loading indicator
-                barangaySelect.innerHTML += '<option value="" disabled>Loading...</option>';
-                
-                // Send AJAX request to get barangays
-                const formData = new FormData();
-                formData.append('province', selectedProvince);
-                formData.append('municipality', selectedMunicipality);
-                
-                fetch('get_locations.php', {
-                    method: 'POST',
-                    body: formData
-                })
-                .then(response => response.json())
-                .then(data => {
-                    // Remove loading indicator
-                    barangaySelect.innerHTML = '<option value="">Select Barangay</option>';
-                    
-                    // Add barangays to dropdown
-                    data.forEach(barangay => {
-                        const option = document.createElement('option');
-                        option.value = barangay;
-                        option.textContent = barangay;
-                        barangaySelect.appendChild(option);
-                    });
-                })
-                .catch(error => {
-                    console.error('Error loading barangays:', error);
-                    barangaySelect.innerHTML = '<option value="">Error loading data</option>';
-                });
-            }
-        }
-        
-        // Add event listeners
-        provinceSelect.addEventListener('change', loadMunicipalities);
-        municipalitySelect.addEventListener('change', loadBarangays);
-        
-        // Initialize if province is already selected (e.g., on page refresh)
-        if (provinceSelect.value) {
-            loadMunicipalities();
-        }
-    });
-    </script>
 </head>
 <style>
     body {
@@ -769,6 +671,12 @@ sort($provinces); // Sort provinces alphabetically
             }
         }
 
+        @media (min-width: 769px) {
+            .mobile-profile-links {
+                display: none;
+            }
+        }
+
         @media screen and (min-width: 769px) {
             .nav-items {
                 display: flex;
@@ -915,6 +823,11 @@ sort($provinces); // Sort provinces alphabetically
     .package-option input[type="radio"] {
         position: absolute;
         opacity: 0;
+    }
+
+    .package-option input[type="radio"]:checked + label {
+        background: #f0f7ff;
+        box-shadow: inset 0 0 0 2px #4a90e2;
     }
 
     .package-option label {
@@ -1128,6 +1041,7 @@ sort($provinces); // Sort provinces alphabetically
     .package-option input[type="radio"]:checked + label {
         background: #f8f9ff;
         border: 2px solid #4a90e2;
+        border-radius: 6px;
         padding: 18px;
     }
     
@@ -1419,66 +1333,6 @@ sort($provinces); // Sort provinces alphabetically
     }
 </style>
 
-<style>
-    /* Payment Method Styles */
-    .payment-methods {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 15px;
-        margin-top: 10px;
-    }
-
-    .payment-method-option {
-        position: relative;
-        margin: 0;
-        cursor: pointer;
-    }
-
-    .payment-method-option input[type="radio"] {
-        position: absolute;
-        opacity: 0;
-        width: 0;
-        height: 0;
-    }
-
-    .payment-method-button {
-        display: flex;
-        align-items: center;
-        padding: 10px 15px;
-        border: 1px solid #aaa;  /* Changed to gray border */
-        border-radius: 5px;
-        background-color: white;
-        transition: all 0.3s ease;
-        min-width: 150px;
-    }
-
-    .payment-logo {
-        width: 30px;
-        height: 30px;
-        margin-right: 10px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-    }
-
-    .payment-logo img {
-        max-width: 100%;
-        max-height: 100%;
-        object-fit: contain;
-    }
-
-    .payment-method-option input[type="radio"]:checked + .payment-method-button {
-        border-color: #0066cc;  /* Changed to blue border */
-        border-width: 2px;  /* Make the border slightly thicker when selected */
-        box-shadow: 0 0 5px rgba(0, 102, 204, 0.3);  /* Add a subtle blue glow */
-        background-color: #f8f9fa;
-    }
-
-    .payment-method-button span {
-        font-weight: 500;
-    }
-</style>
-
 <body>
 <script>
 // Define formatWithCommas as a global function (must be at the top for all scripts to use)
@@ -1683,45 +1537,9 @@ window.formatWithCommas = function(x) {
     <div class="form-group names-group">
         <div class="name-field" id="entertainer-section" style="width: 100%;">
             <label>Entertainer Role: <span class="required">*</span></label>
-            <style>
-                input[name="entertainers[]"]:checked ~ #entertainer-section #no-entertainer-message {
-                    display: none !important;
-                }
-                input[name="entertainers[]"]:checked ~ #entertainer-section .role-section {
-                    display: block !important;
-                }
-            </style>
             <p id="no-entertainer-message" style="color: #6c757d; background: #f8f9fa; padding: 10px; border: 1px dashed #ccc; text-align: center; margin: 10px 0;">
                 No entertainer selected
             </p>
-            <script>
-            // Immediate fix for the "No entertainer selected" message
-            document.addEventListener('DOMContentLoaded', function() {
-                // Check if any entertainer is selected on page load
-                function checkEntertainers() {
-                    const hasSelectedEntertainer = document.querySelector('input[name="entertainers[]"]:checked');
-                    const message = document.getElementById('no-entertainer-message');
-                    if (message && hasSelectedEntertainer) {
-                        message.style.display = 'none';
-                    }
-                }
-                
-                // Add event listeners to all entertainer checkboxes
-                const checkboxes = document.querySelectorAll('input[name="entertainers[]"]');
-                checkboxes.forEach(function(checkbox) {
-                    checkbox.addEventListener('change', function() {
-                        const message = document.getElementById('no-entertainer-message');
-                        if (message) {
-                            message.style.display = this.checked ? 'none' : 'block';
-                        }
-                    });
-                });
-                
-                // Check immediately and again after a short delay
-                checkEntertainers();
-                setTimeout(checkEntertainers, 100);
-            });
-            </script>
             <div id="roles-container">
                             <?php
                             // First, get all roles from the roles table
@@ -2086,81 +1904,30 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         });
         
-                // Immediate fix for the "No entertainer selected" message
-                function fixNoEntertainerMessage() {
-                    const message = document.getElementById('no-entertainer-message');
-                    const selectedEntertainers = document.querySelectorAll('input[name="entertainers[]"]:checked');
-                    
-                    if (message && selectedEntertainers.length > 0) {
-                        // Force hide the message if any entertainer is selected
-                        message.style.display = 'none';
-                        console.log('Hiding no entertainer message');
-                        
-                        // Show the role sections for selected entertainers
-                        selectedEntertainers.forEach(checkbox => {
-                            const section = document.getElementById('roles-' + checkbox.value);
-                            if (section) {
-                                section.style.display = 'block';
-                                console.log('Showing role section for entertainer ID:', checkbox.value);
-                            }
-                        });
-                    }
-                }
-                
-                // Run the fix immediately
-                fixNoEntertainerMessage();
-                
-                // Also run when DOM is fully loaded
                 document.addEventListener('DOMContentLoaded', function() {
                     const message = document.getElementById('no-entertainer-message');
-                    const rolesContainer = document.getElementById('roles-container');
                     
-                    // Run the fix again
-                    fixNoEntertainerMessage();
-                    
-                    // Function to update display based on selected entertainers
                     function updateDisplay() {
-                        const selectedEntertainers = document.querySelectorAll('input[name="entertainers[]"]:checked');
-                        const hasSelectedEntertainer = selectedEntertainers.length > 0;
-                        
-                        // Hide the message if any entertainer is selected
-                        if (message) {
-                            message.style.display = hasSelectedEntertainer ? 'none' : 'block';
-                        }
-                        
-                        // Show/hide individual role sections based on selected entertainers
-                        document.querySelectorAll('.role-section').forEach(section => {
-                            section.style.display = 'none'; // Hide all by default
-                        });
-                        
-                        // Show role sections for selected entertainers
-                        selectedEntertainers.forEach(checkbox => {
-                            const section = document.getElementById('roles-' + checkbox.value);
-                            if (section) {
-                                section.style.display = 'block';
-                            }
-                        });
+                        const hasSelectedEntertainer = document.querySelector('input[name="entertainers[]"]:checked');
+                        message.style.display = hasSelectedEntertainer ? 'none' : 'block';
                     }
 
-                    // Add event listeners to entertainer checkboxes
+                    // Add event listeners
                     document.querySelectorAll('input[name="entertainers[]"]').forEach(cb => {
                         cb.addEventListener('change', function() {
+                            // Toggle role section
+                            const section = document.getElementById('roles-' + this.value);
+                            if (section) section.style.display = this.checked ? 'block' : 'none';
                             updateDisplay();
-                            // Run the fix again after a change
-                            setTimeout(fixNoEntertainerMessage, 10);
                         });
                     });
-                    
-                    // Run on page load to handle pre-selected entertainers
+                    // Run on page load in case of pre-checked boxes (e.g. after validation error)
                     updateDisplay();
 
-                    // Debug log
+                    // Debug log to verify initialization
                     console.log('Roles container found:', document.getElementById('roles-container') !== null);
                     console.log('Number of role sections:', document.querySelectorAll('.role-section').length);
-                    console.log('Selected entertainers:', document.querySelectorAll('input[name="entertainers[]"]:checked').length);
-                    
-                    // Run the fix one more time after a short delay
-                    setTimeout(fixNoEntertainerMessage, 100);
+                    console.log('Initial roles container display:', document.getElementById('roles-container').style.display);
                 });
             </script>
 
@@ -2202,28 +1969,15 @@ document.addEventListener('DOMContentLoaded', function() {
                     // Function to update price when package is selected
                     window.updatePackagePrice = function(packageInput) {
                         const price = parseFloat(packageInput.dataset.price);
-                        document.getElementById('total_price').value = formatWithCommas(price.toFixed(2));
+                        document.getElementById('total_price').value = price.toFixed(2);
                         
                         // Calculate and set 50% down payment
                         const downPayment = price * 0.5;
 
                         // Update display with formatted numbers
                         document.getElementById('down_payment').value = formatWithCommas(downPayment.toFixed(2));
-                        updateBalance();
+                        document.getElementById('balance').value = formatWithCommas((price - downPayment).toFixed(2));
                     };
-                    
-                    // Function to update balance based on total price and down payment
-                    // Define in global scope so it's available to all scripts
-                    window.updateBalance = function() {
-                        const totalPriceStr = document.getElementById('total_price').value.replace(/,/g, '');
-                        const downPaymentStr = document.getElementById('down_payment').value.replace(/,/g, '');
-                        
-                        const totalPrice = parseFloat(totalPriceStr) || 0;
-                        const downPayment = parseFloat(downPaymentStr) || 0;
-                        
-                        const balance = totalPrice - downPayment;
-                        document.getElementById('balance').value = formatWithCommas(balance.toFixed(2));
-                    }
 
                     // Function to update custom price table
                     async function updateCustomPriceTable() {
@@ -2492,19 +2246,11 @@ document.addEventListener('DOMContentLoaded', function() {
             </script>
 
                 <div class="form-group">
-                    <label><strong>Select Payment Method: </strong><span class="required">*</span></label>
-                    <div class="payment-method-container" style="max-width: 500px; border: 1px solid #ddd; border-radius: 8px; padding: 15px; background-color: white;">
-                        <label class="payment-method-option" style="display: block; margin-bottom: 0;">
-                            <input type="radio" name="payment_method" value="gcash" required checked style="margin-right: 10px; vertical-align: middle;">
-                            <div style="display: inline-block; vertical-align: middle;">
-                                <div style="display: flex; align-items: center;">
-                                    <div style="width: 50px; height: 50px; margin-right: 15px;">
-                                        <img src="assets/images/gcash-logo.png" alt="GCash" style="width: 100%; height: 100%; object-fit: contain;">
-                                    </div>
-                                    <span style="font-weight: 500; font-size: 16px;">GCash</span>
-                                </div>
-                            </div>
-                        </label>
+                    <label><strong>Select Payment Method:</strong> <span class="required">*</span></label>
+                    <div class="payment-methods">
+                        <label><input type="radio" name="payment_method" value="gcash" required> GCash</label><br>
+                        <label><input type="radio" name="payment_method" value="paymaya"> PayMaya</label><br>
+                        <label><input type="radio" name="payment_method" value="paypal"> PayPal</label>
                     </div>
                 </div>
 
@@ -2513,193 +2259,254 @@ document.addEventListener('DOMContentLoaded', function() {
         <input type="text" id="total_price" name="total_price" class="form-control" readonly style="font-weight:bold; color:#2c3e50; background:#f8f9fa;">
     </div>
     <div class="form-group">
-        <label for="down_payment">Down Payment (min 50%):</label>
-        <input type="text" id="down_payment" name="down_payment" class="form-control" style="font-weight:bold; color:#2c3e50;">
-        <small class="text-muted">Minimum down payment is 50% of the total price</small>
+        <label for="down_payment">Down Payment (50%):</label>
+        <input type="text" id="down_payment" name="down_payment" class="form-control" readonly style="font-weight:bold; color:#2c3e50; background:#f8f9fa;">
     </div>
     <div class="form-group">
         <label for="balance">Balance:</label>
         <input type="text" id="balance" name="balance" class="form-control" readonly style="font-weight:bold; color:#2c3e50; background:#f8f9fa;">
     </div>
 
-                <script>
-                // Add event listener for down payment input
-                document.addEventListener('DOMContentLoaded', function() {
-                    const downPaymentInput = document.getElementById('down_payment');
-                    
-                    // Handle down payment input changes - only format on blur or enter key
-                    downPaymentInput.addEventListener('keydown', function(e) {
-                        // If Enter key is pressed
-                        if (e.key === 'Enter') {
-                            formatAndValidateDownPayment();
-                            e.preventDefault(); // Prevent form submission
-                        }
-                    });
-                    
-                    // Format and validate when focus is lost
-                    downPaymentInput.addEventListener('blur', function() {
-                        // Only validate if not already in validation process
-                        if (downPaymentInput.dataset.validating !== 'true') {
-                            formatAndValidateDownPayment();
-                        }
-                    });
-                    
-                    // Function to format and validate down payment
-                    function formatAndValidateDownPayment() {
-                        // Remove commas from the input value
-                        let value = downPaymentInput.value.replace(/,/g, '');
-                        
-                        // Ensure it's a valid number
-                        if (value === '' || isNaN(value)) {
-                            value = '0';
-                        }
-                        
-                        const numValue = parseFloat(value);
-                        
-                        // Format with commas and 2 decimal places
-                        downPaymentInput.value = formatWithCommas(numValue.toFixed(2));
-                        
-                        // Validate minimum down payment
-                        const totalPriceStr = document.getElementById('total_price').value.replace(/,/g, '');
-                        const totalPrice = parseFloat(totalPriceStr) || 0;
-                        const minimumDownPayment = totalPrice * 0.5;
-                        
-                        // Show warning if less than minimum
-                        if (numValue < minimumDownPayment) {
-                            // Set a flag to prevent recursive validation
-                            downPaymentInput.dataset.validating = 'true';
-                            
-                            // Highlight the input to indicate error
-                            downPaymentInput.style.borderColor = 'red';
-                            
-                            // Show alert with a slight delay to prevent focus issues
-                            setTimeout(function() {
-                                alert('Down payment must be at least 50% of the total price (' + formatWithCommas(minimumDownPayment.toFixed(2)) + ')');
-                                // Set focus after alert is closed
-                                setTimeout(function() {
-                                    downPaymentInput.focus();
-                                    // Reset the validation flag
-                                    delete downPaymentInput.dataset.validating;
-                                }, 100);
-                            }, 100);
-                        } else {
-                            // Reset border if valid
-                            downPaymentInput.style.borderColor = '';
-                        }
-                        
-                        // Update the balance
-                        updateBalance();
-                    }
-                    
-                    // Add validation to the form submission
-                    const bookingForm = document.getElementById('bookingForm');
-                    const originalSubmit = bookingForm.onsubmit;
-                    
-                    bookingForm.onsubmit = function(event) {
-                        // Validate minimum down payment
-                        const totalPriceStr = document.getElementById('total_price').value.replace(/,/g, '');
-                        const downPaymentStr = document.getElementById('down_payment').value.replace(/,/g, '');
-                        
-                        const totalPrice = parseFloat(totalPriceStr) || 0;
-                        const downPayment = parseFloat(downPaymentStr) || 0;
-                        const minimumDownPayment = totalPrice * 0.5;
-                        
-                        if (downPayment < minimumDownPayment) {
-                            event.preventDefault();
-                            alert('Down payment must be at least 50% of the total price (' + formatWithCommas(minimumDownPayment.toFixed(2)) + ')');
-                            downPaymentInput.focus();
-                            return false;
-                        }
-                        
-                        // Call the original submit handler
-                        if (originalSubmit) {
-                            return originalSubmit.call(this, event);
-                        }
-                    };
-                });
-                </script>
                 <button type="submit" class="btn btn-primary">Submit Booking & Pay</button>
             </form>
 
             <script>
-                // Form submission handler
-                document.getElementById('bookingForm').addEventListener('submit', function(event) {
-                    event.preventDefault();
+                // Function to format phone number
+                function formatPhoneNumber(value) {
+                    // Remove all non-digit characters except + sign at the start
+                    let phoneNumber = value.replace(/[^\d+]/g, '');
                     
-                    // Validate minimum down payment
-                    const totalPriceStr = document.getElementById('total_price').value.replace(/,/g, '');
-                    const downPaymentStr = document.getElementById('down_payment').value.replace(/,/g, '');
-                    
-                    const totalPrice = parseFloat(totalPriceStr) || 0;
-                    const downPayment = parseFloat(downPaymentStr) || 0;
-                    const minimumDownPayment = totalPrice * 0.5;
-                    
-                    if (downPayment < minimumDownPayment) {
-                        alert('Down payment must be at least 50% of the total price (' + formatWithCommas(minimumDownPayment.toFixed(2)) + ')');
-                        document.getElementById('down_payment').focus();
-                        return;
-                    }
-                    
-                    // Show loading indicator
-                    const submitBtn = this.querySelector('button[type="submit"]');
-                    const originalBtnText = submitBtn.innerHTML;
-                    submitBtn.disabled = true;
-                    submitBtn.innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Processing...';
-                    
-                    const formData = new FormData(this);
-                    
-                    // Submit the form data to process_booking.php
-                    fetch('process_booking.php', {
-                        method: 'POST',
-                        body: formData
-                    })
-                    .then(response => response.json())
-                    .then(data => {
-                        console.log('Booking response:', data);
-                        
-                        if (data.success) {
-                            // Store booking details in session storage for reference
-                            sessionStorage.setItem('booking_id', data.booking_id);
-                            sessionStorage.setItem('booking_reference', data.booking_reference);
-                            
-                            // Get payment method
-                            const paymentMethod = document.querySelector('input[name="payment_method"]:checked').value;
-                            
-                            if (paymentMethod === 'gcash') {
-                                // Log the redirection for debugging
-                                console.log('Redirecting to payment page:', 'process_paymongo_payment.php?booking_id=' + data.booking_id + '&amount=' + downPayment);
-                                
-                                // Create a direct link and click it (more reliable than window.location)
-                                const paymentLink = document.createElement('a');
-                                paymentLink.href = 'process_paymongo_payment.php?booking_id=' + data.booking_id + '&amount=' + downPayment;
-                                paymentLink.style.display = 'none';
-                                document.body.appendChild(paymentLink);
-                                
-                                // Show a message to the user
-                                alert('Booking successful! You will now be redirected to the payment page.');
-                                
-                                // Trigger the click after a short delay
-                                setTimeout(() => {
-                                    paymentLink.click();
-                                    document.body.removeChild(paymentLink);
-                                }, 500);
-                            } else {
-                                // Fallback for other payment methods (should not happen with current setup)
-                                alert('Payment method not supported. Please contact support.');
-                                submitBtn.disabled = false;
-                                submitBtn.innerHTML = originalBtnText;
-                            }
+                    // Handle +63 prefix
+                    if (phoneNumber.startsWith('+63')) {
+                        // Remove the +63 prefix for formatting
+                        phoneNumber = phoneNumber.substring(3);
+                        if (phoneNumber.length > 10) {
+                            phoneNumber = phoneNumber.substring(0, 10);
+                        }
+                        // Format the number and add back the +63 prefix
+                        if (phoneNumber.length <= 4) {
+                            return '+63' + phoneNumber;
+                        } else if (phoneNumber.length <= 7) {
+                            return '+63' + phoneNumber.slice(0, 3) + '-' + phoneNumber.slice(3);
                         } else {
-                            // Show error message
-                            alert('Error: ' + (data.message || 'Failed to create booking. Please try again.'));
+                            return '+63' + phoneNumber.slice(0, 3) + '-' + phoneNumber.slice(3, 6) + '-' + phoneNumber.slice(6);
+                        }
+                    } else {
+                        // Handle 09 prefix
+                        if (!phoneNumber.startsWith('09') && phoneNumber.length >= 2) {
+                            phoneNumber = '09' + phoneNumber.substring(2);
+                        }
+                        if (phoneNumber.length > 11) {
+                            phoneNumber = phoneNumber.substring(0, 11);
+                        }
+                        // Format the number
+                        if (phoneNumber.length <= 4) {
+                            return phoneNumber;
+                        } else if (phoneNumber.length <= 7) {
+                            return phoneNumber.slice(0, 4) + '-' + phoneNumber.slice(4);
+                        } else {
+                            return phoneNumber.slice(0, 4) + '-' + phoneNumber.slice(4, 7) + '-' + phoneNumber.slice(7);
+                        }
+                    }
+                }
+
+                // Add event listener to validate on blur
+                document.getElementById('contact_number').addEventListener('blur', function() {
+                    const phoneNumber = this.value.replace(/[^\d+]/g, '');
+                    const isValid = /^(09|\+639)\d{9}$/.test(phoneNumber);
+                    
+                    if (!isValid) {
+                        this.setCustomValidity('Please enter a valid Philippine mobile number (e.g., 0917-123-4567 or +63917-123-4567)');
+                    } else {
+                        this.setCustomValidity('');
+                    }
+                });
+            </script>
+
+            <script>
+                document.addEventListener('DOMContentLoaded', function() {
+                    const entertainerCheckboxes = document.querySelectorAll('input[name="entertainers[]"]');
+                    function updateNoEntertainerMessage() {
+                        const noMsg = document.getElementById('no-entertainer-message');
+                        const anyChecked = Array.from(entertainerCheckboxes).some(c => c.checked);
+                        if (noMsg) noMsg.style.display = anyChecked ? 'none' : 'block';
+                    }
+                    entertainerCheckboxes.forEach(function(cb) {
+                        cb.addEventListener('change', function() {
+                            // Toggle role section
+                            const section = document.getElementById('roles-' + this.value);
+                            if (section) section.style.display = this.checked ? 'block' : 'none';
+                            updateNoEntertainerMessage();
+                        });
+                    });
+                    // Run on page load in case of pre-checked boxes (e.g. after validation error)
+                    updateNoEntertainerMessage();
+                });
+            </script>
+
+            <script>
+                // Handle province and municipality selection
+                document.addEventListener('DOMContentLoaded', function() {
+                    const provinceSelect = document.getElementById('province');
+                    const municipalitySelect = document.getElementById('municipality');
+                    const barangaySelect = document.getElementById('barangay');
+
+                    // When province is selected
+                    provinceSelect.addEventListener('change', async function() {
+                        const selectedProvince = this.value;
+                        municipalitySelect.innerHTML = '<option value="">Select Municipality/City</option>';
+                        barangaySelect.innerHTML = '<option value="">Select Barangay</option>';
+
+                        if (selectedProvince) {
+                            try {
+                                const response = await fetch('get_locations.php', {
+                                    method: 'POST',
+                                    headers: {
+                                        'Content-Type': 'application/x-www-form-urlencoded',
+                                    },
+                                    body: `province=${encodeURIComponent(selectedProvince)}`
+                                });
+
+                                if (response.ok) {
+                                    const municipalities = await response.json();
+                                    municipalities.forEach(municipality => {
+                                        const option = document.createElement('option');
+                                        option.value = municipality;
+                                        option.textContent = municipality;
+                                        municipalitySelect.appendChild(option);
+                                    });
+                                }
+                            } catch (error) {
+                                console.error('Error fetching municipalities:', error);
+                            }
+                        }
+                    });
+
+                    // When municipality is selected
+                    municipalitySelect.addEventListener('change', async function() {
+                        const selectedProvince = provinceSelect.value;
+                        const selectedMunicipality = this.value;
+                        barangaySelect.innerHTML = '<option value="">Select Barangay</option>';
+
+                        if (selectedProvince && selectedMunicipality) {
+                            try {
+                                const response = await fetch('get_locations.php', {
+                                    method: 'POST',
+                                    headers: {
+                                        'Content-Type': 'application/x-www-form-urlencoded',
+                                    },
+                                    body: `province=${encodeURIComponent(selectedProvince)}&municipality=${encodeURIComponent(selectedMunicipality)}`
+                                });
+
+                                if (response.ok) {
+                                    const barangays = await response.json();
+                                    barangays.forEach(barangay => {
+                                        const option = document.createElement('option');
+                                        option.value = barangay;
+                                        option.textContent = barangay;
+                                        barangaySelect.appendChild(option);
+                                    });
+                                }
+                            } catch (error) {
+                                console.error('Error fetching barangays:', error);
+                            }
+                        }
+                    });
+                });
+            </script>
+
+</body>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    // Toggle booking option sections
+    document.getElementById('bookingOption').addEventListener('change', function() {
+        var v = this.value;
+        document.getElementById('option1Section').style.display = v === 'option1' ? 'block' : 'none';
+        document.getElementById('option2Section').style.display = v === 'option2' ? 'block' : 'none';
+    });
+</script>
+<script>
+    // Handle form submission via AJAX
+    document.getElementById('bookingForm').addEventListener('submit', function(event) {
+        event.preventDefault();
+        
+        // Show loading indicator
+        const submitBtn = this.querySelector('button[type="submit"]');
+        const originalBtnText = submitBtn.innerHTML;
+        submitBtn.disabled = true;
+        submitBtn.innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Processing...';
+        
+        const formData = new FormData(this);
+        
+        // First, submit the booking data
+        fetch('process_booking.php', {
+            method: 'POST',
+            body: formData
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                console.log('Booking successful:', data);
+                
+                // Get payment method
+                const paymentMethod = document.querySelector('input[name="payment_method"]:checked').value;
+                
+                if (paymentMethod === 'gcash' || paymentMethod === 'paymaya' || paymentMethod === 'paypal') {
+                    // Create payment data for server-side processing
+                    const paymentData = new FormData();
+                    paymentData.append('payment_method', paymentMethod);
+                    paymentData.append('amount', Math.round(parseFloat(document.getElementById('down_payment').value.replace(/,/g, '')) * 100)); // Convert to centavos
+                    paymentData.append('booking_id', data.booking_id);
+                    paymentData.append('first_name', document.getElementById('first_name').value);
+                    paymentData.append('last_name', document.getElementById('last_name').value);
+                    paymentData.append('email', document.getElementById('email').value);
+                    paymentData.append('contact_number', document.getElementById('contact_number').value);
+                    
+                    // Process payment server-side and get redirect URL
+                    fetch('process_magpie_payment.php', {
+                        method: 'POST',
+                        body: paymentData
+                    })
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error('Network response was not ok: ' + response.status);
+                        }
+                        return response.json();
+                    })
+                    .then(paymentResult => {
+                        if (paymentResult.success && paymentResult.checkout_url) {
+                            // Redirect to checkout URL
+                            window.location.href = paymentResult.checkout_url;
+                        } else {
+                            alert('Payment processing error: ' + (paymentResult.message || 'Unknown error'));
                             submitBtn.disabled = false;
                             submitBtn.innerHTML = originalBtnText;
                         }
                     })
                     .catch(error => {
-                        console.error('Error:', error);
-                        alert('An error occurred while processing your booking. Please try again.');
+                        console.error('Payment error:', error);
+                        alert('Payment processing error. Please try again.');
                         submitBtn.disabled = false;
                         submitBtn.innerHTML = originalBtnText;
                     });
-{{ ... }}
+                } else {
+                    // Redirect to a success page for other payment methods
+                    window.location.href = 'payment-confirmation.php?booking_id=' + data.booking_id + '&status=success';
+                }
+            } else {
+                console.error('Booking error:', data);
+                alert('Booking error: ' + (data.message || 'Unknown error'));
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = originalBtnText;
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('An error occurred. Please try again.');
+            submitBtn.disabled = false;
+            submitBtn.innerHTML = originalBtnText;
+        });
+    });
+</script>
+</html>
