@@ -1,10 +1,33 @@
 <?php
+// Enable error logging to file
+ini_set('log_errors', 1);
+ini_set('error_log', '../error_log.txt');
+
+// For debugging - log all requests
+error_log("[CANCEL] Request received: " . json_encode($_POST));
+
 // Turn off error display for production - this prevents PHP errors from breaking JSON output
 ini_set('display_errors', 0);
 error_reporting(E_ALL);
 
 // Start output buffering to catch any unexpected output
 ob_start();
+
+// Helper function to send JSON response and exit
+function sendJsonResponse($success, $message) {
+    // Log the response for debugging
+    error_log("[CANCEL] Sending response: success=" . ($success ? 'true' : 'false') . ", message=" . $message);
+    
+    // Clear any output that might have been generated
+    ob_end_clean();
+    
+    // Set proper content type
+    header('Content-Type: application/json');
+    
+    // Output JSON response
+    echo json_encode(['success' => $success, 'message' => $message]);
+    exit();
+}
 
 session_start();
 
@@ -22,10 +45,10 @@ if (!isset($_POST['appointment_id']) || !isset($_POST['reason'])) {
 require_once '../includes/mail-config.php';
 
 // Database connection
-$servername = "sql12.freesqldatabase.com";
-$username = "sql12774230";
-$password = "ytPEFx33BF";
-$dbname = "sql12774230";
+$servername = "localhost";
+$username = "root";
+$password = "";
+$dbname = "db_booking_system";
 
 $conn = new mysqli($servername, $username, $password, $dbname);
 
@@ -129,16 +152,4 @@ try {
     sendJsonResponse(false, 'An error occurred while cancelling the appointment: ' . $e->getMessage());
 }
 
-// Helper function to send JSON response and exit
-function sendJsonResponse($success, $message) {
-    // Clear any output that might have been generated
-    ob_end_clean();
-    
-    // Set proper content type
-    header('Content-Type: application/json');
-    
-    // Output JSON response
-    echo json_encode(['success' => $success, 'message' => $message]);
-    exit();
-}
 ?>
