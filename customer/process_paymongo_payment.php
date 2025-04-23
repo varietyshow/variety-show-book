@@ -34,91 +34,89 @@ function debug_log($message, $data = []) {
     file_put_contents($log_file, $log_message . PHP_EOL, FILE_APPEND);
 }
 
-// Initialize response array
-$response = [
-    'success' => false,
-    'message' => '',
-    'redirect_url' => ''
-];
+// Simple direct payment processing script
 
-// Debug the start of the process
-debug_log('Payment process started', $_GET);
+// Get booking ID and amount from the URL parameters
+$booking_id = isset($_GET['booking_id']) ? intval($_GET['booking_id']) : 0;
+$amount = isset($_GET['amount']) ? floatval($_GET['amount']) : 0;
 
-try {
-    // Check if user is logged in
-    if (!isset($_SESSION['customer_id'])) {
-        debug_log('User not logged in', $_SESSION);
-        throw new Exception("User not logged in");
-    }
-    
-    // Get customer information
+// Log the start of the process
+debug_log('Starting payment process', [
+    'booking_id' => $booking_id,
+    'amount' => $amount,
+    'session' => $_SESSION,
+    'get' => $_GET
+]);
+
+// Validate parameters
+if ($booking_id <= 0 || $amount <= 0) {
+    show_error('Invalid booking ID or amount. Please try again.');
+}
+
+// Get customer information (either from session or directly from booking)
+if (isset($_SESSION['customer_id'])) {
     $customer_id = $_SESSION['customer_id'];
-    debug_log('Customer ID', ['customer_id' => $customer_id]);
-    
     $query = "SELECT * FROM customer_account WHERE customer_id = ?";
     $stmt = $conn->prepare($query);
     $stmt->bind_param("i", $customer_id);
     $stmt->execute();
     $result = $stmt->get_result();
+    $customer = $result->fetch_assoc();
     
-    if (!$customer = $result->fetch_assoc()) {
-        debug_log('Customer not found', ['customer_id' => $customer_id]);
-        throw new Exception("Customer information not found");
+    if (!$customer) {
+        debug_log('Customer not found in database', ['customer_id' => $customer_id]);
+        $customer = [
+            'first_name' => 'Guest',
+            'last_name' => 'Customer',
+            'email' => 'guest@example.com',
+            'contact_number' => '09123456789'
+        ];
     }
-    
-    debug_log('Customer found', ['name' => $customer['first_name'] . ' ' . $customer['last_name']]);
-    
-    // Get booking information
-    if (!isset($_GET['booking_id']) || !isset($_GET['amount'])) {
-        debug_log('Missing parameters', $_GET);
-        throw new Exception("Missing required parameters");
-    }
-    
-    $booking_id = $_GET['booking_id'];
-    $amount = floatval($_GET['amount']);
-    
-    debug_log('Booking parameters', ['booking_id' => $booking_id, 'amount' => $amount]);
-    
-    // Verify booking exists and belongs to this customer
+} else {
+    // Get customer info from booking
     $query = "SELECT * FROM booking_report WHERE book_id = ?";
     $stmt = $conn->prepare($query);
     $stmt->bind_param("i", $booking_id);
     $stmt->execute();
     $result = $stmt->get_result();
+    $booking = $result->fetch_assoc();
     
-    if (!$booking = $result->fetch_assoc()) {
-        debug_log('Booking not found', ['booking_id' => $booking_id]);
-        throw new Exception("Booking not found");
+    if (!$booking) {
+        show_error('Booking not found. Please try again.');
     }
     
-    // Removed the customer_id check to allow any booking to be paid
-    debug_log('Booking found', ['booking_id' => $booking_id, 'customer_name' => $booking['first_name'] . ' ' . $booking['last_name']]);
-    
-    // Set up success and failure URLs - use absolute URLs
-    $host = isset($_SERVER['HTTP_HOST']) ? $_SERVER['HTTP_HOST'] : 'localhost';
-    $protocol = isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? 'https' : 'http';
-    $base_url = "{$protocol}://{$host}";
-    
-    if (!str_ends_with($base_url, '/new-system')) {
-        $base_url .= '/new-system';
-    }
-    
-    $success_url = "{$base_url}/customer/booking-success.php?booking_id={$booking_id}";
-    $failed_url = "{$base_url}/customer/booking-failed.php?booking_id={$booking_id}";
-    
-    debug_log('Redirect URLs', ['success' => $success_url, 'failed' => $failed_url]);
-    
-    // Create a reference number for this payment
-    $reference_number = "BOOK-{$booking_id}-" . time();
-    
-    debug_log('Creating GCash source', [
-        'amount' => $amount,
-        'name' => $customer['first_name'] . ' ' . $customer['last_name'],
-        'email' => $customer['email'],
-        'phone' => $customer['contact_number'],
-        'reference' => $reference_number
-    ]);
-    
+    $customer = [
+        'first_name' => $booking['first_name'] ?? 'Guest',
+        'last_name' => $booking['last_name'] ?? 'Customer',
+        'email' => $booking['email'] ?? 'guest@example.com',
+        'contact_number' => $booking['contact_number'] ?? '09123456789'
+    ];
+}
+
+// Create a unique reference number
+$reference_number = "BOOK-{$booking_id}-" . time();
+
+// Set up success and failure URLs
+$host = isset($_SERVER['HTTP_HOST']) ? $_SERVER['HTTP_HOST'] : 'localhost';
+$protocol = isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? 'https' : 'http';
+$base_url = "{$protocol}://{$host}";
+
+if (strpos($base_url, 'localhost') !== false || strpos($base_url, '127.0.0.1') !== false) {
+    $base_url .= '/new-system';
+}
+
+$success_url = "{$base_url}/customer/booking-success.php?booking_id={$booking_id}";
+$failed_url = "{$base_url}/customer/booking-failed.php?booking_id={$booking_id}";
+
+debug_log('Payment details', [
+    'customer' => $customer,
+    'amount' => $amount,
+    'reference' => $reference_number,
+    'success_url' => $success_url,
+    'failed_url' => $failed_url
+]);
+
+try {
     // Create GCash payment source
     $source_result = createGCashSource(
         $amount,
@@ -130,28 +128,21 @@ try {
         $reference_number
     );
     
-    debug_log('Source result', $source_result);
+    debug_log('Source creation result', $source_result);
     
-    // Check for errors in source creation
+    // Check for errors
     if (isset($source_result['error'])) {
-        debug_log('Source creation error', ['error' => $source_result['error']]);
         throw new Exception("Error creating payment source: " . $source_result['error']);
     }
     
     // Check if source data is available
     if (!isset($source_result['data']) || !isset($source_result['data']['id'])) {
-        debug_log('Invalid source response', $source_result);
         throw new Exception("Invalid response from payment provider");
     }
     
-    // Get the source ID and checkout URL
+    // Get checkout URL
     $source_id = $source_result['data']['id'];
     $checkout_url = $source_result['data']['attributes']['redirect']['checkout_url'];
-    
-    debug_log('Source created successfully', [
-        'source_id' => $source_id,
-        'checkout_url' => $checkout_url
-    ]);
     
     // Update booking with payment reference
     $query = "UPDATE booking_report SET payment_reference = ? WHERE book_id = ?";
@@ -159,48 +150,31 @@ try {
     $stmt->bind_param("si", $reference_number, $booking_id);
     $stmt->execute();
     
-    debug_log('Booking updated with payment reference', [
-        'booking_id' => $booking_id,
-        'reference_number' => $reference_number
-    ]);
+    debug_log('Redirecting to GCash', ['checkout_url' => $checkout_url]);
     
-    // Log successful source creation
-    logPayMongoActivity("GCash source created successfully", [
-        'source_id' => $source_id,
-        'booking_id' => $booking_id,
-        'reference_number' => $reference_number
-    ]);
-    
-    debug_log('Redirecting to checkout URL', ['url' => $checkout_url]);
-    
-    // Redirect to the checkout URL
-    header('Location: ' . $checkout_url);
+    // Redirect to GCash checkout
+    echo "<html><head><title>Redirecting to Payment...</title>";
+    echo "<script>window.location.href = '{$checkout_url}';</script>";
+    echo "</head><body>";
+    echo "<h1>Redirecting to GCash Payment...</h1>";
+    echo "<p>If you are not automatically redirected, <a href='{$checkout_url}'>click here</a>.</p>";
+    echo "</body></html>";
     exit;
     
 } catch (Exception $e) {
-    // Log the error
-    $error_message = "Payment processing error: " . $e->getMessage();
-    error_log($error_message);
-    debug_log('Exception caught', ['message' => $e->getMessage(), 'trace' => $e->getTraceAsString()]);
-    logPayMongoActivity("Payment processing error", ['error' => $e->getMessage()]);
-    
-    // Set error response
-    $response = [
-        'success' => false,
-        'message' => $e->getMessage()
-    ];
-    
-    // Output error page with details
-    echo '<html><head><title>Payment Error</title>';
-    echo '<style>body{font-family:Arial,sans-serif;line-height:1.6;color:#333;max-width:800px;margin:40px auto;padding:20px;background:#f9f9f9;}';
-    echo 'h1{color:#e74c3c;}pre{background:#fff;padding:15px;border-radius:5px;overflow:auto;}</style></head>';
-    echo '<body><h1>Payment Processing Error</h1>';
-    echo '<p>' . htmlspecialchars($e->getMessage()) . '</p>';
-    echo '<p>Please go back and try again, or contact support if the problem persists.</p>';
-    echo '<p><a href="customer-booking.php">Return to booking page</a></p>';
-    echo '<div><h3>Technical Details (for support):</h3>';
-    echo '<pre>' . htmlspecialchars(json_encode(['error' => $e->getMessage(), 'trace' => $e->getTraceAsString()], JSON_PRETTY_PRINT)) . '</pre></div>';
-    echo '</body></html>';
+    debug_log('Payment error', ['error' => $e->getMessage()]);
+    show_error($e->getMessage());
+}
+
+// Helper function to display errors
+function show_error($message) {
+    echo "<html><head><title>Payment Error</title>";
+    echo "<style>body{font-family:Arial,sans-serif;max-width:600px;margin:40px auto;padding:20px;background:#f9f9f9;}";
+    echo "h1{color:#e74c3c;}a{color:#3498db;}</style></head>";
+    echo "<body><h1>Payment Processing Error</h1>";
+    echo "<p>{$message}</p>";
+    echo "<p><a href='customer-booking.php'>Return to booking page</a></p>";
+    echo "</body></html>";
     exit;
 }
 
