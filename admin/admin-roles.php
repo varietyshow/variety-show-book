@@ -10,10 +10,10 @@ if (!isset($_SESSION['first_name'])) {
 $first_name = htmlspecialchars($_SESSION['first_name']); // Retrieve and sanitize the first_name
 
 // Database connection
-$servername = "localhost"; // Change this to your database host
-$username = "root";        // Change this to your database username
-$password = "";            // Change this to your database password
-$dbname = "db_booking_system"; // Use your database name
+$servername = "sql12.freesqldatabase.com"; // Change this to your database host
+$username = "sql12774230";        // Change this to your database username
+$password = "ytPEFx33BF";            // Change this to your database password
+$dbname = "sql12774230"; // Use your database name
 
 // Create connection
 $conn = new mysqli($servername, $username, $password, $dbname);
