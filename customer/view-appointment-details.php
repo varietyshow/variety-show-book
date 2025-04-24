@@ -21,10 +21,10 @@ if (!$book_id) {
 }
 
 // Database connection
-$host = 'localhost';
-$dbname = 'db_booking_system';
-$username = 'root';
-$password = '';
+$host = 'sql12.freesqldatabase.com';
+$dbname = 'sql12774230';
+$username = 'sql12774230';
+$password = 'ytPEFx33BF';
 
 try {
     $pdo = new PDO("mysql:host=$host;dbname=$dbname;charset=utf8mb4", $username, $password);
