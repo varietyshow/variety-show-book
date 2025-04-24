@@ -4,8 +4,8 @@ FROM php:8.2-apache
 # Enable Apache rewrite module (useful if you use .htaccess)
 RUN a2enmod rewrite
 
-# Install mysqli extension
-RUN docker-php-ext-install mysqli && docker-php-ext-enable mysqli
+# Install mysqli and pdo_mysql extensions
+RUN docker-php-ext-install mysqli pdo_mysql && docker-php-ext-enable mysqli
 
 # Install system dependencies for Composer (git, unzip)
 RUN apt-get update && apt-get install -y git unzip
