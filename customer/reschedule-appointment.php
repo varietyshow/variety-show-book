@@ -1,4 +1,6 @@
 <?php
+// Start output buffering to prevent 'headers already sent' errors
+ob_start();
 session_start();
 
 // Check if the user is logged in
@@ -16,10 +18,10 @@ if (!isset($_GET['appointment_id'])) {
 $appointment_id = intval($_GET['appointment_id']);
 
 // Database connection
-$servername = "sql12.freesqldatabase.com";
-$username = "sql12774230";
-$password = "ytPEFx33BF";
-$dbname = "sql12774230";
+$servername = "localhost";
+$username = "root";
+$password = "";
+$dbname = "db_booking_system";
 
 $conn = new mysqli($servername, $username, $password, $dbname);
 
@@ -308,7 +310,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     $body = "Dear Admin,<br><br>";
                     $body .= "An appointment has been rescheduled. Here are the details:<br><br>";
                     $body .= "<b>Appointment ID:</b> " . $appointment_id . "<br>";
-                    $body .= "<b>Customer Name:</b> " . $_SESSION['first_name'] . " " . $_SESSION['last_name'] . "<br><br>";
+                    $body .= "<b>Customer Name:</b> " . $_SESSION['first_name'] . (isset($_SESSION['last_name']) ? " " . $_SESSION['last_name'] : "") . "<br><br>";
                     
                     $body .= "<b>Previous Schedule:</b><br>";
                     $body .= "Date: " . date('F j, Y', strtotime($appointment['date_schedule'])) . "<br>";
