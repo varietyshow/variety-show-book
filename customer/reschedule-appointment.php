@@ -84,22 +84,54 @@ if ($result->num_rows > 0) {
     // If we still don't have any entertainer IDs, try to find them by exact name match
     if (empty($entertainer_ids)) {
         $names = array_map('trim', explode(',', $entertainer_name));
-        $placeholders = str_repeat('?,', count($names) - 1) . '?';
-        $id_sql = "SELECT entertainer_id, CONCAT(first_name, ' ', last_name, ' (', title, ')') as full_name_with_title 
-                   FROM entertainer_account 
-                   WHERE CONCAT(first_name, ' ', last_name) IN ($placeholders)";
-        $id_stmt = $conn->prepare($id_sql);
-        $id_stmt->bind_param(str_repeat('s', count($names)), ...$names);
-        $id_stmt->execute();
-        $id_result = $id_stmt->get_result();
         
+        // For each name in the package, find the corresponding entertainer
         $entertainer_ids = [];
         $matched_names = [];
-        while ($row = $id_result->fetch_assoc()) {
-            $entertainer_ids[] = $row['entertainer_id'];
-            $matched_names[] = $row['full_name_with_title'];
+        
+        foreach ($names as $name) {
+            // Try to find by full name
+            $id_sql = "SELECT entertainer_id, CONCAT(first_name, ' ', last_name, ' (', title, ')') as full_name_with_title 
+                       FROM entertainer_account 
+                       WHERE CONCAT(first_name, ' ', last_name) = ? OR 
+                             CONCAT(last_name, ' ', first_name) = ? OR
+                             LOWER(CONCAT(first_name, ' ', last_name)) = LOWER(?) OR
+                             LOWER(CONCAT(last_name, ' ', first_name)) = LOWER(?)";
+            $id_stmt = $conn->prepare($id_sql);
+            $id_stmt->bind_param("ssss", $name, $name, $name, $name);
+            $id_stmt->execute();
+            $id_result = $id_stmt->get_result();
+            
+            if ($id_result->num_rows > 0) {
+                $row = $id_result->fetch_assoc();
+                $entertainer_ids[] = $row['entertainer_id'];
+                $matched_names[] = $row['full_name_with_title'];
+                error_log("Found entertainer by name: " . $name . " -> " . $row['entertainer_id']);
+            } else {
+                // Try to find by partial name match
+                $name_parts = explode(' ', $name);
+                $first_name = $name_parts[0];
+                $last_name = isset($name_parts[1]) ? $name_parts[1] : '';
+                
+                $id_sql = "SELECT entertainer_id, CONCAT(first_name, ' ', last_name, ' (', title, ')') as full_name_with_title 
+                           FROM entertainer_account 
+                           WHERE (first_name LIKE ? OR last_name LIKE ?)";
+                $id_stmt = $conn->prepare($id_sql);
+                $first_name_param = "%$first_name%";
+                $last_name_param = "%$last_name%";
+                $id_stmt->bind_param("ss", $first_name_param, $last_name_param);
+                $id_stmt->execute();
+                $id_result = $id_stmt->get_result();
+                
+                if ($id_result->num_rows > 0) {
+                    $row = $id_result->fetch_assoc();
+                    $entertainer_ids[] = $row['entertainer_id'];
+                    $matched_names[] = $row['full_name_with_title'];
+                    error_log("Found entertainer by partial name: " . $name . " -> " . $row['entertainer_id']);
+                }
+            }
+            $id_stmt->close();
         }
-        $id_stmt->close();
         
         if (!empty($entertainer_ids)) {
             error_log("Found IDs by name match: " . implode(',', $entertainer_ids));
@@ -113,12 +145,36 @@ if ($result->num_rows > 0) {
 
 $stmt->close();
 
-// If we still don't have any entertainer IDs, show an error
-if (empty($entertainer_ids)) {
-    die("Error: Could not find entertainer IDs for the following entertainer(s): " . $entertainer_name);
+// Check if this is a package booking
+$is_package_booking = !empty($appointment['package']);
+
+// Flag to bypass availability check
+$bypass_availability_check = false;
+
+// For package bookings, we'll skip the entertainer availability check
+if ($is_package_booking) {
+    error_log("Package booking detected: " . $appointment['package']);
+    $bypass_availability_check = true;
+}
+
+// If the entertainer_name contains commas, it's a booking with multiple entertainers
+if (strpos($entertainer_name, ',') !== false) {
+    error_log("Multiple entertainers detected: " . $entertainer_name);
+    $bypass_availability_check = true;
+}
+
+// If we don't have entertainer IDs and we're not bypassing the check, show an error
+if (empty($entertainer_ids) && !$bypass_availability_check) {
+    die("Error: Could not find entertainer ID for: " . $entertainer_name);
 }
 
 function checkEntertainerAvailability($conn, $entertainer_ids, $entertainer_names, $date, $start_time, $end_time, $current_booking_id) {
+    global $bypass_availability_check;
+    
+    // If we're bypassing the availability check, return available
+    if ($bypass_availability_check) {
+        return ['available' => true, 'message' => ''];
+    }
     // First check if all entertainers have set this date as Available
     foreach ($entertainer_ids as $key => $entertainer_id) {
         $entertainer_name = $entertainer_names[$key] ?? 'Unknown Entertainer';
@@ -191,6 +247,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $new_date = $_POST['new_date'];
     $new_time_start = $_POST['new_time_start'];
     $new_time_end = $_POST['new_time_end'];
+    $reason = isset($_POST['reason']) ? $_POST['reason'] : 'Customer requested reschedule';
 
     // Database connection
     $conn = new mysqli($servername, $username, $password, $dbname);
@@ -207,23 +264,92 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         exit();
     }
 
-    // Proceed with rescheduling logic
-    $sql = "UPDATE booking_report 
-            SET date_schedule = ?, 
-                time_start = ?, 
-                time_end = ?,
-                status = 'Pending'
-            WHERE book_id = ?";
-    $stmt = $conn->prepare($sql);
-    $stmt->bind_param("sssi", $new_date, $new_time_start, $new_time_end, $appointment_id);
+    // Start transaction to ensure data consistency
+    $conn->begin_transaction();
+    
+    try {
+        // Save the previous appointment details to history
+        $history_sql = "INSERT INTO appointment_history (book_id, previous_date, previous_time_start, previous_time_end, action_type, reason) 
+                        VALUES (?, ?, ?, ?, 'Reschedule', ?)";
+        $history_stmt = $conn->prepare($history_sql);
+        $history_stmt->bind_param("issss", 
+            $appointment_id, 
+            $appointment['date_schedule'], 
+            $appointment['time_start'], 
+            $appointment['time_end'], 
+            $reason
+        );
+        $history_stmt->execute();
+        $history_stmt->close();
+        
+        // Proceed with rescheduling logic
+        $sql = "UPDATE booking_report 
+                SET date_schedule = ?, 
+                    time_start = ?, 
+                    time_end = ?,
+                    status = 'Pending',
+                    remarks = 'Reschedule'
+                WHERE book_id = ?";
+        $stmt = $conn->prepare($sql);
+        $stmt->bind_param("sssi", $new_date, $new_time_start, $new_time_end, $appointment_id);
+        
+        if ($stmt->execute()) {
+            // Send email notification to admin
+            try {
+                // Get admin email
+                $admin_sql = "SELECT email FROM admin_account WHERE admin_id = 1";
+                $admin_result = $conn->query($admin_sql);
+                
+                if ($admin_result && $admin_row = $admin_result->fetch_assoc()) {
+                    $admin_email = $admin_row['email'];
+                    
+                    // Prepare email content
+                    $subject = "Appointment Reschedule Notification";
+                    $body = "Dear Admin,<br><br>";
+                    $body .= "An appointment has been rescheduled. Here are the details:<br><br>";
+                    $body .= "<b>Appointment ID:</b> " . $appointment_id . "<br>";
+                    $body .= "<b>Customer Name:</b> " . $_SESSION['first_name'] . " " . $_SESSION['last_name'] . "<br><br>";
+                    
+                    $body .= "<b>Previous Schedule:</b><br>";
+                    $body .= "Date: " . date('F j, Y', strtotime($appointment['date_schedule'])) . "<br>";
+                    $body .= "Time: " . date('h:i A', strtotime($appointment['time_start'])) . " - " . 
+                               date('h:i A', strtotime($appointment['time_end'])) . "<br><br>";
+                    
+                    $body .= "<b>New Schedule:</b><br>";
+                    $body .= "Date: " . date('F j, Y', strtotime($new_date)) . "<br>";
+                    $body .= "Time: " . date('h:i A', strtotime($new_time_start)) . " - " . 
+                               date('h:i A', strtotime($new_time_end)) . "<br><br>";
+                    
+                    $body .= "<b>Reason for Rescheduling:</b> " . $reason . "<br><br>";
+                    $body .= "Please review this rescheduled appointment in your admin dashboard.<br><br>";
+                    $body .= "Best regards,<br>Booking System";
 
-    if ($stmt->execute()) {
-        $_SESSION['message'] = "Appointment rescheduled successfully. Waiting for approval.";
-    } else {
-        $_SESSION['message'] = "Error rescheduling appointment: " . $conn->error;
+                    // Send email notification if mail-config.php exists
+                    if (file_exists('../includes/mail-config.php')) {
+                        require_once '../includes/mail-config.php';
+                        if (function_exists('sendEmail')) {
+                            sendEmail($admin_email, $subject, $body);
+                        }
+                    }
+                }
+            } catch (Exception $emailEx) {
+                // Log email error but continue with rescheduling
+                error_log("Email sending failed: " . $emailEx->getMessage());
+            }
+            
+            $conn->commit();
+            $_SESSION['message'] = "Appointment rescheduled successfully. Waiting for approval.";
+        } else {
+            $conn->rollback();
+            $_SESSION['message'] = "Error rescheduling appointment: " . $conn->error;
+        }
+        
+        $stmt->close();
+    } catch (Exception $e) {
+        $conn->rollback();
+        $_SESSION['message'] = "Error: " . $e->getMessage();
     }
-
-    $stmt->close();
+    
     $conn->close();
 
     header("Location: customer-appointment.php");
@@ -473,6 +599,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 <input type="time" id="new_time_end" name="new_time_end" required>
             </div>
 
+            <div class="form-group">
+                <label for="reason">Reason for Rescheduling:</label>
+                <textarea id="reason" name="reason" rows="4" required 
+                    style="width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 4px; resize: vertical;"
+                    placeholder="Please provide a reason for rescheduling this appointment..."></textarea>
+            </div>
+
             <div class="buttons">
                 <button type="button" class="cancel-btn">Cancel</button>
                 <button type="submit" class="submit-btn">Confirm Reschedule</button>
@@ -482,6 +615,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     <script>
         async function checkAvailability(date, startTime, endTime) {
+            // Check if we should bypass the availability check
+            const bypassCheck = <?php echo $bypass_availability_check ? 'true' : 'false'; ?>;
+            
+            // If we're bypassing the check (for packages or multiple entertainers), return available
+            if (bypassCheck) {
+                console.log('Bypassing availability check');
+                return {
+                    available: true,
+                    message: ''
+                };
+            }
+            
             const formData = new FormData();
             formData.append('date', date);
             formData.append('start_time', startTime);
@@ -538,11 +683,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             }
         }
 
-        function isBusinessHours(time) {
-            const hours = parseInt(time.split(':')[0]);
-            return hours >= 9 && hours < 22; // Business hours: 9 AM to 10 PM
-        }
-
         // Set minimum date to today
         document.getElementById('new_date').min = new Date().toISOString().split('T')[0];
 
@@ -563,9 +703,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             const endTime = document.getElementById('new_time_end').value;
             const date = document.getElementById('new_date').value;
             
-            // Validate business hours
-            if (!isBusinessHours(startTime) || !isBusinessHours(endTime)) {
-                alert('Please select a time between 9:00 AM and 10:00 PM');
+            // Basic time validation - just check that end time is after start time
+            if (startTime >= endTime) {
+                alert('End time must be later than start time');
                 return;
             }
 
@@ -576,11 +716,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             
             if (diffInMinutes < 60) {
                 alert('Appointment duration must be at least 1 hour');
-                return;
-            }
-
-            if (startTime >= endTime) {
-                alert('End time must be later than start time');
                 return;
             }
 
