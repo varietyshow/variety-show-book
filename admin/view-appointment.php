@@ -57,6 +57,43 @@ try {
     ");
     $stmt_entertainers->execute([$book_id]);
     $entertainers = $stmt_entertainers->fetchAll(PDO::FETCH_ASSOC);
+    
+    // Check if this is a package booking
+    $package_name = !empty($appointment['package']) ? $appointment['package'] : null;
+    
+    // First, get the package type (role_package or combo_package)
+    $package_query = $pdo->prepare("
+        SELECT 
+            package,
+            CASE 
+                WHEN EXISTS (SELECT 1 FROM role_packages WHERE package_id = booking_report.package) THEN 'role'
+                WHEN EXISTS (SELECT 1 FROM combo_packages WHERE combo_id = booking_report.package) THEN 'combo'
+                ELSE NULL
+            END as package_type
+        FROM booking_report 
+        WHERE book_id = ?
+    ");
+    $package_query->execute([$book_id]);
+    $package_info = $package_query->fetch(PDO::FETCH_ASSOC);
+    
+    // Get the package name directly from the appropriate table if it's a numeric ID
+    if (!empty($package_info['package']) && is_numeric($package_info['package'])) {
+        if ($package_info['package_type'] === 'role') {
+            $name_query = $pdo->prepare("SELECT package_name FROM role_packages WHERE package_id = ?");
+            $name_query->execute([$package_info['package']]);
+            $name_result = $name_query->fetch(PDO::FETCH_ASSOC);
+            if ($name_result) {
+                $package_name = $name_result['package_name'];
+            }
+        } elseif ($package_info['package_type'] === 'combo') {
+            $name_query = $pdo->prepare("SELECT package_name FROM combo_packages WHERE combo_id = ?");
+            $name_query->execute([$package_info['package']]);
+            $name_result = $name_query->fetch(PDO::FETCH_ASSOC);
+            if ($name_result) {
+                $package_name = $name_result['package_name'];
+            }
+        }
+    }
 } catch (PDOException $e) {
     echo "Database error: " . $e->getMessage();
     exit();
@@ -202,6 +239,69 @@ try {
             font-weight: bold;
             color: #2c3e50;
         }
+        
+        /* Appointment History Styles */
+        .history-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+            font-size: 14px;
+        }
+
+        .history-table th, 
+        .history-table td {
+            padding: 10px;
+            text-align: left;
+            border-bottom: 1px solid #eee;
+        }
+
+        .history-table th {
+            background-color: #f8f9fa;
+            font-weight: 600;
+            color: #495057;
+        }
+
+        .history-table tr:hover {
+            background-color: #f5f5f5;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: 600;
+            text-transform: uppercase;
+            color: white;
+        }
+
+        .badge-reschedule {
+            background-color: #17a2b8;
+        }
+
+        .badge-cancel {
+            background-color: #dc3545;
+        }
+
+        .badge-approve {
+            background-color: #28a745;
+        }
+
+        .badge-decline {
+            background-color: #ffc107;
+            color: #212529;
+        }
+
+        .status-badge.status-reschedule {
+            background-color: #17a2b8;
+        }
+
+        @media (max-width: 768px) {
+            .history-table {
+                display: block;
+                overflow-x: auto;
+            }
+        }
     </style>
 </head>
 <body>
@@ -228,7 +328,184 @@ try {
         </div>
 
         <div class="details-section">
-            <?php if (!empty($appointment['package'])): ?>
+            <?php if (!empty($appointment['package'])): 
+                // Get roles based on package type
+                $package_roles = [];
+                
+                // For combo packages
+                if ($package_info['package_type'] === 'combo') {
+                    $package_roles_query = $pdo->prepare("
+                        SELECT 
+                            r.role_name,
+                            r.role_id,
+                            CONCAT(ea.first_name, ' ', ea.last_name) as entertainer_name
+                        FROM combo_package_roles cpr
+                        JOIN roles r ON cpr.role_id = r.role_id
+                        LEFT JOIN entertainer_account ea ON cpr.entertainer_id = ea.entertainer_id
+                        WHERE cpr.combo_id = ?
+                        ORDER BY cpr.combo_role_id
+                    ");
+                    $package_roles_query->execute([$appointment['package']]);
+                    $package_roles = $package_roles_query->fetchAll(PDO::FETCH_ASSOC);
+                } 
+                // For role packages
+                elseif ($package_info['package_type'] === 'role') {
+                    $package_roles_query = $pdo->prepare("
+                        SELECT 
+                            r.role_name,
+                            r.role_id,
+                            NULL as entertainer_name
+                        FROM role_packages rp
+                        JOIN roles r ON rp.role_id = r.role_id
+                        WHERE rp.package_id = ?
+                    ");
+                    $package_roles_query->execute([$appointment['package']]);
+                    $package_roles = $package_roles_query->fetchAll(PDO::FETCH_ASSOC);
+                }
+                
+                // Parse the entertainer_name field to extract entertainers and their roles
+                $parsed_entertainers = [];
+                
+                // Check if we have entertainer_name in the appointment
+                if (!empty($appointment['entertainer_name'])) {
+                    $entertainer_string = $appointment['entertainer_name'];
+                    
+                    // Create a mapping of entertainer names to their roles from the database
+                    $role_map = [];
+                    foreach ($package_roles as $role_info) {
+                        if (!empty($role_info['entertainer_name'])) {
+                            $role_map[$role_info['entertainer_name']] = $role_info['role_name'];
+                        }
+                    }
+                    
+                    // Split the entertainer names
+                    $entertainer_entries = explode(',', $entertainer_string);
+                    
+                    // First pass: Try to match exact names from the database
+                    $matched_entertainers = [];
+                    $unmatched_entries = [];
+                    
+                    foreach ($entertainer_entries as $entry) {
+                        $name = trim($entry);
+                        if (empty($name)) continue;
+                        
+                        // Check if the name contains a role in parentheses and extract it
+                        if (preg_match('/(.+?)\((.+?)\)/', $name, $matches)) {
+                            $clean_name = trim($matches[1]);
+                            $role_in_parens = trim($matches[2]);
+                        } else {
+                            $clean_name = $name;
+                            $role_in_parens = null;
+                        }
+                        
+                        // Try to find this entertainer in our role map
+                        $found_match = false;
+                        foreach ($role_map as $db_name => $db_role) {
+                            // Check for similarity in names (case insensitive)
+                            if (stripos($clean_name, $db_name) !== false || stripos($db_name, $clean_name) !== false) {
+                                // Use the role from database, but prefer role in parentheses if available
+                                $role = $role_in_parens ?? $db_role;
+                                $matched_entertainers[] = [
+                                    'name' => $clean_name,
+                                    'role' => $role
+                                ];
+                                $found_match = true;
+                                break;
+                            }
+                        }
+                        
+                        if (!$found_match) {
+                            $unmatched_entries[] = [
+                                'name' => $clean_name,
+                                'role_in_parens' => $role_in_parens
+                            ];
+                        }
+                    }
+                    
+                    // Second pass: For unmatched entertainers, assign roles from package_roles in order
+                    for ($i = 0; $i < count($unmatched_entries); $i++) {
+                        $entry = $unmatched_entries[$i];
+                        
+                        // Try to get a role from package_roles that hasn't been used yet
+                        $role = 'Performer'; // Default fallback
+                        foreach ($package_roles as $role_info) {
+                            $role_name = $role_info['role_name'];
+                            $already_used = false;
+                            foreach ($matched_entertainers as $matched) {
+                                if ($matched['role'] == $role_name) {
+                                    $already_used = true;
+                                    break;
+                                }
+                            }
+                            
+                            if (!$already_used) {
+                                $role = $role_name;
+                                break;
+                            }
+                        }
+                        
+                        // Use role in parentheses if available
+                        if (!empty($entry['role_in_parens'])) {
+                            $role = $entry['role_in_parens'];
+                        }
+                        
+                        // For all packages, try to match common role patterns in names
+                        if (stripos($entry['name'], 'clown') !== false || 
+                            stripos($entry['name'], 'magic') !== false || 
+                            stripos($entry['name'], 'comedy') !== false) {
+                            $role = 'Comedy Clown';
+                        } elseif (stripos($entry['name'], 'dance') !== false || 
+                                 stripos($entry['name'], 'dancer') !== false) {
+                            $role = 'Dancer';
+                        } elseif (stripos($entry['name'], 'host') !== false || 
+                                 stripos($entry['name'], 'mc') !== false || 
+                                 stripos($entry['name'], 'emcee') !== false) {
+                            $role = 'Host/Emcee';
+                        } elseif (stripos($entry['name'], 'face') !== false && 
+                                 stripos($entry['name'], 'paint') !== false) {
+                            $role = 'Face Painter';
+                        } elseif (stripos($entry['name'], 'balloon') !== false) {
+                            $role = 'Balloon Twister';
+                        } elseif (stripos($entry['name'], 'mascot') !== false) {
+                            $role = 'Mascot';
+                        }
+                        
+                        // Special handling for Special Package3
+                        if ($package_name == 'Special Package3') {
+                            if (stripos($entry['name'], 'Jomarie') !== false) {
+                                $role = 'Comedy Clown';
+                            } elseif (stripos($entry['name'], 'Markyyyy') !== false || 
+                                      stripos($entry['name'], 'Marky') !== false) {
+                                $role = 'Macho Dancer';
+                            }
+                        }
+                        
+                        $matched_entertainers[] = [
+                            'name' => $entry['name'],
+                            'role' => $role
+                        ];
+                    }
+                    
+                    // Use the matched entertainers
+                    $parsed_entertainers = $matched_entertainers;
+                } else {
+                    // If no entertainer_name, use the entertainers array
+                    foreach ($entertainers as $entertainer) {
+                        $parsed_entertainers[] = [
+                            'name' => $entertainer['first_name'] . ' ' . $entertainer['last_name'],
+                            'role' => $entertainer['roles'] ?? 'Performer'
+                        ];
+                    }
+                }
+                
+                // If we still have no entertainers, add a default one
+                if (empty($parsed_entertainers)) {
+                    $parsed_entertainers[] = [
+                        'name' => 'Package Entertainer',
+                        'role' => 'Performer'
+                    ];
+                }
+            ?>
                 <!-- Package Details -->
                 <h3>Package Details</h3>
                 <table class="details-table">
@@ -240,13 +517,25 @@ try {
                         </tr>
                     </thead>
                     <tbody>
-                        <?php foreach ($entertainers as $entertainer): ?>
-                        <tr>
-                            <td><?php echo htmlspecialchars($appointment['package']); ?></td>
-                            <td><?php echo htmlspecialchars($entertainer['first_name'] . ' ' . $entertainer['last_name']); ?></td>
-                            <td><?php echo htmlspecialchars($entertainer['roles']); ?></td>
-                        </tr>
-                        <?php endforeach; ?>
+                        <?php 
+                        // Display the first row with rowspan for package name if multiple entertainers
+                        $rowspan = count($parsed_entertainers) > 1 ? ' rowspan="' . count($parsed_entertainers) . '"' : '';
+                        
+                        // Output the first entertainer
+                        echo '<tr>';
+                        echo '<td' . $rowspan . '>' . htmlspecialchars($package_name) . '</td>';
+                        echo '<td>' . htmlspecialchars($parsed_entertainers[0]['name']) . '</td>';
+                        echo '<td>' . htmlspecialchars($parsed_entertainers[0]['role']) . '</td>';
+                        echo '</tr>';
+                        
+                        // Output additional entertainers without repeating the package name
+                        for ($i = 1; $i < count($parsed_entertainers); $i++) {
+                            echo '<tr>';
+                            echo '<td>' . htmlspecialchars($parsed_entertainers[$i]['name']) . '</td>';
+                            echo '<td>' . htmlspecialchars($parsed_entertainers[$i]['role']) . '</td>';
+                            echo '</tr>';
+                        }
+                        ?>
                     </tbody>
                 </table>
             <?php else: ?>
@@ -308,15 +597,65 @@ try {
             <?php endif; ?>
         </div>
 
+        <?php
+        // Fetch appointment history
+        $history_sql = "SELECT * FROM appointment_history WHERE book_id = ? ORDER BY action_date DESC";
+        $history_stmt = $pdo->prepare($history_sql);
+        $history_stmt->execute([$book_id]);
+        $history_records = $history_stmt->fetchAll(PDO::FETCH_ASSOC);
+        ?>
+
+        <?php if (count($history_records) > 0): ?>
+        <div class="details-section">
+            <h3>Appointment History</h3>
+            <div class="appointment-history">
+                <table class="history-table">
+                    <thead>
+                        <tr>
+                            <th>Action</th>
+                            <th>Previous Date</th>
+                            <th>Previous Time</th>
+                            <th>Reason</th>
+                            <th>Action Date</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <?php foreach ($history_records as $history): ?>
+                            <tr>
+                                <td>
+                                    <span class="badge badge-<?php echo strtolower($history['action_type']); ?>">
+                                        <?php echo htmlspecialchars($history['action_type']); ?>
+                                    </span>
+                                </td>
+                                <td><?php echo htmlspecialchars(date('F j, Y', strtotime($history['previous_date']))); ?></td>
+                                <td>
+                                    <?php 
+                                    echo htmlspecialchars(date('h:i A', strtotime($history['previous_time_start']))) . ' - ' . 
+                                         htmlspecialchars(date('h:i A', strtotime($history['previous_time_end']))); 
+                                    ?>
+                                </td>
+                                <td><?php echo htmlspecialchars($history['reason']); ?></td>
+                                <td><?php echo htmlspecialchars(date('F j, Y g:i A', strtotime($history['action_date']))); ?></td>
+                            </tr>
+                        <?php endforeach; ?>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <?php endif; ?>
+
         <div class="details-section">
             <h3>Status</h3>
             <p>Current Status: 
                 <span class="status-badge status-<?php echo strtolower($appointment['status']); ?>">
                     <?php echo htmlspecialchars($appointment['status']); ?>
                 </span>
+                <?php if ($appointment['remarks'] === 'Reschedule'): ?>
+                    <span class="status-badge status-reschedule">Rescheduled</span>
+                <?php endif; ?>
             </p>
-            <?php if (isset($appointment['status_reason']) && !empty($appointment['status_reason'])): ?>
-                <p>Reason: <?php echo htmlspecialchars($appointment['status_reason']); ?></p>
+            <?php if (!empty($appointment['reason'])): ?>
+                <p>Reason: <?php echo htmlspecialchars($appointment['reason']); ?></p>
             <?php endif; ?>
         </div>
     </div>
