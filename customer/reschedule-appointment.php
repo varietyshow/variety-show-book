@@ -18,10 +18,10 @@ if (!isset($_GET['appointment_id'])) {
 $appointment_id = intval($_GET['appointment_id']);
 
 // Database connection
-$servername = "localhost";
-$username = "root";
-$password = "";
-$dbname = "db_booking_system";
+$servername = "sql12.freesqldatabase.com";
+$username = "sql12774230";
+$password = "ytPEFx33BF";
+$dbname = "sql12774230";
 
 $conn = new mysqli($servername, $username, $password, $dbname);
 
