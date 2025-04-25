@@ -154,7 +154,7 @@ try {
     
     // Insert a record into the payment_transactions table if it exists
     try {
-        $stmt = $conn->prepare("INSERT INTO payment_transactions (booking_id, charge_id, amount, payment_method, status, created_at) VALUES (?, ?, ?, ?, ?, NOW())");
+        $stmt = $conn->prepare("INSERT INTO payment_transactions (booking_reference, charge_id, amount, payment_method, status, created_at) VALUES (?, ?, ?, ?, ?, NOW())");
         $status = 'pending';
         $stmt->bind_param("isids", $booking_id, $charge_id, $amount, $payment_method, $status);
         $stmt->execute();
