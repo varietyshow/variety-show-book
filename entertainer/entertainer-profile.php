@@ -19,10 +19,10 @@ if (!isset($_SESSION['first_name'])) {
 $first_name = htmlspecialchars($_SESSION['first_name']); // Retrieve and sanitize the first_name
 
 // Database configuration
-$host = 'localhost'; // Your database host
-$dbname = 'db_booking_system'; // Your database name
-$username = 'root'; // Your database username
-$password = ''; // Your database password
+$host = 'sql12.freesqldatabase.com'; // Your database host
+$dbname = 'sql12775634'; // Your database name
+$username = 'sql12775634'; // Your database username
+$password = 'kPZFb8pXsU'; // Your database password
 
 // Create connection
 $conn = new mysqli($host, $username, $password, $dbname);
