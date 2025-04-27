@@ -17,10 +17,10 @@ if (isset($_SESSION['entertainer_id'])) {
 $first_name = htmlspecialchars($_SESSION['first_name']); // Retrieve and sanitize the first_name
 
 // Database connection
-$servername = "localhost"; // Your database server name
-$username = "root";        // Your database username
-$password = "";            // Your database password
-$dbname = "db_booking_system"; // Your database name
+$servername = "sql12.freesqldatabase.com"; // Your database server name
+$username = "sql12775634";        // Your database username
+$password = "kPZFb8pXsU";            // Your database password
+$dbname = "sql12775634"; // Your database name
 
 // Create connection
 $conn = new mysqli($servername, $username, $password, $dbname);
