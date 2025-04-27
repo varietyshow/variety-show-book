@@ -13,9 +13,9 @@ $first_name = htmlspecialchars($_SESSION['first_name']);
 
 // Database connection configuration
 $servername = "sql12.freesqldatabase.com";
-$username = "sql12774230";
-$password = "ytPEFx33BF";
-$dbname = "sql12774230";
+$username = "sql12775634";
+$password = "kPZFb8pXsU";
+$dbname = "sql12775634";
 
 // Create database connection
 $conn = new mysqli($servername, $username, $password, $dbname);
