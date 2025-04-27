@@ -2,10 +2,10 @@
 // delete-payment-method.php
 
 // Database connection details
-$servername = "localhost"; // Your database server
-$username = "root"; // Your database username
-$password = ""; // Your database password
-$dbname = "db_booking_system"; // Your actual database name
+$servername = "sql12.freesqldatabase.com"; // Your database server
+$username = "sql12775634"; // Your database username
+$password = "kPZFb8pXsU"; // Your database password
+$dbname = "sql12775634"; // Your actual database name
 
 // Create connection
 $conn = new mysqli($servername, $username, $password, $dbname);
