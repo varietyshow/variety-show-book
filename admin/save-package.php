@@ -8,10 +8,10 @@ if (!isset($_SESSION['first_name'])) {
 }
 
 // Database connection
-$servername = "localhost";
-$username = "root";
-$password = "";
-$dbname = "db_booking_system";
+$servername = "sql12.freesqldatabase.com";
+$username = "sql12775634";
+$password = "kPZFb8pXsU";
+$dbname = "sql12775634";
 
 // Create connection
 $conn = new mysqli($servername, $username, $password, $dbname);
