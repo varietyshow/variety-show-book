@@ -11,9 +11,9 @@ $first_name = htmlspecialchars($_SESSION['first_name']); // Retrieve and sanitiz
 
 // Database configuration
 $host = 'sql12.freesqldatabase.com'; // replace with your host
-$db = 'sql12774230'; // your database name
-$user = 'sql12774230'; // your database username
-$pass = 'ytPEFx33BF'; // your database password
+$db = 'sql12775634'; // your database name
+$user = 'sql12775634'; // your database username
+$pass = 'kPZFb8pXsU'; // your database password
 $charset = 'utf8mb4';
 
 // Set up a DSN (Data Source Name)
