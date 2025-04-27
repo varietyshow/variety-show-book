@@ -19,9 +19,9 @@ $appointment_id = intval($_GET['appointment_id']);
 
 // Database connection
 $servername = "sql12.freesqldatabase.com";
-$username = "sql12774230";
-$password = "ytPEFx33BF";
-$dbname = "sql12774230";
+$username = "sql12775634";
+$password = "kPZFb8pXsU";
+$dbname = "sql12775634";
 
 $conn = new mysqli($servername, $username, $password, $dbname);
 
