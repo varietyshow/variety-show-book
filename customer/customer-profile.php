@@ -14,10 +14,10 @@ if (!isset($_SESSION['username']) || !isset($_SESSION['first_name'])) {
 }
 
 // Database connection
-$host = "localhost";
-$dbname = "db_booking_system";
-$username = "root";
-$password = "";
+$host = "sql12.freesqldatabase.com";
+$dbname = "sql12775634";
+$username = "sql12775634";
+$password = "kPZFb8pXsU";
 
 try {
     $pdo = new PDO("mysql:host=$host;dbname=$dbname", $username, $password);
