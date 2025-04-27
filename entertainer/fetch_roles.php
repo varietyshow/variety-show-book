@@ -2,10 +2,10 @@
 // fetch_roles.php
 
 // Database credentials
-$host = 'localhost';
-$db   = 'db_booking_system';
-$user = 'root';
-$pass = '';
+$host = 'sql12.freesqldatabase.com';
+$db   = 'sql12775634';
+$user = 'sql12775634';
+$pass = 'kPZFb8pXsU';
 
 try {
     // Create a new PDO instance
