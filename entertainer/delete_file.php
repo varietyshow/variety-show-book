@@ -7,10 +7,10 @@ if (!isset($_SESSION['first_name']) || !isset($_POST['upload_id'])) {
 }
 
 // Database configuration
-$host = 'localhost';
-$dbname = 'db_booking_system';
-$username = 'root';
-$password = '';
+$host = 'sql12.freesqldatabase.com';
+$dbname = 'sql12775634';
+$username = 'sql12775634';
+$password = 'kPZFb8pXsU';
 
 // Create connection
 $conn = new mysqli($host, $username, $password, $dbname);
