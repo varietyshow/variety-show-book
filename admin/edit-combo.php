@@ -1,9 +1,9 @@
 <?php
 session_start();
-$servername = "localhost"; // Change this to your database host
-$username = "root";        // Change this to your database username
-$password = "";            // Change this to your database password
-$dbname = "db_booking_system"; // Use your database name
+$servername = "sql12.freesqldatabase.com"; // Change this to your database host
+$username = "sql12775634";        // Change this to your database username
+$password = "kPZFb8pXsU";            // Change this to your database password
+$dbname = "sql12775634"; // Use your database name
 
 // Create connection
 $conn = new mysqli($servername, $username, $password, $dbname);
