@@ -3,10 +3,10 @@ session_start();
 header('Content-Type: application/json');
 
 // Database connection details
-$host = 'localhost';
-$db = 'db_booking_system';
-$user = 'root';
-$pass = '';
+$host = 'sql12.freesqldatabase.com';
+$db = 'sql12775634';
+$user = 'sql12775634';
+$pass = 'kPZFb8pXsU';
 
 // Create a new PDO instance
 $pdo = new PDO("mysql:host=$host;dbname=$db;charset=utf8mb4", $user, $pass);
