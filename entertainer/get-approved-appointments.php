@@ -2,10 +2,10 @@
 session_start();
 
 // Database connection
-$host = 'localhost';
-$dbname = 'db_booking_system';
-$username = 'root';
-$password = '';
+$host = 'sql12.freesqldatabase.com';
+$dbname = 'sql12775634';
+$username = 'sql12775634';
+$password = 'kPZFb8pXsU';
 
 try {
     $pdo = new PDO("mysql:host=$host;dbname=$dbname;charset=utf8mb4", $username, $password);
