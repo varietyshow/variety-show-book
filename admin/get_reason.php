@@ -40,9 +40,9 @@ try {
 
     // Create new PDO connection to ensure we have a fresh connection
     $host = 'sql12.freesqldatabase.com';
-    $dbname = 'sql12775634';
-    $username = 'sql12775634';
-    $password = 'kPZFb8pXsU';
+    $dbname = 'sql12777569';
+    $username = 'sql12777569';
+    $password = 'QlgHSeuU1n';
     
     $pdo = new PDO("mysql:host=$host;dbname=$dbname;charset=utf8", $username, $password);
     $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
