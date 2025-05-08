@@ -3,9 +3,9 @@
 
 // Database credentials
 $host = 'sql12.freesqldatabase.com';
-$db   = 'sql12775634';
-$user = 'sql12775634';
-$pass = 'kPZFb8pXsU';
+$db   = 'sql12777569';
+$user = 'sql12777569';
+$pass = 'QlgHSeuU1n';
 
 try {
     // Create a new PDO instance
