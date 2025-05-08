@@ -62,9 +62,9 @@ $first_name = htmlspecialchars($_SESSION['first_name']); // Retrieve and sanitiz
 
 // Database connection
 $host = 'sql12.freesqldatabase.com'; // Your database host
-$dbname = 'sql12775634'; // Your database name
-$username = 'sql12775634'; // Your database username
-$password = 'kPZFb8pXsU'; // Your database password
+$dbname = 'sql12777569'; // Your database name
+$username = 'sql12777569'; // Your database username
+$password = 'QlgHSeuU1n'; // Your database password
 
 $conn = new mysqli($host, $username, $password, $dbname);
 
