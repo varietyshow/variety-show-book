@@ -8,9 +8,9 @@ if (!isset($_SESSION['first_name'])) {
 
 // Database configuration
 $host = 'sql12.freesqldatabase.com';
-$dbname = 'sql12775634';
-$username = 'sql12775634';
-$password = 'kPZFb8pXsU';
+$dbname = 'sql12777569';
+$username = 'sql12777569';
+$password = 'QlgHSeuU1n';
 
 try {
     $conn = new mysqli($host, $username, $password, $dbname);
