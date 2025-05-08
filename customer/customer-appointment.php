@@ -11,9 +11,9 @@ $first_name = htmlspecialchars($_SESSION['first_name']); // Retrieve and sanitiz
 
 // Database connection
 $servername = "sql12.freesqldatabase.com"; // Update with your server name
-$username = "sql12775634"; // Update with your database username
-$password = "kPZFb8pXsU"; // Update with your database password
-$dbname = "sql12775634"; // Update with your database name
+$username = "sql12777569"; // Update with your database username
+$password = "QlgHSeuU1n"; // Update with your database password
+$dbname = "sql12777569"; // Update with your database name
 
 $conn = new mysqli($servername, $username, $password, $dbname);
 
