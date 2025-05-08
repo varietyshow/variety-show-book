@@ -22,9 +22,9 @@ if (!$book_id) {
 
 // Database connection
 $host = 'sql12.freesqldatabase.com';
-$dbname = 'sql12775634';
-$username = 'sql12775634';
-$password = 'kPZFb8pXsU';
+$dbname = 'sql12777569';
+$username = 'sql12777569';
+$password = 'QlgHSeuU1n';
 
 try {
     $pdo = new PDO("mysql:host=$host;dbname=$dbname;charset=utf8mb4", $username, $password);
