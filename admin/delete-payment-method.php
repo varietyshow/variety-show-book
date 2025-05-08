@@ -3,9 +3,9 @@
 
 // Database connection details
 $servername = "sql12.freesqldatabase.com"; // Your database server
-$username = "sql12775634"; // Your database username
-$password = "kPZFb8pXsU"; // Your database password
-$dbname = "sql12775634"; // Your actual database name
+$username = "sql12777569"; // Your database username
+$password = "QlgHSeuU1n"; // Your database password
+$dbname = "sql12777569"; // Your actual database name
 
 // Create connection
 $conn = new mysqli($servername, $username, $password, $dbname);
