@@ -10,9 +10,9 @@ if (!isset($_SESSION['first_name'])) {
 
 // Database connection parameters
 $servername = "sql12.freesqldatabase.com"; // Change this to your database host
-$username = "sql12775634";        // Change this to your database username
-$password = "kPZFb8pXsU";            // Change this to your database password
-$dbname = "sql12775634"; // Use your actual database name
+$username = "sql12777569";        // Change this to your database username
+$password = "QlgHSeuU1n";            // Change this to your database password
+$dbname = "sql12777569"; // Use your actual database name
 
 // Create connection
 $conn = new mysqli($servername, $username, $password, $dbname);
