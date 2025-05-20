@@ -1,5 +1,14 @@
 <?php
 session_start();
+
+// Check if the user is logged in
+if (!isset($_SESSION['first_name'])) {
+    header("Location: customer-loginpage.php"); // Redirect to login page if not logged in
+    exit();
+}
+
+$first_name = htmlspecialchars($_SESSION['first_name']); // Retrieve and sanitize the first_name
+
 // Payment Confirmation Page - With PayMongo Integration
 require_once dirname(__DIR__) . '/vendor/autoload.php';
 require_once 'db_connect.php';
