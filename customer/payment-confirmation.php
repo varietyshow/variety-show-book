@@ -1,14 +1,41 @@
 <?php
 session_start();
 
+// Get booking ID from URL if available
+$booking_id = isset($_GET['booking_id']) ? $_GET['booking_id'] : '';
+
 // Check if the user is logged in
-if (!isset($_SESSION['first_name'])) {
-    header("Location: customer-loginpage.php"); // Redirect to login page if not logged in
+if (!isset($_SESSION['first_name']) && !empty($booking_id)) {
+    // If we have a booking ID but no session, try to restore the session from booking information
+    require_once 'db_connect.php';
+    
+    // Get customer information from booking ID
+    $stmt = $conn->prepare("SELECT c.customer_id, c.first_name, c.email 
+                          FROM booking_report b 
+                          JOIN customer_account c ON b.customer_id = c.customer_id 
+                          WHERE b.book_id = ?");
+    $stmt->bind_param("i", $booking_id);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    
+    if ($result && $result->num_rows > 0) {
+        // Found customer info, restore session
+        $customer = $result->fetch_assoc();
+        $_SESSION['customer_id'] = $customer['customer_id'];
+        $_SESSION['first_name'] = $customer['first_name'];
+        $_SESSION['email'] = $customer['email'];
+    } else {
+        // Could not restore session, redirect to login
+        header("Location: customer-loginpage.php"); 
+        exit();
+    }
+} else if (!isset($_SESSION['first_name'])) {
+    // No session and no booking ID, redirect to login
+    header("Location: customer-loginpage.php");
     exit();
 }
 
 $first_name = htmlspecialchars($_SESSION['first_name']); // Retrieve and sanitize the first_name
-
 // Payment Confirmation Page - With PayMongo Integration
 require_once dirname(__DIR__) . '/vendor/autoload.php';
 require_once 'db_connect.php';
@@ -62,6 +89,10 @@ try {
                 error_log("Could not update payment status: " . $e->getMessage());
             }
         }
+        
+        // Redirect to customer appointment page after successful payment
+        header("Location: customer-appointment.php");
+        exit();
     } 
     // Check PayMongo payment status if we have a source_id
     else if (!empty($source_id)) {
@@ -83,6 +114,10 @@ try {
             $updated_status = 'successful';
             $stmt->bind_param("ss", $updated_status, $source_id);
             $stmt->execute();
+            
+            // Redirect to customer appointment page after successful payment
+            header("Location: customer-appointment.php");
+            exit();
             
         } catch (Exception $e) {
             // If API check fails, assume success for testing
@@ -107,6 +142,10 @@ try {
                 if ($db_status === 'successful') {
                     $status = 'success';
                     $message = "Your booking has been confirmed and payment has been processed successfully.";
+                    
+                    // Redirect to customer appointment page after successful payment
+                    header("Location: customer-appointment.php");
+                    exit();
                 } else {
                     // For testing purposes, assume success
                     $status = 'success';
@@ -117,17 +156,29 @@ try {
                     $updated_status = 'successful';
                     $stmt->bind_param("ss", $updated_status, $charge_id);
                     $stmt->execute();
+                    
+                    // Redirect to customer appointment page after successful payment
+                    header("Location: customer-appointment.php");
+                    exit();
                 }
             } else {
                 // If no record found, assume success for testing
                 $status = 'success';
                 $message = "Your booking has been confirmed. Thank you!";
+                
+                // Redirect to customer appointment page after successful payment
+                header("Location: customer-appointment.php");
+                exit();
             }
         } catch (Exception $e) {
             // If DB check fails, assume success for testing
             $status = 'success';
             $message = "Your booking has been confirmed. Thank you!";
             error_log("Error checking payment status: " . $e->getMessage());
+            
+            // Redirect to customer appointment page after successful payment
+            header("Location: customer-appointment.php");
+            exit();
         }
     } else if ($payment_status === 'failed') {
         $status = 'error';
