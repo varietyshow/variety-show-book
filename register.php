@@ -114,7 +114,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 <p>Please click the link below to verify your email:</p>
                 
                 <div style='text-align: left; margin: 20px 0;'>
-                    <a href='http://localhost/new-system/verify-email.php' style='background-color: #4CAF50; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px; display: inline-block;'>Verify Email</a>
+                    <a href='https://variety-show-book-2.onrender.com/verify-email.php' style='background-color: #4CAF50; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px; display: inline-block;'>Verify Email</a>
                 </div>
                 
                 <p>Or you can enter your verification code manually at: <a href='http://localhost/new-system/verify-email.php' style='color: #0066cc; text-decoration: underline;'>http://localhost/new-system/verify-email.php</a></p>
