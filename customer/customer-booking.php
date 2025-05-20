@@ -1487,8 +1487,8 @@ window.formatWithCommas = function(x) {
                     <label for="contact_number">Contact Number: <span class="required">*</span></label>
                     <input type="tel" id="contact_number" name="contact_number" 
                            pattern="^(09|\+639)\d{9}$" 
-                           placeholder="e.g., 0917-123-4567 or +63917-123-4567"
-                           title="Please enter a valid Philippine mobile number (e.g., 0917-123-4567 or +63917-123-4567)"
+                           placeholder="e.g., 09171234567 or +639171234567"
+                           title="Please enter a valid Philippine mobile number (e.g., 09171234567 or +639171234567)"
                            required 
                            value="<?php echo isset($contact_number) ? htmlspecialchars($contact_number) : ''; ?>"
                            oninput="this.value = formatPhoneNumber(this.value)">
@@ -2455,14 +2455,8 @@ document.addEventListener('DOMContentLoaded', function() {
                         if (phoneNumber.length > 10) {
                             phoneNumber = phoneNumber.substring(0, 10);
                         }
-                        // Format the number and add back the +63 prefix
-                        if (phoneNumber.length <= 4) {
-                            return '+63' + phoneNumber;
-                        } else if (phoneNumber.length <= 7) {
-                            return '+63' + phoneNumber.slice(0, 3) + '-' + phoneNumber.slice(3);
-                        } else {
-                            return '+63' + phoneNumber.slice(0, 3) + '-' + phoneNumber.slice(3, 6) + '-' + phoneNumber.slice(6);
-                        }
+                        // Add back the +63 prefix without dashes
+                        return '+63' + phoneNumber;
                     } else {
                         // Handle 09 prefix
                         if (!phoneNumber.startsWith('09') && phoneNumber.length >= 2) {
@@ -2471,14 +2465,8 @@ document.addEventListener('DOMContentLoaded', function() {
                         if (phoneNumber.length > 11) {
                             phoneNumber = phoneNumber.substring(0, 11);
                         }
-                        // Format the number
-                        if (phoneNumber.length <= 4) {
-                            return phoneNumber;
-                        } else if (phoneNumber.length <= 7) {
-                            return phoneNumber.slice(0, 4) + '-' + phoneNumber.slice(4);
-                        } else {
-                            return phoneNumber.slice(0, 4) + '-' + phoneNumber.slice(4, 7) + '-' + phoneNumber.slice(7);
-                        }
+                        // Return the number without dashes
+                        return phoneNumber;
                     }
                 }
 
