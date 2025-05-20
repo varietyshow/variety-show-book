@@ -1,4 +1,5 @@
 <?php
+session_start();
 // Payment Confirmation Page - With PayMongo Integration
 require_once dirname(__DIR__) . '/vendor/autoload.php';
 require_once 'db_connect.php';
