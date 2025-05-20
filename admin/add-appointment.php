@@ -1489,33 +1489,62 @@ $(document).on('click', '.select-package-btn', function(e) {
     const packageName = btn.data('package-name');
     
     // Get roles from the package
-    const selectedRoles = [];
-    const selectedDurations = [];
+    const selectedRolesData = {};
+    const selectedDurationsData = {};
     const duration = packageOption.find('.package-duration').text().trim() || '1 hour';
     
-    // Get roles from package details
+    // Get the selected entertainers
+    const selectedEntertainers = $('.entertainer-checkbox:checked');
+    
+    // Get roles from package details or selected checkboxes
+    const packageRoles = [];
     packageOption.find('.package-roles li').each(function() {
-        const role = $(this).text().trim();
-        selectedRoles.push(role);
-        selectedDurations.push(duration);
+        packageRoles.push($(this).text().trim());
     });
     
-    // If no roles found in package-roles, get from selected checkboxes
-    if (selectedRoles.length === 0) {
-        $('.role-checkbox:checked').each(function() {
-            const role = $(this).val().trim();
-            selectedRoles.push(role);
-            selectedDurations.push(duration);
-        });
-    }
+    // If no package roles found, use selected checkboxes
+    const rolesToUse = packageRoles.length > 0 ? packageRoles : 
+        $('.role-checkbox:checked').map(function() { return $(this).val().trim(); }).get();
+    
+    // Distribute roles among selected entertainers
+    selectedEntertainers.each(function() {
+        const entertainerId = $(this).val();
+        
+        // Get the roles selected for this entertainer
+        const entertainerRoles = [];
+        const entertainerDurations = [];
+        
+        // For package pricing, assign all package roles to each entertainer
+        // or assign the roles that were checked for this specific entertainer
+        if (packageRoles.length > 0) {
+            // Use package roles for all entertainers
+            packageRoles.forEach(role => {
+                entertainerRoles.push(role);
+                entertainerDurations.push(duration);
+            });
+        } else {
+            // Use the roles that were specifically checked for this entertainer
+            $(`input[name="selected_roles[${entertainerId}][]"]:checked`).each(function() {
+                const role = $(this).val().trim();
+                entertainerRoles.push(role);
+                entertainerDurations.push(duration);
+            });
+        }
+        
+        // Only add if roles were selected
+        if (entertainerRoles.length > 0) {
+            selectedRolesData[entertainerId] = entertainerRoles;
+            selectedDurationsData[entertainerId] = entertainerDurations;
+        }
+    });
     
     // Log the collected data
-    console.log('Package Selected - Roles:', selectedRoles);
-    console.log('Package Selected - Durations:', selectedDurations);
+    console.log('Package Selected - Roles Data:', selectedRolesData);
+    console.log('Package Selected - Durations Data:', selectedDurationsData);
     
     // Update hidden fields
-    $('#selected_roles').val(JSON.stringify(selectedRoles));
-    $('#selected_durations').val(JSON.stringify(selectedDurations));
+    $('#selected_roles').val(JSON.stringify(selectedRolesData));
+    $('#selected_durations').val(JSON.stringify(selectedDurationsData));
     $('#package_name').val(packageName);
     $('#total_price').val(selectedPrice);
     
