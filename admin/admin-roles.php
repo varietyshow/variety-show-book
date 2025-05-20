@@ -1170,7 +1170,8 @@ small {
                             
                             // Format content column with line breaks
                             echo "<td><ul class='content-list'>";
-                            $roles = explode('||', $row['role_combination']);
+                            // Add null check before explode to prevent deprecated warning
+                            $roles = !is_null($row['role_combination']) ? explode('||', $row['role_combination']) : [];
                             foreach ($roles as $role) {
                                 if (!empty($role)) {
                                     echo "<li>" . htmlspecialchars($role) . "</li>";
