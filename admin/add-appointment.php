@@ -1609,6 +1609,80 @@ document.getElementById('appointment-form').addEventListener('submit', function(
     if (!validateContactNumber(contactInput)) {
         e.preventDefault();
         alert('Please enter a valid contact number before submitting.');
+        return;
+    }
+    
+    // Check if any entertainer is selected
+    const selectedEntertainers = $('.entertainer-checkbox:checked');
+    if (selectedEntertainers.length === 0) {
+        e.preventDefault();
+        alert('Please select at least one entertainer.');
+        return;
+    }
+    
+    // Check if roles are selected
+    let hasRoles = false;
+    const priceMethod = $('#price_method').val();
+    
+    if (priceMethod === 'package') {
+        // For package pricing, check if the hidden field has data
+        const selectedRolesData = $('#selected_roles').val();
+        if (!selectedRolesData || selectedRolesData === '{}' || selectedRolesData === '') {
+            e.preventDefault();
+            alert('Please select a package and roles for the entertainers.');
+            return;
+        }
+        
+        // Log the data being submitted
+        console.log('Submitting roles data:', selectedRolesData);
+        console.log('Submitting durations data:', $('#selected_durations').val());
+    } else if (priceMethod === 'custom') {
+        // For custom pricing, collect all selected roles
+        const selectedRolesData = {};
+        const selectedDurationsData = {};
+        
+        selectedEntertainers.each(function() {
+            const entertainerId = $(this).val();
+            const selectedRoles = $(`input[name="selected_roles[${entertainerId}][]"]`).filter(':checked');
+            
+            if (selectedRoles.length > 0) {
+                hasRoles = true;
+                const entertainerRoles = [];
+                const entertainerDurations = [];
+                
+                selectedRoles.each(function() {
+                    const role = $(this).val().trim();
+                    const rowId = `row_${entertainerId}_${role.replace(/\s+/g, '_')}`;
+                    const durationInput = $(`.duration-input[data-row="${rowId}"]`);
+                    const durationValue = durationInput.val() || '1';
+                    const durationUnit = durationInput.next('.duration-unit').text().replace(/s$/, '');
+                    
+                    entertainerRoles.push(role);
+                    entertainerDurations.push(`${durationValue} ${durationUnit}`);
+                });
+                
+                selectedRolesData[entertainerId] = entertainerRoles;
+                selectedDurationsData[entertainerId] = entertainerDurations;
+            }
+        });
+        
+        if (!hasRoles) {
+            e.preventDefault();
+            alert('Please select at least one role for each entertainer.');
+            return;
+        }
+        
+        // Update hidden fields with the collected data
+        $('#selected_roles').val(JSON.stringify(selectedRolesData));
+        $('#selected_durations').val(JSON.stringify(selectedDurationsData));
+        
+        // Log the data being submitted
+        console.log('Submitting custom roles data:', JSON.stringify(selectedRolesData));
+        console.log('Submitting custom durations data:', JSON.stringify(selectedDurationsData));
+    } else {
+        e.preventDefault();
+        alert('Please select a price method (Custom or Package).');
+        return;
     }
 });
     </script>
