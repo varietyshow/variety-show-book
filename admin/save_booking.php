@@ -243,11 +243,60 @@ try {
     $selected_roles_json = $_POST['selected_roles'];
     $selected_durations_json = $_POST['selected_durations'];
     
+    // Debug log the JSON data
+    error_log("Selected roles JSON: " . $selected_roles_json);
+    error_log("Selected durations JSON: " . $selected_durations_json);
+    
+    // Check if we're using a package
+    $price_method = $_POST['price_method'];
+    $package_name = isset($_POST['package_name']) ? $_POST['package_name'] : '';
+    
+    // For package bookings, we might need to handle roles differently
+    if ($price_method === 'package' && !empty($package_name)) {
+        error_log("Package booking detected: " . $package_name);
+        
+        // If this is a package booking but no roles JSON is provided, create a default one
+        if (empty($selected_roles_json) || $selected_roles_json === '{}') {
+            // Create default roles for each entertainer
+            $default_roles = array();
+            $default_durations = array();
+            
+            foreach ($entertainer_ids as $ent_id) {
+                // Get the entertainer's available roles
+                $roles_query = "SELECT roles FROM entertainer_account WHERE entertainer_id = ?";
+                $stmt_roles = $conn->prepare($roles_query);
+                $stmt_roles->bind_param("i", $ent_id);
+                $stmt_roles->execute();
+                $roles_result = $stmt_roles->get_result();
+                $roles_data = $roles_result->fetch_assoc();
+                
+                if ($roles_data && !empty($roles_data['roles'])) {
+                    $available_roles = explode(',', $roles_data['roles']);
+                    $first_role = trim($available_roles[0]);
+                    
+                    // Use the first available role as default
+                    $default_roles[$ent_id] = array($first_role);
+                    $default_durations[$ent_id] = array('1 hour');
+                }
+            }
+            
+            // Update the JSON strings
+            $selected_roles_json = json_encode($default_roles);
+            $selected_durations_json = json_encode($default_durations);
+            
+            error_log("Created default roles for package: " . $selected_roles_json);
+        }
+    }
+    
     $selected_roles = json_decode($selected_roles_json, true);
     $selected_durations = json_decode($selected_durations_json, true);
+    
+    // Debug log the decoded data
+    error_log("Decoded roles: " . print_r($selected_roles, true));
+    error_log("Decoded durations: " . print_r($selected_durations, true));
 
-    if (!$selected_roles) {
-        throw new Exception("No roles were selected for the entertainers");
+    if (empty($selected_roles) || !is_array($selected_roles)) {
+        throw new Exception("No roles were selected for the entertainers. Please select at least one role for each entertainer.");
     }
 
     // Insert into booking_entertainers table for each entertainer
@@ -290,11 +339,14 @@ try {
     
     // Return success response
     http_response_code(200);
-    echo json_encode([
+    $response = [
         'success' => true,
         'message' => 'Booking added successfully',
         'booking_id' => $booking_id
-    ]);
+    ];
+    
+    // Output the JSON response only
+    echo json_encode($response);
 
 } catch (Exception $e) {
     // Rollback transaction on error
@@ -304,9 +356,12 @@ try {
     
     // Return error response
     http_response_code(400);
-    echo json_encode([
+    $response = [
         'success' => false,
         'error' => $e->getMessage()
-    ]);
+    ];
+    
+    // Output the JSON response only
+    echo json_encode($response);
 }
 ?>
