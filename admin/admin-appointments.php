@@ -61,10 +61,10 @@ if (!isset($_SESSION['first_name'])) {
 $first_name = htmlspecialchars($_SESSION['first_name']); // Retrieve and sanitize the first_name
 
 // Database connection
-$host = 'sql12.freesqldatabase.com'; // Your database host
-$dbname = 'sql12777569'; // Your database name
-$username = 'sql12777569'; // Your database username
-$password = 'QlgHSeuU1n'; // Your database password
+$host = 'localhost'; // Your database host
+$dbname = 'db_booking_system'; // Your database name
+$username = 'root'; // Your database username
+$password = ''; // Your database password
 
 $conn = new mysqli($host, $username, $password, $dbname);
 
@@ -144,14 +144,22 @@ function getAppointmentDetails($conn, $book_id) {
 
 // Function to send JSON response
 function sendJsonResponse($status, $message, $data = null) {
-    header('Content-Type: application/json');
+    // Ensure no output has been sent before
+    if (!headers_sent()) {
+        header('Content-Type: application/json');
+    } else {
+        error_log('Headers already sent before JSON response');
+    }
+    
     $response = [
         'status' => $status,
         'message' => $message
     ];
+    
     if ($data !== null) {
         $response['data'] = $data;
     }
+    
     echo json_encode($response);
     exit;
 }
@@ -2257,7 +2265,16 @@ function handleApprove(book_id) {
                     if (!response.ok) {
                         throw new Error('Network response was not ok');
                     }
-                    return response.json();
+                    // Check if the response is JSON
+                    const contentType = response.headers.get('content-type');
+                    if (contentType && contentType.indexOf('application/json') !== -1) {
+                        return response.json();
+                    } else {
+                        // Handle non-JSON response
+                        return response.text().then(text => {
+                            throw new Error('Received non-JSON response: ' + text.substring(0, 100) + '...');
+                        });
+                    }
                 })
                 .then(data => {
                     if (data.status === 'success') {
