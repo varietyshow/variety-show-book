@@ -224,7 +224,7 @@ function sendAppointmentStatusNotification($conn, $appointmentId, $status, $reas
         }
         
         if ($status == 'Approved') {
-            $body .= "\nPlease make sure to arrive on time for your appointment.\n";
+            $body .= "\nThe entertainer(s) will arrive at the venue before the scheduled appointment time.\n";
         } elseif ($status == 'Declined') {
             $body .= "\nIf you have any questions, please contact our support team.\n";
         }
