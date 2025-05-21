@@ -1129,8 +1129,9 @@ $('.entertainer-checkbox').change(function() {
     const today = new Date().toISOString().split('T')[0];
     dateInput.setAttribute('min', today);
 
-    // Validate time inputs
-    document.querySelector('form').addEventListener('submit', function(e) {
+    // We'll handle all form validation in the main form submit handler
+    // This function just validates the date and time
+    function validateDateAndTime() {
         const startTime = document.getElementById('time_start').value;
         const endTime = document.getElementById('time_end').value;
         const appointmentDate = document.getElementById('date_schedule').value;
@@ -1142,18 +1143,18 @@ $('.entertainer-checkbox').change(function() {
 
         // Check if date is in the past
         if (startDateTime < now) {
-            e.preventDefault();
             alert('Cannot schedule appointments in the past');
-            return;
+            return false;
         }
         
         // Check if end time is after start time
         if (startDateTime >= endDateTime) {
-            e.preventDefault();
             alert('End time must be later than start time');
-            return;
+            return false;
         }
-    });
+        
+        return true;
+    }
 
 
     $(document).ready(function() {
@@ -1524,18 +1525,28 @@ $(document).on('click', '.select-package-btn', function(e) {
             });
         } else {
             // Use the roles that were specifically checked for this entertainer
-            $(`input[name="selected_roles[${entertainerId}][]"]:checked`).each(function() {
+            $(`input[name="selected_roles[${entertainerId}][]"]`).filter(':checked').each(function() {
                 const role = $(this).val().trim();
                 entertainerRoles.push(role);
                 entertainerDurations.push(duration);
             });
         }
         
-        // Only add if roles were selected
-        if (entertainerRoles.length > 0) {
-            selectedRolesData[entertainerId] = entertainerRoles;
-            selectedDurationsData[entertainerId] = entertainerDurations;
+        // If no roles were selected for this entertainer, use the first checked role
+        if (entertainerRoles.length === 0) {
+            // Find the first available role for this entertainer
+            const firstRole = $(`input[name="selected_roles[${entertainerId}][]"]`).first();
+            if (firstRole.length > 0) {
+                const role = firstRole.val().trim();
+                entertainerRoles.push(role);
+                entertainerDurations.push(duration);
+            }
         }
+        
+        // Always add the entertainer to the data, even with empty roles
+        // The server will handle this case
+        selectedRolesData[entertainerId] = entertainerRoles;
+        selectedDurationsData[entertainerId] = entertainerDurations;
     });
     
     // Log the collected data
@@ -1603,50 +1614,148 @@ function validateContactNumber(input) {
     }
 }
 
-// Add form validation before submission
-document.getElementById('appointment-form').addEventListener('submit', function(e) {
+// Remove all existing event listeners from the form
+const form = document.getElementById('appointment-form');
+const oldForm = form.cloneNode(true);
+form.parentNode.replaceChild(oldForm, form);
+
+// Get the new form reference
+const newForm = document.getElementById('appointment-form');
+
+// Add a single submit button click handler instead of form submit
+document.querySelector('.submit-btn').addEventListener('click', function(event) {
+    event.preventDefault();
+    
+    // Disable the button immediately to prevent multiple clicks
+    this.disabled = true;
+    this.textContent = 'Submitting...';
+    
+    // Store button reference for later
+    const submitBtn = this;
+    
+    // Validate date and time
+    const startTime = document.getElementById('time_start').value;
+    const endTime = document.getElementById('time_end').value;
+    const appointmentDate = document.getElementById('date_schedule').value;
+    
+    // Create Date objects for comparison
+    const startDateTime = new Date(appointmentDate + ' ' + startTime);
+    const endDateTime = new Date(appointmentDate + ' ' + endTime);
+    const now = new Date();
+
+    // Check if date is in the past
+    if (startDateTime < now) {
+        alert('Cannot schedule appointments in the past');
+        submitBtn.disabled = false;
+        submitBtn.textContent = 'Add Booking';
+        return;
+    }
+    
+    // Check if end time is after start time
+    if (startDateTime >= endDateTime) {
+        alert('End time must be later than start time');
+        submitBtn.disabled = false;
+        submitBtn.textContent = 'Add Booking';
+        return;
+    }
+    
+    // Validate contact number
     const contactInput = document.getElementById('contact_number');
     if (!validateContactNumber(contactInput)) {
-        e.preventDefault();
         alert('Please enter a valid contact number before submitting.');
+        submitBtn.disabled = false;
+        submitBtn.textContent = 'Add Booking';
         return;
     }
     
     // Check if any entertainer is selected
     const selectedEntertainers = $('.entertainer-checkbox:checked');
     if (selectedEntertainers.length === 0) {
-        e.preventDefault();
         alert('Please select at least one entertainer.');
+        submitBtn.disabled = false;
+        submitBtn.textContent = 'Add Booking';
         return;
     }
     
-    // Check if roles are selected
-    let hasRoles = false;
-    const priceMethod = $('#price_method').val();
+    // Check if roles are selected for each entertainer
+    let allEntertainersHaveRoles = true;
+    let atLeastOneRoleSelected = false;
     
-    if (priceMethod === 'package') {
-        // For package pricing, check if the hidden field has data
-        const selectedRolesData = $('#selected_roles').val();
-        if (!selectedRolesData || selectedRolesData === '{}' || selectedRolesData === '') {
-            e.preventDefault();
-            alert('Please select a package and roles for the entertainers.');
-            return;
-        }
+    selectedEntertainers.each(function() {
+        const entertainerId = $(this).val();
+        const selectedRoles = $(`input[name="selected_roles[${entertainerId}][]"]`).filter(':checked');
         
-        // Log the data being submitted
-        console.log('Submitting roles data:', selectedRolesData);
-        console.log('Submitting durations data:', $('#selected_durations').val());
+        if (selectedRoles.length === 0) {
+            allEntertainersHaveRoles = false;
+        } else {
+            atLeastOneRoleSelected = true;
+        }
+    });
+    
+    if (!atLeastOneRoleSelected) {
+        alert('Please select at least one role for each entertainer.');
+        submitBtn.disabled = false;
+        submitBtn.textContent = 'Add Booking';
+        return;
+    }
+    
+    if (!allEntertainersHaveRoles) {
+        alert('Each entertainer must have at least one role selected.');
+        submitBtn.disabled = false;
+        submitBtn.textContent = 'Add Booking';
+        return;
+    }
+    
+    // Check if price method is selected
+    const priceMethod = $('#price_method').val();
+    if (!priceMethod) {
+        alert('Please select a price method (Custom or Package).');
+        submitBtn.disabled = false;
+        submitBtn.textContent = 'Add Booking';
+        return;
+    }
+    
+    // Initialize role data objects
+    const selectedRolesData = {};
+    const selectedDurationsData = {};
+    
+    // Process based on price method
+    if (priceMethod === 'package') {
+        // For package pricing, use the data already set by the package selection
+        const existingRolesData = $('#selected_roles').val();
+        
+        if (!existingRolesData || existingRolesData === '{}' || existingRolesData === '') {
+            // If no package was selected, collect roles manually
+            selectedEntertainers.each(function() {
+                const entertainerId = $(this).val();
+                const selectedRoles = $(`input[name="selected_roles[${entertainerId}][]"]`).filter(':checked');
+                
+                if (selectedRoles.length > 0) {
+                    const entertainerRoles = [];
+                    const entertainerDurations = [];
+                    
+                    selectedRoles.each(function() {
+                        const role = $(this).val().trim();
+                        entertainerRoles.push(role);
+                        entertainerDurations.push('1 hour'); // Default duration
+                    });
+                    
+                    selectedRolesData[entertainerId] = entertainerRoles;
+                    selectedDurationsData[entertainerId] = entertainerDurations;
+                }
+            });
+            
+            // Update hidden fields with the collected data
+            $('#selected_roles').val(JSON.stringify(selectedRolesData));
+            $('#selected_durations').val(JSON.stringify(selectedDurationsData));
+        }
     } else if (priceMethod === 'custom') {
         // For custom pricing, collect all selected roles
-        const selectedRolesData = {};
-        const selectedDurationsData = {};
-        
         selectedEntertainers.each(function() {
             const entertainerId = $(this).val();
             const selectedRoles = $(`input[name="selected_roles[${entertainerId}][]"]`).filter(':checked');
             
             if (selectedRoles.length > 0) {
-                hasRoles = true;
                 const entertainerRoles = [];
                 const entertainerDurations = [];
                 
@@ -1666,24 +1775,83 @@ document.getElementById('appointment-form').addEventListener('submit', function(
             }
         });
         
-        if (!hasRoles) {
-            e.preventDefault();
-            alert('Please select at least one role for each entertainer.');
-            return;
-        }
-        
         // Update hidden fields with the collected data
         $('#selected_roles').val(JSON.stringify(selectedRolesData));
         $('#selected_durations').val(JSON.stringify(selectedDurationsData));
-        
-        // Log the data being submitted
-        console.log('Submitting custom roles data:', JSON.stringify(selectedRolesData));
-        console.log('Submitting custom durations data:', JSON.stringify(selectedDurationsData));
-    } else {
-        e.preventDefault();
-        alert('Please select a price method (Custom or Package).');
-        return;
     }
+    
+    // Log the data being submitted for debugging
+    console.log('Final price method:', priceMethod);
+    console.log('Final roles data:', $('#selected_roles').val());
+    console.log('Final durations data:', $('#selected_durations').val());
+    
+    // Create FormData object to handle file uploads
+    const formData = new FormData(newForm);
+    
+    // Ensure the roles and durations data are included
+    formData.set('selected_roles', $('#selected_roles').val());
+    formData.set('selected_durations', $('#selected_durations').val());
+    
+    // Create a new XMLHttpRequest instead of using jQuery AJAX
+    const xhr = new XMLHttpRequest();
+    
+    // Set up the request
+    xhr.open('POST', 'save_booking.php', true);
+    
+    // Set up event handlers
+    xhr.onload = function() {
+        if (xhr.status >= 200 && xhr.status < 300) {
+            // Success
+            try {
+                const response = JSON.parse(xhr.responseText);
+                console.log('Booking success:', response);
+                alert('Booking added successfully!');
+                window.location.href = 'admin-appointments.php';
+            } catch (e) {
+                console.error('Error parsing success response:', e);
+                alert('Booking was successful, but there was an error processing the response.');
+                submitBtn.disabled = false;
+                submitBtn.textContent = 'Add Booking';
+            }
+        } else {
+            // Error
+            console.error('XHR Error:', xhr.status, xhr.statusText);
+            let errorMessage = 'An error occurred while saving the booking.';
+            
+            try {
+                const response = JSON.parse(xhr.responseText);
+                if (response && response.error) {
+                    errorMessage = response.error;
+                }
+            } catch (e) {
+                console.error('Error parsing error response:', e);
+            }
+            
+            alert('Error: ' + errorMessage);
+            submitBtn.disabled = false;
+            submitBtn.textContent = 'Add Booking';
+        }
+    };
+    
+    xhr.onerror = function() {
+        console.error('Network Error');
+        alert('Network error occurred. Please check your connection and try again.');
+        submitBtn.disabled = false;
+        submitBtn.textContent = 'Add Booking';
+    };
+    
+    // Set a timeout for the request
+    xhr.timeout = 30000; // 30 seconds
+    
+    xhr.ontimeout = function() {
+        console.error('Request timed out');
+        alert('Request timed out. Please try again.');
+        submitBtn.disabled = false;
+        submitBtn.textContent = 'Add Booking';
+    };
+    
+    // Send the request
+    xhr.send(formData);
 });
     </script>
 
